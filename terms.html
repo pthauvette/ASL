@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conditions d’utilisation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&display=swap">
+  <script>
+    tailwind.config={theme:{extend:{colors:{primary:'#000033',secondary:'#43464B',offwhite:'#FAFAF0'},fontFamily:{sans:['Inter','sans-serif']}}}};
+  </script>
+  <style>body{font-family:'Inter',sans-serif!important}::-webkit-scrollbar{display:none}html,body{-ms-overflow-style:none;scrollbar-width:none}</style>
+</head>
+<body class="bg-offwhite font-sans">
+  <!-- Header -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <h1 class="text-2xl font-bold text-primary">ASL</h1>
+        <nav class="hidden md:flex space-x-8 items-center">
+          <a href="registration.html" class="text-secondary font-medium hover:text-primary text-sm">Devenir membre</a>
+          <a href="#" class="text-secondary font-medium hover:text-primary text-sm">À propos de l'ASL</a>
+          <a href="#" class="text-secondary font-medium hover:text-primary text-sm">Répertoire des membres</a>
+          <a href="#" class="text-secondary font-medium hover:text-primary text-sm">Opportunités de partenariat</a>
+          <a href="#" class="text-secondary font-medium hover:text-primary text-sm">Événements</a>
+          <a href="index.html" class="text-white bg-primary px-4 py-2 rounded-md text-sm font-medium">Connexion membre</a>
+        </nav>
+        <div class="md:hidden flex items-center">
+          <button class="text-secondary hover:text-primary"><i class="fa-solid fa-bars text-xl"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 bg-white rounded-lg shadow-sm mt-8">
+    <h1 class="text-3xl font-bold text-primary mb-6 text-center">Conditions d’utilisation</h1>
+    <section class="mb-6">
+      <h2 class="text-xl font-semibold text-secondary mb-2">1. Acceptation des conditions</h2>
+      <p class="text-secondary">En accédant ou en utilisant ce site, vous acceptez d’être lié par ces Conditions d’utilisation et notre Politique de confidentialité.</p>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-xl font-semibold text-secondary mb-2">2. Utilisation du contenu</h2>
+      <p class="text-secondary">Tout contenu publié sur ce site est protégé par le droit d’auteur. Vous ne pouvez pas copier, modifier ou distribuer le contenu sans autorisation écrite.</p>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-xl font-semibold text-secondary mb-2">3. Compte utilisateur</h2>
+      <p class="text-secondary">Vous êtes responsable de la confidentialité de vos identifiants et de vos activités sur votre compte. Signalez immédiatement toute utilisation non autorisée.</p>
+    </section>
+    <section class="mb-6">
+      <h2 class="text-xl font-semibold text-secondary mb-2">4. Limitation de responsabilité</h2>
+      <p class="text-secondary">En aucun cas, l’ASL ne pourra être tenu responsable des dommages directs ou indirects résultant de l’utilisation de ce site.</p>
+    </section>
+    <section>
+      <h2 class="text-xl font-semibold text-secondary mb-2">5. Contact</h2>
+      <p class="text-secondary">Pour toute question, veuillez nous contacter à <a href="mailto:support@asl.org" class="text-primary hover:underline">support@asl.org</a>.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact principal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&display=swap">
+  <script>
+    tailwind.config={theme:{extend:{colors:{primary:'#000033',secondary:'#43464B',offwhite:'#FAFAF0'},fontFamily:{sans:['Inter','sans-serif']}}}};
+  </script>
+  <style>body{font-family:'Inter',sans-serif!important}::-webkit-scrollbar{display:none}html,body{-ms-overflow-style:none;scrollbar-width:none}</style>
+</head>
+<body class="bg-offwhite font-sans">
+  <!-- Header -->
+  <header id="header" class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <h1 class="text-2xl font-bold text-primary">ASL</h1>
+        <nav class="hidden md:flex space-x-8 items-center">
+          <a href="registration.html" class="text-secondary font-medium hover:text-primary text-sm">Détails organisation</a>
+          <a href="registration-membership.html" class="text-secondary font-medium hover:text-primary text-sm">Choix d’adhésion</a>
+          <span class="text-white bg-primary px-3 py-2 rounded-md text-sm font-medium">Contact principal</span>
+          <a href="index.html" class="text-secondary font-medium hover:text-primary text-sm">Connexion</a>
+        </nav>
+        <div class="md:hidden flex items-center">
+          <button class="text-secondary hover:text-primary"><i class="fa-solid fa-bars text-xl"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+      <i class="fa-solid fa-address-card text-primary text-6xl mb-4"></i>
+      <h1 class="text-4xl font-bold text-primary mb-4">Contact principal</h1>
+      <p class="text-lg text-secondary max-w-2xl mx-auto">Indiquez la personne à contacter pour votre adhésion.</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm p-8">
+      <form id="contact-form" class="space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-secondary">Civilité</span>
+            <select name="Salutation" required
+                    class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+              <option value="1">Monsieur</option>
+              <option value="2">Madame</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-secondary">Prénom</span>
+            <input name="FirstName" type="text" required placeholder="Prénom"
+                   class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-secondary">Nom</span>
+            <input name="LastName" type="text" required placeholder="Nom"
+                   class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+          </label>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <label class="block">
+            <span class="text-sm font-medium text-secondary">Courriel</span>
+            <input name="Email" type="email" required placeholder="contact@exemple.com"
+                   class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+          </label>
+          <label class="block">
+            <span class="text-sm font-medium text-secondary">Téléphone</span>
+            <input name="Phone" type="tel" required placeholder="123-456-7890"
+                   class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+          </label>
+        </div>
+        <div class="flex justify-between pt-6 border-t border-gray-200">
+          <button type="button" onclick="history.back()"
+                  class="px-6 py-2 border border-gray-300 rounded-md hover:bg-gray-50 text-secondary flex items-center">
+            <i class="fa-solid fa-arrow-left mr-2"></i>Retour
+          </button>
+          <button type="submit"
+                  class="px-6 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 flex items-center">
+            Suivant<i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script type="module" src="membri-api.js"></script>
+  <script type="module" src="page-registration-contact.js"></script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paiements</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500;600;700;800;900&display=swap">
+  <script>
+    tailwind.config={theme:{extend:{colors:{primary:'#000033',secondary:'#43464B',offwhite:'#FAFAF0'},fontFamily:{sans:['Inter','sans-serif']}}}};
+  </script>
+  <style>body{font-family:'Inter',sans-serif!important}::-webkit-scrollbar{display:none}html,body{-ms-overflow-style:none;scrollbar-width:none}</style>
+</head>
+<body class="bg-offwhite font-sans">
+  <!-- Header -->
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-20 items-center">
+        <h1 class="text-2xl font-bold text-primary">ASL</h1>
+        <nav class="hidden md:flex space-x-8 items-center">
+          <a href="dashboard.html" class="text-secondary font-medium hover:text-primary text-sm">Tableau de bord</a>
+          <a href="memberships.html" class="text-secondary font-medium hover:text-primary text-sm">Mes adhésions</a>
+          <span class="text-white bg-primary px-4 py-2 rounded-md text-sm font-medium">Paiements</span>
+          <a href="index.html" class="text-secondary font-medium hover:text-primary text-sm">Se déconnecter</a>
+        </nav>
+        <div class="md:hidden flex items-center">
+          <button class="text-secondary hover:text-primary"><i class="fa-solid fa-bars text-xl"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center mb-12">
+      <i class="fa-solid fa-credit-card text-primary text-6xl mb-4"></i>
+      <h1 class="text-4xl font-bold text-primary mb-4">Paiements</h1>
+      <p class="text-lg text-secondary max-w-2xl mx-auto">Consultez votre prochain paiement et l’historique complet.</p>
+    </div>
+
+    <!-- Prochain paiement -->
+    <div class="bg-white rounded-lg shadow-sm p-8 mb-16">
+      <h2 class="text-2xl font-semibold text-secondary mb-4">Prochain paiement</h2>
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-secondary">Date</p>
+          <p id="next-payment-date" class="text-xl font-bold text-primary">-</p>
+        </div>
+        <div>
+          <p class="text-sm text-secondary">Montant</p>
+          <p id="next-payment-amount" class="text-xl font-bold text-primary">-</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique des paiements -->
+    <div class="bg-white rounded-lg shadow-sm p-8">
+      <h2 class="text-2xl font-semibold text-secondary mb-4">Historique des paiements</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-offwhite">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Date</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Montant</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-secondary uppercase tracking-wider">Statut</th>
+              <th class="px-6 py-3"></th>
+            </tr>
+          </thead>
+          <tbody id="payment-list" class="bg-white divide-y divide-gray-200">
+            <!-- Lignes dynamiques -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="membri-api.js"></script>
+  <script type="module" src="page-payment.js"></script>
+</body>
+</html>

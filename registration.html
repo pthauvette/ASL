@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Devenir membre</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>window.FontAwesomeConfig={autoReplaceSvg:'nest'};</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { theme: { extend: { colors: { primary:'#1f245e', secondary:'#4a4a4a', offwhite:'#f7f6f3', accent:'#e6eaea' }, fontFamily:{ sans:['Inter','sans-serif'] } } } };
+  </script>
+  <style>body{font-family:'Inter',sans-serif!important}::-webkit-scrollbar{display:none}html,body{-ms-overflow-style:none;scrollbar-width:none}</style>
+</head>
+<body class="bg-offwhite">
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-primary">ASL</h1>
+      <nav class="space-x-6 hidden md:flex">
+        <a href="#" class="text-secondary hover:text-primary">À propos d'ASL</a>
+        <a href="#" class="text-secondary hover:text-primary">Répertoire</a>
+        <a href="#" class="text-secondary hover:text-primary">Partenariats</a>
+        <a href="#" class="text-secondary hover:text-primary">Événements</a>
+        <a href="index.html" class="px-4 py-2 bg-primary text-white rounded-md">Connexion</a>
+      </nav>
+    </div>
+  </header>
+  <main class="max-w-7xl mx-auto flex gap-8 px-6 py-10">
+    <aside class="w-1/4 hidden lg:block">
+      <h2 class="text-lg font-semibold text-primary mb-6">Étapes d'inscription</h2>
+      <ol class="space-y-8 text-secondary">
+        <li data-step-nav="1" class="flex items-start"><span class="h-6 w-6 bg-primary text-white rounded-full flex items-center justify-center">1</span><div class="ml-4"><p class="font-medium">Informations de base</p><p class="text-sm text-primary">En cours</p></div></li>
+        <li data-step-nav="2" class="flex items-center opacity-50"><span class="h-6 w-6 border-2 border-secondary rounded-full flex items-center justify-center">2</span><span class="ml-4">Choix d’adhésion</span></li>
+        <li data-step-nav="3" class="flex items-center opacity-50"><span class="h-6 w-6 border-2 border-secondary rounded-full flex items-center justify-center">3</span><span class="ml-4">Contact principal</span></li>
+        <li data-step-nav="4" class="flex items-center opacity-50"><span class="h-6 w-6 border-2 border-secondary rounded-full flex items-center justify-center">4</span><span class="ml-4">Délégués</span></li>
+        <li data-step-nav="5" class="flex items-center opacity-50"><span class="h-6 w-6 border-2 border-secondary rounded-full flex items-center justify-center">5</span><span class="ml-4">Revue & soumission</span></li>
+      </ol>
+      <div class="mt-10 p-4 bg-white rounded-lg shadow-sm"><p class="font-medium text-primary mb-2">Besoin d’aide ?</p><p class="text-sm">Contactez <a href="mailto:support@asl.org" class="text-primary underline">support@asl.org</a>.</p></div>
+    </aside>
+    <section class="flex-1">
+      <div class="mb-6"><div class="flex justify-between items-center mb-2"><h1 class="text-2xl font-bold text-primary">Devenir membre</h1><div id="step-label" class="text-sm text-secondary">Étape 1 sur 5</div></div><div class="w-full bg-accent rounded-full h-2.5"><div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width:20%"></div></div></div>
+      <form id="wizard-form" class="space-y-8 bg-white p-8 rounded-lg shadow-sm">
+        <!-- Étape 1 -->
+        <fieldset data-step="1">
+          <h2 class="text-lg font-medium text-secondary mb-4">Informations sur l'organisation / le compte</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div><label class="block mb-2 text-secondary">Nom de l'entreprise ou individu *</label><input type="text" name="AccountName" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div><label class="block mb-2 text-secondary">Courriel général *</label><input type="email" name="Email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div><label class="block mb-2 text-secondary">Téléphone</label><input type="tel" name="Phone" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div><label class="block mb-2 text-secondary">Courriel facturation</label><input type="email" name="EmailBilling" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+          </div>
+          <div class="mb-6"><label class="block mb-2 text-secondary">Adresse complète *</label><input type="text" name="Address" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div><label class="block mb-2 text-secondary">Adresse ligne 2</label><input type="text" name="Address2" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div class="grid grid-cols-2 gap-6">
+              <div><label class="block mb-2 text-secondary">Ville *</label><select name="CityID" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"><option disabled selected>Sélectionnez une ville</option></select></div>
+              <div><label class="block mb-2 text-secondary">Code postal *</label><input type="text" name="PostalCode" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            </div>
+          </div>
+          <div class="mb-6"><h3 class="text-md font-medium text-secondary mb-4">Détails de l'entreprise</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div><label class="block mb-2 text-secondary">Site web</label><input type="url" name="Website" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div><label class="block mb-2 text-secondary">Télécopieur</label><input type="tel" name="Fax" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div><label class="block mb-2 text-secondary">Nombre employés</label><select name="EmployeeCount" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"><option disabled selected>Sélectionnez</option></select></div>
+            <div><label class="block mb-2 text-secondary">Numéro NEQ</label><input type="text" name="NEQ" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div><label class="block mb-2 text-secondary">Date fondation</label><input type="date" name="FoundationDate" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+          </div></div>
+          <div class="mb-6"><h3 class="text-md font-medium text-secondary mb-4">Réseaux sociaux</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="flex items-center"><i class="fab fa-facebook text-primary text-xl mr-2"></i><input type="url" name="Facebook" class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div class="flex items-center"><i class="fab fa-twitter text-primary text-xl mr-2"></i><input type="url" name="Twitter" class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div class="flex items-center"><i class="fab fa-linkedin text-primary text-xl mr-2"></i><input type="url" name="LinkedIn" class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+            <div class="flex items-center md:col-span-2"><i class="fab fa-youtube text-primary text-xl mr-2"></i><input type="url" name="YouTube" class="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary"></div>
+          </div></div>
+          <div class="mb-6"><h3 class="text-md font-medium text-secondary mb-4">Caractéristiques</h3><div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <label class="flex items-center"><input type="checkbox" name="IsNew" class="mr-2">Nouvelle entreprise</label>
+            <label class="flex items-center"><input type="checkbox" name="IsExporteur" class="mr-2">Exportateur</label>
+            <label class="flex items-center"><input type="checkbox" name="IsEco" class="mr-2">Écoresponsable</label>
+            <label class="flex items-center"><input type="checkbox" name="IsAutonome" class="mr-2">Travailleur autonome</label>
+            <label class="flex items-center"><input type="checkbox" name="IsManu" class="mr-2">Manufacturier</label>
+            <label class="flex items-center"><input type="checkbox" name="IsFemale" class="mr-2">Entrepreneure femme</label>
+          </div></div>
+          <div class="flex justify-end pt-6 border-t border-accent"><button type="button" data-next class="px-6 py-2 bg-primary text-white rounded-lg">Suivant <i class="fa-solid fa-arrow-right ml-2"></i></button></div>
+        </fieldset>
+        <!-- Étape 2 -->
+        <fieldset data-step="2" hidden>
+          <h2 class="text-lg font-medium text-secondary mb-4">Choix d’adhésion</h2>
+          <div class="space-y-4">
+            <label class="flex justify-between p-4 border rounded-lg hover:border-primary cursor-pointer"><div><h3 class="text-primary font-semibold">Entreprise</h3><p class="text-secondary">Forfait entreprise annuel</p></div><input type="radio" name="membershipType" value="enterprise" class="form-radio text-primary"></label>
+            <label class="flex justify-between p-4 border rounded-lg hover:border-primary cursor-pointer"><div><h3 class="text-primary font-semibold">Individuelle</h3><p class="text-secondary">Abonnement individuel mensuel</p></div><input type="radio" name="membershipType" value="individual" class="form-radio text-primary"></label>
+          </div>
+          <div class="flex justify-between pt-6 border-t border-accent"><button type="button" data-prev class="px-6 py-2 border border-gray-300 rounded-lg text-secondary">Retour</button><button type="button" data-next class="px-6 py-2 bg-primary text-white rounded-lg">Suivant</button></div>
+        </fieldset>
+        <!-- Étape 3 -->
+        <fieldset data-step="3" hidden>
+          <h2 class="text-lg font-medium text-secondary mb-4">Contact principal</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div><label class="block mb-2 text-secondary">Prénom *</label><input name="FirstName" type="text" required class="w-full px-4 py-2 border rounded-lg"></div>
+            <div><label class="block mb-2 text-secondary">Nom *</label><input name="LastName" type="text" required class="w-full px-4 py-2 border rounded-lg"></div>
+            <div><label class="block mb-2 text-secondary">Email *</label><input name="ContactEmail" type="email" required class="w-full px-4 py-2 border rounded-lg"></div>
+            <div><label class="block mb-2 text-secondary">Téléphone *</label><input name="ContactPhone" type="tel" required class="w-full px-4 py-2 border rounded-lg"></div>
+          </div>
+          <div class="flex justify-between pt-6 border-t border-accent"><button type="button" data-prev class="px-6 py-2 border border-gray-300 rounded-lg text-secondary">Retour</button><button type="button" data-next class="px-6 py-2 bg-primary text-white rounded-lg">Suivant</button></div>
+        </fieldset>
+        <!-- Étape 4 -->
+        <fieldset data-step="4" hidden>
+          <h2 class="text-lg font-medium text-secondary mb-4">Délégués supplémentaires</h2>
+          <div id="delegates-container" class="space-y-4"></div>
+          <button type="button" id="add-delegate" class="text-primary hover:underline">+ Ajouter un délégué</button>
+          <div class="flex justify-between pt-6 border-t border-accent"><button type="button" data-prev class="px-6 py-2 border border-gray-300 rounded-lg text-secondary">Retour</button><button type="button" data-next class="px-6 py-2 bg-primary text-white rounded-lg">Suivant</button></div>
+        </fieldset>
+        <!-- Étape 5 -->
+        <fieldset data-step="5" hidden>
+          <h2 class="text-lg font-medium text-secondary mb-4">Revue & soumission</h2>
+          <div id="review-section" class="space-y-4 mb-6"></div>
+          <div class="flex justify-between pt-6 border-t border-accent"><button type="button" data-prev class="px-6 py-2 border border-gray-300 rounded-lg text-secondary">Retour</button><button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg">Soumettre</button></div>
+        </fieldset>
+      </form>
+    </section>
+  </main>
+  <script type="module" src="membri-api.js"></script>
+  <script>
+    const form = document.getElementById('wizard-form');
+    const steps = [...form.querySelectorAll('fieldset')];
+    const progressBar = document.getElementById('progress-bar');
+    const stepLabel = document.getElementById('step-label');
+    const navItems = document.querySelectorAll('[data-step-nav]');
+    let current = 1, total = steps.length;
+    function showStep(n) {
+      steps.forEach(f => f.hidden = f.dataset.step != n);
+      navItems.forEach(li => li.classList.toggle('opacity-50', li.dataset.stepNav != n));
+      progressBar.style.width = `${(n/total)*100}%`;
+      stepLabel.textContent = `Étape ${n} sur ${total}`;
+    }
+    form.addEventListener('click', e => {
+      if (e.target.dataset.next) { if (form.checkValidity()) current = Math.min(current+1,total); }
+      if (e.target.dataset.prev) { current = Math.max(current-1,1); }
+      showStep(current);
+    });
+    showStep(current);
+    document.getElementById('add-delegate').addEventListener('click', () => {
+      const container = document.getElementById('delegates-container');
+      const idx = container.children.length;
+      const div = document.createElement('div');
+      div.className = 'grid grid-cols-1 md:grid-cols-3 gap-6';
+      div.innerHTML = `
+        <input type="text" name="DelegateName${idx}" placeholder="Nom complet" class="w-full px-4 py-2 border rounded-lg">
+        <input type="email" name="DelegateEmail${idx}" placeholder="Email" class="w-full px-4 py-2 border rounded-lg">
+        <button type="button" class="text-red-600 hover:underline" onclick="this.parentElement.remove()">Supprimer</button>
+      `;
+      container.appendChild(div);
+    });
+  </script>
+</body>
+</html>
