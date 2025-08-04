@@ -1,65 +1,71 @@
 // Fichier : page-registration.js
-// Logique pour la page des détails de l’organisation utilisant le module membri-api.js
+// Connexion du formulaire d'inscription à l'API Membri
 
 import { apiRequest } from './membri-api.js';
 
+const CHECKBOX_FIELDS = [
+  'IsNew',
+  'IsExporteur',
+  'IsEco',
+  'IsAutonome',
+  'IsManu',
+  'IsFemale'
+];
+
 window.addEventListener('DOMContentLoaded', async () => {
-  // Charger les listes dynamiques
+  const errorMsg = document.getElementById('form-error');
+  // Charger dynamiquement la liste des villes
   try {
-    // Villes
     const cities = await apiRequest('City');
     const citySelect = document.querySelector('select[name="CityID"]');
-    cities.forEach(c => {
-      const opt = document.createElement('option');
-      opt.value = c.ID;
-      opt.textContent = c.Name;
-      citySelect.appendChild(opt);
-    });
-
-    // Secteurs
-    const sectors = await apiRequest('SectorCategory');
-    const sectorSelect = document.querySelector('select[name="SectorCategoryID"]');
-    sectors.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.ID;
-      opt.textContent = s.Name;
-      sectorSelect.appendChild(opt);
-    });
+    if (citySelect) {
+      cities.forEach((c) => {
+        const opt = document.createElement('option');
+        opt.value = c.ID;
+        opt.textContent = c.Name;
+        if (c.Name === 'Québec') {
+          opt.selected = true;
+        }
+        citySelect.appendChild(opt);
+      });
+    }
   } catch (err) {
-    console.error('Erreur chargement listes dynamiques :', err);
-    alert('Impossible de charger les données de la page d’inscription.');
+    console.error('Erreur chargement villes :', err);
   }
 
-  // Soumission du formulaire
-  const form = document.getElementById('organization-details-form');
+  // Soumission du formulaire d'inscription
+  const form = document.getElementById('wizard-form');
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      if (errorMsg) {
+        errorMsg.textContent = 'Veuillez remplir tous les champs obligatoires.';
+        errorMsg.classList.remove('hidden');
+      }
+      return;
+    }
     const fd = new FormData(form);
-    const payload = {
-      AccountName: fd.get('AccountName'),
-      Email: fd.get('Email'),
-      Password: fd.get('Password'),
-      CityID: fd.get('CityID'),
-      SectorCategoryID: fd.get('SectorCategoryID')
-    };
+    const payload = {};
+
+    for (const [key, value] of fd.entries()) {
+      if (CHECKBOX_FIELDS.includes(key)) {
+        payload[key] = true;
+      } else {
+        payload[key] = value;
+      }
+    }
 
     try {
-      // Création du membre (organisation)
-      const member = await apiRequest('Member', {
-        method: 'POST',
-        body: payload
-      });
-      if (member && member.ID) {
-        // Stocker l’ID pour la suite de l’inscription
-        sessionStorage.setItem('newMemberId', member.ID);
-        // Aller à la page de choix d’adhésion
-        window.location.href = '/registration-membership.html';
-      } else {
-        throw new Error('Réponse inattendue de l’API');
-      }
+      await apiRequest('Member', { method: 'POST', body: payload });
+      window.location.href = 'registration-success.html';
     } catch (err) {
       console.error('Erreur lors de la création du membre :', err);
-      alert('Impossible de créer votre compte. Vérifiez vos informations et réessayez.');
+      if (errorMsg) {
+        errorMsg.textContent = "Impossible de créer votre compte. Vérifiez vos informations et réessayez.";
+        errorMsg.classList.remove('hidden');
+      }
     }
   });
 });
+

@@ -41,6 +41,7 @@
     <section class="flex-1">
       <div class="mb-6"><div class="flex justify-between items-center mb-2"><h1 class="text-2xl font-bold text-primary">Devenir membre</h1><div id="step-label" class="text-sm text-secondary">Étape 1 sur 5</div></div><div class="w-full bg-accent rounded-full h-2.5"><div id="progress-bar" class="bg-primary h-2.5 rounded-full" style="width:20%"></div></div></div>
       <form id="wizard-form" class="space-y-8 bg-white p-8 rounded-lg shadow-sm">
+        <p id="form-error" class="hidden mb-4 p-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded"></p>
         <!-- Étape 1 -->
         <fieldset data-step="1">
           <h2 class="text-lg font-medium text-secondary mb-4">Informations sur l'organisation / le compte</h2>
@@ -118,22 +119,38 @@
     </section>
   </main>
   <script type="module" src="membri-api.js"></script>
+  <script type="module" src="page-registration.js"></script>
   <script>
     const form = document.getElementById('wizard-form');
     const steps = [...form.querySelectorAll('fieldset')];
     const progressBar = document.getElementById('progress-bar');
     const stepLabel = document.getElementById('step-label');
     const navItems = document.querySelectorAll('[data-step-nav]');
+    const errorMsg = document.getElementById('form-error');
     let current = 1, total = steps.length;
     function showStep(n) {
       steps.forEach(f => f.hidden = f.dataset.step != n);
       navItems.forEach(li => li.classList.toggle('opacity-50', li.dataset.stepNav != n));
       progressBar.style.width = `${(n/total)*100}%`;
       stepLabel.textContent = `Étape ${n} sur ${total}`;
+      errorMsg.classList.add('hidden');
     }
     form.addEventListener('click', e => {
-      if (e.target.dataset.next) { if (form.checkValidity()) current = Math.min(current+1,total); }
-      if (e.target.dataset.prev) { current = Math.max(current-1,1); }
+      if (e.target.dataset.next) {
+        const currentStep = steps[current-1];
+        if (currentStep.checkValidity()) {
+          errorMsg.classList.add('hidden');
+          current = Math.min(current + 1, total);
+        } else {
+          currentStep.reportValidity();
+          errorMsg.textContent = 'Veuillez remplir tous les champs obligatoires.';
+          errorMsg.classList.remove('hidden');
+        }
+      }
+      if (e.target.dataset.prev) {
+        errorMsg.classList.add('hidden');
+        current = Math.max(current - 1, 1);
+      }
       showStep(current);
     });
     showStep(current);
