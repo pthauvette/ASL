@@ -21,11 +21,15 @@ const RUNTIME_CACHE_NAME = 'asl-runtime-v3.0.0';
 // Ressources critiques à mettre en cache immédiatement
 const STATIC_ASSETS = [
   '/',
-  '/index.html',
-  '/asl_custom.css',
-  '/asl_main.js',
-  '/favicon.ico',
-  '/apple-touch-icon.png',
+  'index.html',
+  'about-page.html',
+  'services-page.html',
+  'membres-page.html',
+  'contact-page.html',
+  'asl_custom.css',
+  'asl_main.js',
+  'favicon.ico',
+  'apple-touch-icon.png',
   // Polices critiques
   'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap',
   // CDN critiques
