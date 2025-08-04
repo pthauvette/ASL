@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos Membres - Association des Armateurs du Saint-Laurent</title>
+    <meta name="description" content="Découvrez les membres de l'Association des Armateurs du Saint-Laurent. Armateurs, opérateurs et professionnels du transport maritime canadien.">
+    <meta name="keywords" content="membres, ASL, armateurs, opérateurs, navires, transport maritime, canada, saint-laurent">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Nos Membres - Association des Armateurs du Saint-Laurent">
+    <meta property="og:description" content="Découvrez les membres actifs de l'ASL, leaders du transport maritime canadien">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://armateurs-saint-laurent.ca/membres">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MembershipOrganization",
+      "name": "Association des Armateurs du Saint-Laurent",
+      "description": "Membres actifs de l'association maritime",
+      "numberOfMembers": 12,
+      "memberOf": {
+        "@type": "Organization",
+        "name": "Industrie Maritime Canadienne"
+      }
+    }
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="asl_custom.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'maritime-blue': '#2563eb',
+                        'maritime-blue-dark': '#1d4ed8',
+                        'maritime-light': '#3b82f6',
+                        'maritime-navy': '#1e40af',
+                        'brand-beige': '#f8fafc',
+                        'brand-dark': '#1f2937'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'serif': ['Playfair Display', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-brand-beige text-brand-dark font-sans">
+    <!-- Skip link -->
+    <a href="#main-content" class="skip-link" aria-label="Aller au contenu principal">Aller au contenu principal</a>
+    
+    <!-- Header -->
+    <header id="header" class="header bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100 fixed top-0 w-full z-50 transition-all duration-300" role="banner">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-maritime-blue to-maritime-blue-dark rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-ship text-white text-lg" aria-hidden="true"></i>
+                    </div>
+                    <a href="/" class="text-2xl font-bold text-maritime-blue hover:text-maritime-blue-dark transition-colors">
+                        Armateurs Saint-Laurent
+                    </a>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden lg:flex items-center gap-8" role="navigation" aria-label="Navigation principale">
+                    <a href="/" class="text-gray-600 hover:text-maritime-blue transition duration-300">Accueil</a>
+                    <a href="/a-propos" class="text-gray-600 hover:text-maritime-blue transition duration-300">L'Association</a>
+                    <a href="/voie-maritime" class="text-gray-600 hover:text-maritime-blue transition duration-300">La Voie Maritime</a>
+                    <a href="/services" class="text-gray-600 hover:text-maritime-blue transition duration-300">Services</a>
+                    <a href="/membres" class="text-maritime-blue font-semibold">Membres</a>
+                    <a href="/contact" class="text-gray-600 hover:text-maritime-blue transition duration-300">Contact</a>
+                </nav>
+                
+                <!-- Action Button -->
+                <div class="flex items-center gap-4">
+                    <a href="/portail-membre" class="hidden sm:block px-6 py-2.5 rounded-full border-2 border-maritime-blue text-maritime-blue hover:bg-maritime-blue hover:text-white transition-all duration-300 font-medium">
+                        Portail Membre
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-gray-600 hover:text-maritime-blue transition" aria-label="Ouvrir le menu mobile">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <nav id="mobile-menu" class="lg:hidden hidden mt-4 pb-4 border-t border-gray-200" role="navigation" aria-label="Navigation mobile">
+                <div class="flex flex-col space-y-4 pt-4">
+                    <a href="/" class="text-gray-600 hover:text-maritime-blue transition">Accueil</a>
+                    <a href="/a-propos" class="text-gray-600 hover:text-maritime-blue transition">L'Association</a>
+                    <a href="/voie-maritime" class="text-gray-600 hover:text-maritime-blue transition">La Voie Maritime</a>
+                    <a href="/services" class="text-gray-600 hover:text-maritime-blue transition">Services</a>
+                    <a href="/membres" class="text-maritime-blue font-semibold">Membres</a>
+                    <a href="/contact" class="text-gray-600 hover:text-maritime-blue transition">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- Hero Section -->
+        <section class="relative py-24 bg-gradient-to-br from-maritime-blue to-maritime-blue-dark text-white overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 bg-hero-pattern opacity-20"></div>
+            
+            <!-- Content -->
+            <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto text-center">
+                    <!-- Breadcrumb -->
+                    <nav class="mb-8" aria-label="Fil d'ariane">
+                        <ol class="flex items-center justify-center gap-2 text-blue-200">
+                            <li><a href="/" class="hover:text-white transition-colors">Accueil</a></li>
+                            <li><i class="fas fa-chevron-right text-xs"></i></li>
+                            <li class="text-white">Nos Membres</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 animate-fade-in-up">
+                        Nos Membres
+                    </h1>
+                    <p class="text-xl text-blue-100 leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s">
+                        Découvrez les armateurs et opérateurs maritimes qui forment notre communauté d'excellence sur le fleuve Saint-Laurent et les Grands Lacs.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
+                    <div class="animate-on-scroll">
+                        <div class="text-5xl font-bold text-maritime-blue mb-2 counter" data-target="12">0</div>
+                        <p class="text-gray-600 font-medium">Membres Actifs</p>
+                        <p class="text-sm text-gray-500">Armateurs et opérateurs</p>
+                    </div>
+                    <div class="animate-on-scroll">
+                        <div class="text-5xl font-bold text-maritime-blue mb-2 counter" data-target="150">0</div>
+                        <p class="text-gray-600 font-medium">Navires Opérés</p>
+                        <p class="text-sm text-gray-500">Flotte diversifiée</p>
+                    </div>
+                    <div class="animate-on-scroll">
+                        <div class="text-5xl font-bold text-maritime-blue mb-2 counter" data-target="2500">0</div>
+                        <p class="text-gray-600 font-medium">Emplois Créés</p>
+                        <p class="text-sm text-gray-500">Marins et personnel</p>
+                    </div>
+                    <div class="animate-on-scroll">
+                        <div class="text-5xl font-bold text-maritime-blue mb-2 counter" data-target="25">0</div>
+                        <p class="text-gray-600 font-medium">Millions de Tonnes</p>
+                        <p class="text-sm text-gray-500">Marchandises transportées</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search and Filter Section -->
+        <section class="py-12 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-2xl p-8 shadow-lg">
+                    <div class="flex flex-col lg:flex-row gap-6 items-center">
+                        <div class="flex-1">
+                            <label for="search-members" class="sr-only">Rechercher un membre</label>
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" 
+                                       id="search-members" 
+                                       placeholder="Rechercher un membre, une entreprise..."
+                                       class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:border-maritime-blue focus:ring-4 focus:ring-maritime-blue/20 focus:outline-none transition-all duration-300">
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <select id="filter-type" class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-maritime-blue focus:ring-4 focus:ring-maritime-blue/20 focus:outline-none transition-all duration-300">
+                                <option value="">Tous les types</option>
+                                <option value="armateur">Armateurs</option>
+                                <option value="operateur">Opérateurs</option>
+                                <option value="service">Services maritimes</option>
+                            </select>
+                            
+                            <select id="filter-region" class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-maritime-blue focus:ring-4 focus:ring-maritime-blue/20 focus:outline-none transition-all duration-300">
+                                <option value="">Toutes les régions</option>
+                                <option value="quebec">Québec</option>
+                                <option value="ontario">Ontario</option>
+                                <option value="maritime">Provinces maritimes</option>
+                                <option value="ouest">Ouest canadien</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading State -->
+        <div id="loading-members" class="py-20 text-center hidden">
+            <div class="inline-flex items-center gap-3 text-maritime-blue">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-maritime-blue"></div>
+                <span class="text-lg font-medium">Chargement des membres...</span>
+            </div>
+        </div>
+
+        <!-- Members Grid -->
+        <section class="py-20 bg-white" id="members-section">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Members will be loaded here -->
+                <div id="members-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                    <!-- Dynamic content -->
+                </div>
+                
+                <!-- Load More Button -->
+                <div class="text-center mt-12">
+                    <button id="load-more-btn" class="bg-maritime-blue text-white px-8 py-3 rounded-full hover:bg-maritime-blue-dark transition-all duration-300 font-medium shadow-lg hidden">
+                        Voir plus de membres
+                    </button>
+                </div>
+                
+                <!-- No Results -->
+                <div id="no-results" class="text-center py-16 hidden">
+                    <div class="max-w-md mx-auto">
+                        <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucun membre trouvé</h3>
+                        <p class="text-gray-500">Essayez de modifier vos critères de recherche.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Membership Benefits -->
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-maritime-blue mb-6">
+                        Avantages de l'Adhésion
+                    </h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                        Rejoindre l'ASL, c'est intégrer un réseau d'excellence et bénéficier d'un accompagnement personnalisé.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Benefit 1 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll text-center">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-handshake text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Représentation Collective</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Une voix unifiée et influente auprès des autorités gouvernementales et des instances réglementaires.
+                        </p>
+                    </div>
+                    
+                    <!-- Benefit 2 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll text-center">
+                        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-network-wired text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Réseau Professionnel</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Accès privilégié à un réseau d'experts et d'opportunités de collaboration avec les leaders de l'industrie.
+                        </p>
+                    </div>
+                    
+                    <!-- Benefit 3 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll text-center">
+                        <div class="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-graduation-cap text-yellow-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Formation Spécialisée</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Programmes de formation exclusifs et certifications adaptées aux besoins du transport maritime.
+                        </p>
+                    </div>
+                    
+                    <!-- Benefit 4 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll text-center">
+                        <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-chart-line text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Veille Stratégique</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Informations privilégiées sur les tendances du marché et les évolutions réglementaires.
+                        </p>
+                    </div>
+                    
+                    <!-- Benefit 5 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll text-center">
+                        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-shield-alt text-red-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Support Technique</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Assistance technique et conseil spécialisé pour optimiser vos opérations maritimes.
+                        </p>
+                    </div>
+                    
+                    <!-- Benefit 6 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll text-center">
+                        <div class="w-20 h-20 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-calendar-alt text-teal-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Événements Exclusifs</h3>
+                        <p class="text-gray-600 leading-relaxed">
+                            Conférences, séminaires et événements de networking réservés aux membres de l'association.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Membership Process -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-maritime-blue mb-6">
+                        Comment Devenir Membre
+                    </h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                        Un processus simple et transparent pour intégrer notre communauté maritime d'excellence.
+                    </p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <!-- Step 1 -->
+                        <div class="text-center animate-on-scroll">
+                            <div class="w-16 h-16 bg-maritime-blue rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
+                                1
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-3">Candidature</h3>
+                            <p class="text-gray-600 text-sm">
+                                Soumettez votre dossier de candidature avec les informations sur votre entreprise.
+                            </p>
+                        </div>
+                        
+                        <!-- Step 2 -->
+                        <div class="text-center animate-on-scroll">
+                            <div class="w-16 h-16 bg-maritime-light rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
+                                2
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-3">Évaluation</h3>
+                            <p class="text-gray-600 text-sm">
+                                Notre comité d'admission évalue votre profil selon nos critères d'excellence.
+                            </p>
+                        </div>
+                        
+                        <!-- Step 3 -->
+                        <div class="text-center animate-on-scroll">
+                            <div class="w-16 h-16 bg-maritime-navy rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
+                                3
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-3">Entretien</h3>
+                            <p class="text-gray-600 text-sm">
+                                Rencontre avec notre équipe pour présenter votre projet et vos objectifs.
+                            </p>
+                        </div>
+                        
+                        <!-- Step 4 -->
+                        <div class="text-center animate-on-scroll">
+                            <div class="w-16 h-16 bg-gradient-to-r from-maritime-blue to-maritime-navy rounded-full flex items-center justify-center mx-auto mb-6 text-white font-bold text-xl">
+                                4
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-3">Intégration</h3>
+                            <p class="text-gray-600 text-sm">
+                                Accueil personnalisé et intégration dans notre réseau de membres actifs.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Timeline connector for desktop -->
+                    <div class="hidden md:block absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 transform -translate-y-1/2 -z-10"></div>
+                </div>
+                
+                <div class="text-center mt-12 animate-on-scroll">
+                    <a href="/contact" class="bg-maritime-blue text-white px-8 py-4 rounded-full hover:bg-maritime-blue-dark transition-all duration-300 font-medium shadow-lg inline-flex items-center gap-3">
+                        <span>Postuler maintenant</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials from Members -->
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-maritime-blue mb-6">
+                        Témoignages de nos Membres
+                    </h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                        Découvrez pourquoi nos membres font confiance à l'ASL pour les accompagner dans leur développement.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-6">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" 
+                                 alt="Marie Dubois" 
+                                 class="w-16 h-16 rounded-full object-cover mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Marie Dubois</h4>
+                                <p class="text-sm text-gray-600">Directrice Générale</p>
+                                <p class="text-sm text-maritime-blue font-medium">Algoma Central Corporation</p>
+                            </div>
+                        </div>
+                        <blockquote class="text-gray-600 italic leading-relaxed">
+                            "L'ASL nous offre une plateforme unique pour influencer positivement l'avenir du transport maritime. Leur expertise réglementaire et leur réseau professionnel sont inestimables pour notre croissance."
+                        </blockquote>
+                        <div class="flex text-yellow-400 mt-4">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-6">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" 
+                                 alt="Jean-François Martin" 
+                                 class="w-16 h-16 rounded-full object-cover mr-4">
+                            <div>
+                                <h4 class="font-bold text-gray-900">Jean-François Martin</h4>
+                                <p class="text-sm text-gray-600">Président</p>
+                                <p class="text-sm text-maritime-blue font-medium">Lower Lakes Towing</p>
+                            </div>
+                        </div>
+                        <blockquote class="text-gray-600 italic leading-relaxed">
+                            "Être membre de l'ASL depuis plus de 15 ans nous a permis de développer des partenariats durables et d'avoir accès aux meilleures pratiques de l'industrie. C'est un investissement essentiel."
+                        </blockquote>
+                        <div class="flex text-yellow-400 mt-4">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-maritime-blue to-maritime-blue-dark rounded-full flex items-center justify-center">
+                            <i class="fas fa-ship text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold">Armateurs Saint-Laurent</span>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        Association représentant les armateurs canadiens depuis 1936.
+                    </p>
+                    
+                    <!-- Social Media -->
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-maritime-blue transition-all duration-300 group">
+                            <i class="fab fa-linkedin-in group-hover:scale-110 transition-transform duration-300"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-maritime-blue transition-all duration-300 group">
+                            <i class="fab fa-facebook-f group-hover:scale-110 transition-transform duration-300"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-maritime-blue transition-all duration-300 group">
+                            <i class="fab fa-youtube group-hover:scale-110 transition-transform duration-300"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Navigation</h3>
+                    <ul class="space-y-4">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors duration-300">Accueil</a></li>
+                        <li><a href="/a-propos" class="text-gray-300 hover:text-white transition-colors duration-300">À propos d'ASL</a></li>
+                        <li><a href="/membres" class="text-gray-300 hover:text-white transition-colors duration-300">Nos membres</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white transition-colors duration-300">Services</a></li>
+                        <li><a href="/contact" class="text-gray-300 hover:text-white transition-colors duration-300">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Pour nos Membres</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Portail membre</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Formations</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Événements</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Support technique</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-300">Réseau professionnel</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Contact</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <i class="text-maritime-blue mt-1 fas fa-map-marker-alt flex-shrink-0"></i>
+                            <div class="text-gray-300">
+                                <p>101 Rue Saint-Paul</p>
+                                <p>Québec, QC G1R 1S9</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="text-maritime-blue fas fa-phone"></i>
+                            <a href="tel:+14186924681" class="text-gray-300 hover:text-white transition-colors duration-300">+1 (418) 692-4681</a>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="text-maritime-blue fas fa-envelope"></i>
+                            <a href="mailto:info@asl.ca" class="text-gray-300 hover:text-white transition-colors duration-300">info@asl.ca</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Association des Armateurs du Saint-Laurent. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Member Detail Modal -->
+    <div id="member-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden">
+        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-screen overflow-y-auto">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-6">
+                    <h3 id="modal-title" class="text-2xl font-bold text-gray-900"></h3>
+                    <button id="close-modal" class="text-gray-500 hover:text-gray-700 text-2xl font-bold">
+                        &times;
+                    </button>
+                </div>
+                <div id="modal-content">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="asl_main.js"></script>
+    
+    <!-- Page-specific JavaScript -->
+    <script>
+        // Global variables for members management
+        let allMembers = [];
+        let filteredMembers = [];
+        let currentPage = 1;
+        const membersPerPage = 12;
+        
+        // Sample members data (will be replaced by API call)
+        const sampleMembers = [
+            {
+                id: 1,
+                name: "Georges CSL",
+                company: "CSL Group Inc.",
+                type: "armateur",
+                region: "quebec",
+                description: "Leader du transport maritime de vrac solide en Amérique du Nord",
+                founded: "1845",
+                fleet: "12 navires",
+                specialization: "Transport de vrac solide, minerai de fer, charbon",
+                contact: {
+                    website: "https://www.cslships.com",
+                    phone: "+1 (514) 982-3800",
+                    email: "info@cslships.com"
+                },
+                avatar: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+            },
+            {
+                id: 2,
+                name: "Algoma Central",
+                company: "Algoma Central Corporation",
+                type: "armateur",
+                region: "ontario",
+                description: "Opérateur de navires de vrac solide sur les Grands Lacs",
+                founded: "1899",
+                fleet: "28 navires",
+                specialization: "Transport de minerai de fer, charbon, sel, produits agricoles",
+                contact: {
+                    website: "https://www.algonet.com",
+                    phone: "+1 (705) 949-2775",
+                    email: "info@algonet.com"
+                },
+                avatar: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg"
+            },
+            {
+                id: 3,
+                name: "Lower Lakes Towing",
+                company: "Lower Lakes Towing Ltd.",
+                type: "operateur",
+                region: "ontario",
+                description: "Services de remorquage et transport maritime spécialisé",
+                founded: "1950",
+                fleet: "15 navires",
+                specialization: "Remorquage, transport de produits pétroliers, services auxiliaires",
+                contact: {
+                    website: "https://www.lowerlakes.com",
+                    phone: "+1 (519) 733-9292",
+                    email: "info@lowerlakes.com"
+                },
+                avatar: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg"
+            },
+            {
+                id: 4,
+                name: "McKeil Marine",
+                company: "McKeil Marine Limited",
+                type: "armateur",
+                region: "ontario",
+                description: "Transport maritime innovant et services côtiers",
+                founded: "1964",
+                fleet: "20 navires",
+                specialization: "Transport de vrac liquide et solide, services côtiers",
+                contact: {
+                    website: "https://www.mckeilmarine.com",
+                    phone: "+1 (905) 688-3022",
+                    email: "info@mckeilmarine.com"
+                },
+                avatar: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg"
+            },
+            {
+                id: 5,
+                name: "Groupe Desgagnés",
+                company: "Groupe Desgagnés Inc.",
+                type: "armateur",
+                region: "quebec",
+                description: "Transport maritime diversifié et services arctiques",
+                founded: "1866",
+                fleet: "25 navires",
+                specialization: "Transport arctique, produits pétroliers, services gouvernementaux",
+                contact: {
+                    website: "https://www.desgagnes.com",
+                    phone: "+1 (418) 692-1000",
+                    email: "info@desgagnes.com"
+                },
+                avatar: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg"
+            },
+            {
+                id: 6,
+                name: "Seaway Marine Transport",
+                company: "Seaway Marine Transport",
+                type: "operateur",
+                region: "ontario",
+                description: "Transport de vrac sec sur les Grands Lacs",
+                founded: "1960",
+                fleet: "8 navires",
+                specialization: "Minerai de fer, charbon, sel, grains",
+                contact: {
+                    website: "https://www.seawaymarine.com",
+                    phone: "+1 (613) 933-1023",
+                    email: "info@seawaymarine.com"
+                },
+                avatar: "https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg"
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize the page
+            initializePage();
+            loadMembers();
+            setupEventListeners();
+            
+            // Initialize animations
+            initializeAnimations();
+        });
+
+        function initializePage() {
+            // Set initial state
+            allMembers = sampleMembers;
+            filteredMembers = [...allMembers];
+            
+            // Show loading initially
+            showLoading();
+        }
+
+        async function loadMembers() {
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Try to load from API (this would be the real implementation)
+                // const result = await window.ASL.api.getMembers();
+                // if (result.success) {
+                //     allMembers = result.data;
+                // } else {
+                //     // Fallback to sample data
+                //     allMembers = sampleMembers;
+                // }
+                
+                // For now, use sample data
+                allMembers = sampleMembers;
+                filteredMembers = [...allMembers];
+                
+                hideLoading();
+                renderMembers();
+                
+            } catch (error) {
+                console.error('Error loading members:', error);
+                hideLoading();
+                allMembers = sampleMembers;
+                filteredMembers = [...allMembers];
+                renderMembers();
+            }
+        }
+
+        function setupEventListeners() {
+            // Search input
+            const searchInput = document.getElementById('search-members');
+            searchInput.addEventListener('input', debounce(handleSearch, 300));
+            
+            // Filters
+            const typeFilter = document.getElementById('filter-type');
+            const regionFilter = document.getElementById('filter-region');
+            
+            typeFilter.addEventListener('change', handleFilter);
+            regionFilter.addEventListener('change', handleFilter);
+            
+            // Load more button
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            loadMoreBtn.addEventListener('click', loadMoreMembers);
+            
+            // Modal close
+            const closeModal = document.getElementById('close-modal');
+            const memberModal = document.getElementById('member-modal');
+            
+            closeModal.addEventListener('click', closeMemberModal);
+            memberModal.addEventListener('click', (e) => {
+                if (e.target === memberModal) {
+                    closeMemberModal();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeMemberModal();
+                }
+            });
+        }
+
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase().trim();
+            applyFilters(query);
+        }
+
+        function handleFilter() {
+            const searchQuery = document.getElementById('search-members').value.toLowerCase().trim();
+            applyFilters(searchQuery);
+        }
+
+        function applyFilters(searchQuery = '') {
+            const typeFilter = document.getElementById('filter-type').value;
+            const regionFilter = document.getElementById('filter-region').value;
+            
+            filteredMembers = allMembers.filter(member => {
+                // Search filter
+                const matchesSearch = !searchQuery || 
+                    member.name.toLowerCase().includes(searchQuery) ||
+                    member.company.toLowerCase().includes(searchQuery) ||
+                    member.description.toLowerCase().includes(searchQuery);
+                
+                // Type filter
+                const matchesType = !typeFilter || member.type === typeFilter;
+                
+                // Region filter
+                const matchesRegion = !regionFilter || member.region === regionFilter;
+                
+                return matchesSearch && matchesType && matchesRegion;
+            });
+            
+            currentPage = 1;
+            renderMembers();
+        }
+
+        function renderMembers() {
+            const membersGrid = document.getElementById('members-grid');
+            const noResults = document.getElementById('no-results');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            
+            if (filteredMembers.length === 0) {
+                membersGrid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                loadMoreBtn.classList.add('hidden');
+                return;
+            }
+            
+            noResults.classList.add('hidden');
+            
+            const startIndex = 0;
+            const endIndex = currentPage * membersPerPage;
+            const membersToShow = filteredMembers.slice(startIndex, endIndex);
+            
+            membersGrid.innerHTML = membersToShow.map(member => createMemberCard(member)).join('');
+            
+            // Show/hide load more button
+            if (endIndex >= filteredMembers.length) {
+                loadMoreBtn.classList.add('hidden');
+            } else {
+                loadMoreBtn.classList.remove('hidden');
+            }
+            
+            // Add click listeners to member cards
+            addMemberCardListeners();
+            
+            // Trigger animations for new cards
+            animateNewCards();
+        }
+
+        function createMemberCard(member) {
+            return `
+                <div class="member-card bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer hover-lift" data-member-id="${member.id}">
+                    <div class="text-center">
+                        <img src="${member.avatar}" 
+                             alt="${member.name}" 
+                             class="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-gray-100"
+                             loading="lazy">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${member.name}</h3>
+                        <p class="text-maritime-blue font-medium mb-2">${member.company}</p>
+                        <p class="text-sm text-gray-600 mb-4 line-clamp-2">${member.description}</p>
+                        
+                        <div class="flex justify-center items-center gap-4 text-xs text-gray-500 mb-4">
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-ship"></i>
+                                ${member.fleet}
+                            </span>
+                            <span class="flex items-center gap-1">
+                                <i class="fas fa-calendar"></i>
+                                ${member.founded}
+                            </span>
+                        </div>
+                        
+                        <button class="w-full bg-maritime-blue text-white py-2 px-4 rounded-lg hover:bg-maritime-blue-dark transition-colors duration-300 font-medium">
+                            Voir le profil
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addMemberCardListeners() {
+            document.querySelectorAll('.member-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const memberId = parseInt(card.dataset.memberId);
+                    showMemberModal(memberId);
+                });
+            });
+        }
+
+        function showMemberModal(memberId) {
+            const member = allMembers.find(m => m.id === memberId);
+            if (!member) return;
+            
+            const modal = document.getElementById('member-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            
+            modalTitle.textContent = member.company;
+            modalContent.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex items-center gap-6">
+                        <img src="${member.avatar}" 
+                             alt="${member.name}" 
+                             class="w-24 h-24 rounded-full object-cover border-4 border-gray-100">
+                        <div>
+                            <h4 class="text-xl font-bold text-gray-900 mb-2">${member.name}</h4>
+                            <p class="text-maritime-blue font-medium mb-1">${member.company}</p>
+                            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium capitalize">
+                                ${member.type}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-semibold text-gray-900 mb-2">Description</h5>
+                        <p class="text-gray-600 leading-relaxed">${member.description}</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h5 class="font-semibold text-gray-900 mb-2">Informations</h5>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-calendar text-maritime-blue"></i>
+                                    <span>Fondée en ${member.founded}</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-ship text-maritime-blue"></i>
+                                    <span>${member.fleet}</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fas fa-map-marker-alt text-maritime-blue"></i>
+                                    <span class="capitalize">${member.region}</span>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h5 class="font-semibold text-gray-900 mb-2">Spécialisations</h5>
+                            <p class="text-sm text-gray-600">${member.specialization}</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-semibold text-gray-900 mb-2">Contact</h5>
+                        <div class="space-y-2 text-sm">
+                            <a href="${member.contact.website}" target="_blank" rel="noopener noreferrer" 
+                               class="flex items-center gap-2 text-maritime-blue hover:text-maritime-blue-dark transition-colors">
+                                <i class="fas fa-globe"></i>
+                                <span>Site web</span>
+                                <i class="fas fa-external-link-alt text-xs"></i>
+                            </a>
+                            <a href="tel:${member.contact.phone}" 
+                               class="flex items-center gap-2 text-maritime-blue hover:text-maritime-blue-dark transition-colors">
+                                <i class="fas fa-phone"></i>
+                                <span>${member.contact.phone}</span>
+                            </a>
+                            <a href="mailto:${member.contact.email}" 
+                               class="flex items-center gap-2 text-maritime-blue hover:text-maritime-blue-dark transition-colors">
+                                <i class="fas fa-envelope"></i>
+                                <span>${member.contact.email}</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMemberModal() {
+            const modal = document.getElementById('member-modal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function loadMoreMembers() {
+            currentPage++;
+            renderMembers();
+        }
+
+        function showLoading() {
+            document.getElementById('loading-members').classList.remove('hidden');
+            document.getElementById('members-section').classList.add('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-members').classList.add('hidden');
+            document.getElementById('members-section').classList.remove('hidden');
+        }
+
+        function animateNewCards() {
+            const cards = document.querySelectorAll('.member-card');
+            cards.forEach((card, index) => {
+                gsap.fromTo(card, {
+                    opacity: 0,
+                    y: 30,
+                    scale: 0.95
+                }, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    delay: index * 0.1,
+                    ease: "power2.out"
+                });
+            });
+        }
+
+        function initializeAnimations() {
+            // Initialize GSAP ScrollTrigger
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Animate elements on scroll
+            gsap.utils.toArray('.animate-on-scroll').forEach((element, i) => {
+                gsap.fromTo(element, {
+                    opacity: 0,
+                    y: 50
+                }, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: element,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            });
+            
+            // Counter animations
+            const counters = document.querySelectorAll('.counter');
+            
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            counters.forEach(counter => counterObserver.observe(counter));
+            
+            // Header scroll effect
+            let lastScrollY = window.pageYOffset;
+            const header = document.getElementById('header');
+            
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.pageYOffset;
+                
+                if (currentScrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                lastScrollY = currentScrollY;
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuToggle && mobileMenu) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        }
+
+        function animateCounter(element, duration = 2000) {
+            const target = parseInt(element.dataset.target);
+            const start = 0;
+            const startTime = performance.now();
+            
+            const updateCounter = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (ease-out)
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (target - start) * easeOut);
+                
+                element.textContent = current.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target.toLocaleString();
+                }
+            };
+            
+            requestAnimationFrame(updateCounter);
+        }
+
+        // Utility function for debouncing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Association des Armateurs du Saint-Laurent</title>
+    <meta name="description" content="Découvrez les services de l'ASL : représentation, promotion, formation, sécurité maritime et conseil réglementaire pour les armateurs canadiens.">
+    <meta name="keywords" content="services, ASL, représentation, formation, sécurité maritime, conseil, armateurs, réglementation">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Services - Association des Armateurs du Saint-Laurent">
+    <meta property="og:description" content="Services complets pour les armateurs canadiens : représentation, formation, sécurité maritime">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://armateurs-saint-laurent.ca/services">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": "Services ASL",
+      "description": "Services complets pour les armateurs du Saint-Laurent",
+      "provider": {
+        "@type": "Organization",
+        "name": "Association des Armateurs du Saint-Laurent"
+      },
+      "serviceType": [
+        "Représentation réglementaire",
+        "Formation maritime",
+        "Conseil en sécurité",
+        "Promotion industrielle"
+      ]
+    }
+    </script>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="asl_custom.css">
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'maritime-blue': '#2563eb',
+                        'maritime-blue-dark': '#1d4ed8',
+                        'maritime-light': '#3b82f6',
+                        'maritime-navy': '#1e40af',
+                        'brand-beige': '#f8fafc',
+                        'brand-dark': '#1f2937'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'serif': ['Playfair Display', 'Georgia', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-brand-beige text-brand-dark font-sans">
+    <!-- Skip link -->
+    <a href="#main-content" class="skip-link" aria-label="Aller au contenu principal">Aller au contenu principal</a>
+    
+    <!-- Header -->
+    <header id="header" class="header bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100 fixed top-0 w-full z-50 transition-all duration-300" role="banner">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-maritime-blue to-maritime-blue-dark rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fa-solid fa-ship text-white text-lg" aria-hidden="true"></i>
+                    </div>
+                    <a href="/" class="text-2xl font-bold text-maritime-blue hover:text-maritime-blue-dark transition-colors">
+                        Armateurs Saint-Laurent
+                    </a>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="hidden lg:flex items-center gap-8" role="navigation" aria-label="Navigation principale">
+                    <a href="/" class="text-gray-600 hover:text-maritime-blue transition duration-300">Accueil</a>
+                    <a href="/a-propos" class="text-gray-600 hover:text-maritime-blue transition duration-300">L'Association</a>
+                    <a href="/voie-maritime" class="text-gray-600 hover:text-maritime-blue transition duration-300">La Voie Maritime</a>
+                    <a href="/services" class="text-maritime-blue font-semibold">Services</a>
+                    <a href="/membres" class="text-gray-600 hover:text-maritime-blue transition duration-300">Membres</a>
+                    <a href="/contact" class="text-gray-600 hover:text-maritime-blue transition duration-300">Contact</a>
+                </nav>
+                
+                <!-- Action Button -->
+                <div class="flex items-center gap-4">
+                    <a href="/portail-membre" class="hidden sm:block px-6 py-2.5 rounded-full border-2 border-maritime-blue text-maritime-blue hover:bg-maritime-blue hover:text-white transition-all duration-300 font-medium">
+                        Portail Membre
+                    </a>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-toggle" class="lg:hidden p-2 text-gray-600 hover:text-maritime-blue transition" aria-label="Ouvrir le menu mobile">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Navigation -->
+            <nav id="mobile-menu" class="lg:hidden hidden mt-4 pb-4 border-t border-gray-200" role="navigation" aria-label="Navigation mobile">
+                <div class="flex flex-col space-y-4 pt-4">
+                    <a href="/" class="text-gray-600 hover:text-maritime-blue transition">Accueil</a>
+                    <a href="/a-propos" class="text-gray-600 hover:text-maritime-blue transition">L'Association</a>
+                    <a href="/voie-maritime" class="text-gray-600 hover:text-maritime-blue transition">La Voie Maritime</a>
+                    <a href="/services" class="text-maritime-blue font-semibold">Services</a>
+                    <a href="/membres" class="text-gray-600 hover:text-maritime-blue transition">Membres</a>
+                    <a href="/contact" class="text-gray-600 hover:text-maritime-blue transition">Contact</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" role="main">
+        <!-- Hero Section -->
+        <section class="relative py-24 bg-gradient-to-br from-maritime-blue to-maritime-blue-dark text-white overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 bg-hero-pattern opacity-20"></div>
+            
+            <!-- Content -->
+            <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto text-center">
+                    <!-- Breadcrumb -->
+                    <nav class="mb-8" aria-label="Fil d'ariane">
+                        <ol class="flex items-center justify-center gap-2 text-blue-200">
+                            <li><a href="/" class="hover:text-white transition-colors">Accueil</a></li>
+                            <li><i class="fas fa-chevron-right text-xs"></i></li>
+                            <li class="text-white">Services</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="text-4xl md:text-6xl font-serif font-bold mb-6 animate-fade-in-up">
+                        Nos Services
+                    </h1>
+                    <p class="text-xl text-blue-100 leading-relaxed animate-fade-in-up" style="animation-delay: 0.2s">
+                        Une gamme complète de services dédiés aux armateurs canadiens pour soutenir et développer l'industrie maritime sur le Saint-Laurent.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Overview -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-maritime-blue mb-6">
+                        Excellence et Expertise Maritime
+                    </h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                        Depuis 1936, nous offrons des services spécialisés pour accompagner nos membres dans tous les aspects de leurs activités maritimes.
+                    </p>
+                </div>
+                
+                <!-- Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-16">
+                    <div class="text-center animate-on-scroll">
+                        <div class="text-4xl font-bold text-maritime-blue mb-2 counter" data-target="12">0</div>
+                        <p class="text-gray-600">Membres actifs</p>
+                    </div>
+                    <div class="text-center animate-on-scroll">
+                        <div class="text-4xl font-bold text-maritime-blue mb-2 counter" data-target="88">0</div>
+                        <p class="text-gray-600">Années d'expérience</p>
+                    </div>
+                    <div class="text-center animate-on-scroll">
+                        <div class="text-4xl font-bold text-maritime-blue mb-2 counter" data-target="150">0</div>
+                        <p class="text-gray-600">Navires représentés</p>
+                    </div>
+                    <div class="text-center animate-on-scroll">
+                        <div class="text-4xl font-bold text-maritime-blue mb-2 counter" data-target="25">0</div>
+                        <p class="text-gray-600">Formations annuelles</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Services -->
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="space-y-20">
+                    <!-- Service 1: Représentation -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div class="animate-on-scroll">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-users text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-blue-600 uppercase tracking-wide">Service Principal</span>
+                                    <h3 class="text-3xl font-bold text-maritime-blue">Représentation</h3>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                                Nous défendons les intérêts de nos membres auprès des institutions gouvernementales, des organismes de réglementation et des parties prenantes de l'industrie maritime.
+                            </p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-blue-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Advocacy auprès de Transport Canada</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-blue-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Participation aux consultations réglementaires</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-blue-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Relations avec les autorités portuaires</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-blue-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Coordination avec les organisations internationales</span>
+                                </li>
+                            </ul>
+                            <a href="#representation" class="inline-flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                                En savoir plus <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+                        <div class="animate-on-scroll">
+                            <img src="https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Représentation maritime" 
+                                 class="w-full h-96 object-cover rounded-2xl shadow-lg">
+                        </div>
+                    </div>
+
+                    <!-- Service 2: Promotion -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div class="lg:order-2 animate-on-scroll">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-bullhorn text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-green-600 uppercase tracking-wide">Développement</span>
+                                    <h3 class="text-3xl font-bold text-maritime-blue">Promotion</h3>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                                Nous valorisons le transport maritime et promouvons l'expertise canadienne auprès des décideurs, des médias et du grand public.
+                            </p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Campagnes de sensibilisation publique</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Relations médias et communication</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Participation aux salons internationaux</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-green-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Publications spécialisées</span>
+                                </li>
+                            </ul>
+                            <a href="#promotion" class="inline-flex items-center gap-2 text-green-600 font-medium hover:text-green-700 transition-colors">
+                                En savoir plus <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+                        <div class="lg:order-1 animate-on-scroll">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Promotion maritime" 
+                                 class="w-full h-96 object-cover rounded-2xl shadow-lg">
+                        </div>
+                    </div>
+
+                    <!-- Service 3: Sécurité Maritime -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <div class="animate-on-scroll">
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-shield-alt text-white text-2xl"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-medium text-red-600 uppercase tracking-wide">Priorité Absolue</span>
+                                    <h3 class="text-3xl font-bold text-maritime-blue">Sécurité Maritime</h3>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-lg leading-relaxed mb-6">
+                                La sécurité est au cœur de nos préoccupations. Nous offrons formation, conseil et support pour maintenir les plus hauts standards de sécurité.
+                            </p>
+                            <ul class="space-y-3 mb-8">
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-red-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Programmes de formation certifiés</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-red-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Audit et évaluation des risques</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-red-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Mise à jour réglementaire continue</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <i class="fas fa-check-circle text-red-600 mt-1 flex-shrink-0"></i>
+                                    <span class="text-gray-600">Support technique 24/7</span>
+                                </li>
+                            </ul>
+                            <a href="#securite" class="inline-flex items-center gap-2 text-red-600 font-medium hover:text-red-700 transition-colors">
+                                En savoir plus <i class="fas fa-arrow-right text-sm"></i>
+                            </a>
+                        </div>
+                        <div class="animate-on-scroll">
+                            <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                                 alt="Sécurité maritime" 
+                                 class="w-full h-96 object-cover rounded-2xl shadow-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Services -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-maritime-blue mb-6">
+                        Services Complémentaires
+                    </h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                        Une expertise étendue pour répondre à tous vos besoins maritimes.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Formation -->
+                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll hover-lift">
+                        <div class="w-16 h-16 bg-yellow-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Formation Professionnelle</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Programmes de formation spécialisés pour développer les compétences de vos équipages et améliorer les performances opérationnelles.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-yellow-500 text-xs"></i>
+                                <span>Certification STCW</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-yellow-500 text-xs"></i>
+                                <span>Gestion des urgences</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-yellow-500 text-xs"></i>
+                                <span>Technologies maritimes</span>
+                            </li>
+                        </ul>
+                        <a href="#formation" class="text-yellow-600 font-medium hover:text-yellow-700 transition-colors">
+                            Découvrir nos formations →
+                        </a>
+                    </div>
+                    
+                    <!-- Réglementation -->
+                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll hover-lift">
+                        <div class="w-16 h-16 bg-purple-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-balance-scale text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Conseil Réglementaire</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Veille réglementaire et accompagnement personnalisé pour assurer la conformité de vos opérations avec les exigences nationales et internationales.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-purple-500 text-xs"></i>
+                                <span>Conformité réglementaire</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-purple-500 text-xs"></i>
+                                <span>Veille juridique</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-purple-500 text-xs"></i>
+                                <span>Support administratif</span>
+                            </li>
+                        </ul>
+                        <a href="#reglementation" class="text-purple-600 font-medium hover:text-purple-700 transition-colors">
+                            Obtenir du support →
+                        </a>
+                    </div>
+                    
+                    <!-- Réseau -->
+                    <div class="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll hover-lift">
+                        <div class="w-16 h-16 bg-teal-500 rounded-lg flex items-center justify-center mb-6">
+                            <i class="fas fa-network-wired text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-4">Réseau et Partenariats</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Facilitation des échanges commerciaux et techniques entre nos membres et développement de partenariats stratégiques.
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-600 mb-6">
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-teal-500 text-xs"></i>
+                                <span>Événements networking</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-teal-500 text-xs"></i>
+                                <span>Partenariats stratégiques</span>
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <i class="fas fa-dot-circle text-teal-500 text-xs"></i>
+                                <span>Plateforme d'échanges</span>
+                            </li>
+                        </ul>
+                        <a href="#reseau" class="text-teal-600 font-medium hover:text-teal-700 transition-colors">
+                            Rejoindre le réseau →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section class="py-20 bg-maritime-blue text-white relative overflow-hidden">
+            <!-- Background Pattern -->
+            <div class="absolute inset-0 bg-hero-pattern opacity-10"></div>
+            
+            <div class="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                        Notre Approche
+                    </h2>
+                    <p class="text-blue-100 max-w-3xl mx-auto text-lg">
+                        Une méthodologie éprouvée pour garantir l'excellence de nos services.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <!-- Step 1 -->
+                    <div class="text-center animate-on-scroll">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+                            <span class="text-2xl font-bold">1</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">Analyse</h3>
+                        <p class="text-blue-100">
+                            Évaluation approfondie de vos besoins et défis spécifiques.
+                        </p>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="text-center animate-on-scroll">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+                            <span class="text-2xl font-bold">2</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">Stratégie</h3>
+                        <p class="text-blue-100">
+                            Développement d'une stratégie personnalisée et actionnable.
+                        </p>
+                    </div>
+                    
+                    <!-- Step 3 -->
+                    <div class="text-center animate-on-scroll">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+                            <span class="text-2xl font-bold">3</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">Mise en œuvre</h3>
+                        <p class="text-blue-100">
+                            Exécution rigoureuse avec un suivi constant des résultats.
+                        </p>
+                    </div>
+                    
+                    <!-- Step 4 -->
+                    <div class="text-center animate-on-scroll">
+                        <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+                            <span class="text-2xl font-bold">4</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4">Optimisation</h3>
+                        <p class="text-blue-100">
+                            Amélioration continue basée sur les retours et performances.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="py-20 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16 animate-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-maritime-blue mb-6">
+                        Ce que disent nos membres
+                    </h2>
+                    <p class="text-gray-600 max-w-3xl mx-auto text-lg">
+                        La satisfaction de nos membres est notre meilleure référence.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 italic">
+                            "L'ASL nous accompagne depuis des années avec un professionnalisme exemplaire. Leur expertise réglementaire nous fait gagner un temps précieux."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-1.jpg" 
+                                 alt="Marie Dubois" 
+                                 class="w-12 h-12 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Marie Dubois</h4>
+                                <p class="text-sm text-gray-500">Directrice, Algoma Central</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 italic">
+                            "Les formations proposées par l'ASL sont d'une qualité exceptionnelle. Nos équipes sont toujours mieux préparées après leurs sessions."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-3.jpg" 
+                                 alt="Jean Martin" 
+                                 class="w-12 h-12 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Jean Martin</h4>
+                                <p class="text-sm text-gray-500">Capitaine, CSL Group</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 animate-on-scroll">
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 italic">
+                            "Grâce au réseau de l'ASL, nous avons développé des partenariats stratégiques qui ont transformé notre activité."
+                        </p>
+                        <div class="flex items-center gap-4">
+                            <img src="https://storage.googleapis.com/uxpilot-auth.appspot.com/avatars/avatar-8.jpg" 
+                                 alt="Sophie Tremblay" 
+                                 class="w-12 h-12 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Sophie Tremblay</h4>
+                                <p class="text-sm text-gray-500">PDG, McKeil Marine</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-gradient-to-br from-maritime-blue to-maritime-navy rounded-3xl p-12 text-white text-center relative overflow-hidden">
+                    <!-- Background Pattern -->
+                    <div class="absolute inset-0 bg-hero-pattern opacity-10"></div>
+                    
+                    <div class="relative z-10 max-w-4xl mx-auto">
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">
+                            Prêt à bénéficier de nos services ?
+                        </h2>
+                        <p class="text-xl text-blue-100 mb-8 leading-relaxed">
+                            Contactez notre équipe d'experts pour découvrir comment nous pouvons accompagner votre développement maritime.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                            <a href="/contact" class="bg-white text-maritime-blue px-8 py-4 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg">
+                                Demander une consultation
+                            </a>
+                            <a href="/membres" class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-maritime-blue transition-all duration-300">
+                                Devenir membre
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Company Info -->
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-gradient-to-r from-maritime-blue to-maritime-blue-dark rounded-full flex items-center justify-center">
+                            <i class="fas fa-ship text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold">Armateurs Saint-Laurent</span>
+                    </div>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        Association représentant les armateurs canadiens depuis 1936.
+                    </p>
+                    
+                    <!-- Social Media -->
+                    <div class="flex gap-4">
+                        <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-maritime-blue transition-all duration-300 group">
+                            <i class="fab fa-linkedin-in group-hover:scale-110 transition-transform duration-300"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-maritime-blue transition-all duration-300 group">
+                            <i class="fab fa-facebook-f group-hover:scale-110 transition-transform duration-300"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-maritime-blue transition-all duration-300 group">
+                            <i class="fab fa-youtube group-hover:scale-110 transition-transform duration-300"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Navigation</h3>
+                    <ul class="space-y-4">
+                        <li><a href="/" class="text-gray-300 hover:text-white transition-colors duration-300">Accueil</a></li>
+                        <li><a href="/a-propos" class="text-gray-300 hover:text-white transition-colors duration-300">À propos d'ASL</a></li>
+                        <li><a href="/membres" class="text-gray-300 hover:text-white transition-colors duration-300">Nos membres</a></li>
+                        <li><a href="/services" class="text-gray-300 hover:text-white transition-colors duration-300">Services</a></li>
+                        <li><a href="/contact" class="text-gray-300 hover:text-white transition-colors duration-300">Contact</a></li>
+                    </ul>
+                </div>
+
+                <!-- Services -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Nos Services</h3>
+                    <ul class="space-y-4">
+                        <li><a href="#representation" class="text-gray-300 hover:text-white transition-colors duration-300">Représentation</a></li>
+                        <li><a href="#promotion" class="text-gray-300 hover:text-white transition-colors duration-300">Promotion</a></li>
+                        <li><a href="#formation" class="text-gray-300 hover:text-white transition-colors duration-300">Formation</a></li>
+                        <li><a href="#securite" class="text-gray-300 hover:text-white transition-colors duration-300">Sécurité maritime</a></li>
+                        <li><a href="#reglementation" class="text-gray-300 hover:text-white transition-colors duration-300">Conseil réglementaire</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Info -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-6">Contact</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-3">
+                            <i class="text-maritime-blue mt-1 fas fa-map-marker-alt flex-shrink-0"></i>
+                            <div class="text-gray-300">
+                                <p>101 Rue Saint-Paul</p>
+                                <p>Québec, QC G1R 1S9</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="text-maritime-blue fas fa-phone"></i>
+                            <a href="tel:+14186924681" class="text-gray-300 hover:text-white transition-colors duration-300">+1 (418) 692-4681</a>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="text-maritime-blue fas fa-envelope"></i>
+                            <a href="mailto:info@asl.ca" class="text-gray-300 hover:text-white transition-colors duration-300">info@asl.ca</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Association des Armateurs du Saint-Laurent. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="asl_main.js"></script>
+    
+    <!-- Page-specific JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize animations
+            gsap.registerPlugin(ScrollTrigger);
+            
+            // Animate elements on scroll
+            gsap.utils.toArray('.animate-on-scroll').forEach((element, i) => {
+                gsap.fromTo(element, {
+                    opacity: 0,
+                    y: 50
+                }, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: element,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            });
+            
+            // Counter animations
+            const counters = document.querySelectorAll('.counter');
+            
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounter(entry.target);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            });
+            
+            counters.forEach(counter => counterObserver.observe(counter));
+            
+            function animateCounter(element, duration = 2000) {
+                const target = parseInt(element.dataset.target);
+                const start = 0;
+                const startTime = performance.now();
+                
+                const updateCounter = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    // Easing function (ease-out)
+                    const easeOut = 1 - Math.pow(1 - progress, 3);
+                    const current = Math.floor(start + (target - start) * easeOut);
+                    
+                    element.textContent = current;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        element.textContent = target;
+                    }
+                };
+                
+                requestAnimationFrame(updateCounter);
+            }
+            
+            // Header scroll effect
+            let lastScrollY = window.pageYOffset;
+            const header = document.getElementById('header');
+            
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.pageYOffset;
+                
+                if (currentScrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+                
+                lastScrollY = currentScrollY;
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            
+            if (mobileMenuToggle && mobileMenu) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
