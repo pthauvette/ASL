@@ -1,5 +1,5 @@
 // Fichier : page-registration.js
-// Logique pour la page Détails organisation utilisant le module membri-api.js
+// Logique pour la page des détails de l’organisation utilisant le module membri-api.js
 
 import { apiRequest } from './membri-api.js';
 
