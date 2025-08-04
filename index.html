@@ -246,6 +246,11 @@
         /* Loading spinner */
         #loading-spinner {
             transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        .js-loading #loading-spinner {
+            display: flex;
         }
         
         /* Responsive adjustments */
@@ -811,7 +816,13 @@
     
     <!-- Remove loading class when JavaScript loads -->
     <script>
-        document.body.classList.remove('js-loading');
+        window.addEventListener('load', () => {
+            document.body.classList.remove('js-loading');
+            const spinner = document.getElementById('loading-spinner');
+            if (spinner) {
+                spinner.remove();
+            }
+        });
     </script>
 </body>
 </html>
