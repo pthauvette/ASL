@@ -5,7 +5,7 @@ const apiBase  = 'https://api.membri365.com/v1_01/';
 const apiSCode = 'rkTl0wgwFkJVxOURkz3tpwWcYols1flS4NdUZAcFzoBAckCxvl6tDr2XE5VGPgfG';
 const orgId    = 'ec4fb530-d07a-4e5c-81d2-b238d3ff2adb';
 
-async function apiRequest(path, { method = 'GET', query = '', body } = {}) {
+export async function apiRequest(path, { method = 'GET', query = '', body } = {}) {
   const url = `${apiBase}${path}?orgId=${orgId}${query}`;
   const headers = { 'Accept': 'application/json', 'SCode': apiSCode };
   if (body) headers['Content-Type'] = 'application/json';
