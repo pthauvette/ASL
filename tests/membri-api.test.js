@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { apiRequest } from '../membri-api.js';
+import { apiRequest } from '../portail/membri-api.js';
 
 test('apiRequest constructs URL and headers correctly', async () => {
   let captured = {};
