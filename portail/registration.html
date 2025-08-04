@@ -133,8 +133,17 @@
       stepLabel.textContent = `Étape ${n} sur ${total}`;
     }
     form.addEventListener('click', e => {
-      if (e.target.dataset.next) { if (form.checkValidity()) current = Math.min(current+1,total); }
-      if (e.target.dataset.prev) { current = Math.max(current-1,1); }
+      if (e.target.dataset.next) {
+        const currentStep = steps[current-1];
+        if (currentStep.checkValidity()) {
+          current = Math.min(current + 1, total);
+        } else {
+          currentStep.reportValidity();
+        }
+      }
+      if (e.target.dataset.prev) {
+        current = Math.max(current - 1, 1);
+      }
       showStep(current);
     });
     showStep(current);
