@@ -22,7 +22,11 @@ const ASL_CONFIG = {
     // Configuration API Membri 365
     api: {
         baseURL: 'https://api.membri365.com',
-        orgId: process.env.MEMBRI_ORG_ID || 'YOUR_ORG_ID', // À remplacer par l'ID réel
+        // Utilise la valeur fournie dans l'environnement navigateur ou serveur
+        orgId:
+            (typeof window !== 'undefined' && window.MEMBRI_ORG_ID) ||
+            (typeof process !== 'undefined' && process.env && process.env.MEMBRI_ORG_ID) ||
+            'YOUR_ORG_ID', // À remplacer par l'ID réel
         version: 'v1',
         timeout: 10000,
         retryAttempts: 3,
