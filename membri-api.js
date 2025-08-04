@@ -22,6 +22,8 @@ export async function apiRequest(path, { method = 'GET', query = '', body } = {}
   return response.json();
 }
 
+export { apiRequest };
+
 /** Authentification */
 export async function loginMember(email, password) {
   return apiRequest('Member/Login', {
