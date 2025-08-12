@@ -1,0 +1,41 @@
+# Robots.txt pour Armateurs du Saint-Laurent
+# https://armateurs-saint-laurent.ca
+
+User-agent: *
+Allow: /
+
+# Pages importantes
+Allow: /
+Allow: /association
+Allow: /membres
+Allow: /evenements
+Allow: /contact
+Allow: /saint-laurent
+Allow: /dossiers
+
+# Pages d'inscription et connexion
+Allow: /inscription
+Allow: /connexion
+
+# Sitemap
+Sitemap: https://armateurs-saint-laurent.ca/sitemap.xml
+
+# Crawl-delay pour respecter les serveurs
+Crawl-delay: 1
+
+# Blocage des ressources non nécessaires pour le SEO
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /private/
+
+# Fichiers et extensions à éviter
+Disallow: *.json$
+Disallow: *.js$
+Disallow: *.css$
+Disallow: *.map$
+
+# Paramètres de requête à éviter
+Disallow: /*?*debug=
+Disallow: /*?*test=
+Disallow: /*?*dev=
