@@ -34,26 +34,18 @@ export function ProfilePage({ user, membershipInfo }: ProfilePageProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // Protection contre user undefined ou incomplet
-  const safeUser = {
-    email: '',
-    organization: '',
-    name: 'Membre',
-    ...user
-  };
-
   const [profileData, setProfileData] = useState({
     // Informations personnelles
     firstName: 'Jean',
     lastName: 'Tremblay',
-    email: safeUser.email || '',
+    email: user.email,
     phone: '(514) 555-0123',
     cellphone: '(514) 555-9876',
     jobTitle: 'Directeur des opérations',
     department: 'Opérations maritimes',
 
-    // Informations de l'organisation
-    organization: safeUser.organization || '',
+    // Informations de l\'organisation
+    organization: user.organization,
     address: '123 Rue du Port',
     city: 'Montréal',
     province: 'Québec',
@@ -389,7 +381,7 @@ export function ProfilePage({ user, membershipInfo }: ProfilePageProps) {
                     Type d'adhésion
                   </label>
                   <div className="p-3 bg-gray-50 rounded-lg border">
-                    <span className="text-[#000033] font-medium">{membershipInfo?.type || 'Membre standard'}</span>
+                    <span className="text-[#000033] font-medium">{membershipInfo.type}</span>
                   </div>
                 </div>
                 <div>
@@ -397,7 +389,7 @@ export function ProfilePage({ user, membershipInfo }: ProfilePageProps) {
                     Numéro de membre
                   </label>
                   <div className="p-3 bg-gray-50 rounded-lg border">
-                    <span className="text-[#000033] font-medium">{membershipInfo?.memberNumber || 'ASL-001'}</span>
+                    <span className="text-[#000033] font-medium">{membershipInfo.memberNumber}</span>
                   </div>
                 </div>
               </div>
@@ -409,7 +401,7 @@ export function ProfilePage({ user, membershipInfo }: ProfilePageProps) {
                   </label>
                   <div className="p-3 bg-gray-50 rounded-lg border">
                     <span className="text-[#000033] font-medium">
-                      {membershipInfo?.joinDate ? new Date(membershipInfo.joinDate).toLocaleDateString('fr-CA') : '2024-01-01'}
+                      {new Date(membershipInfo.joinDate).toLocaleDateString('fr-CA')}
                     </span>
                   </div>
                 </div>
@@ -419,7 +411,7 @@ export function ProfilePage({ user, membershipInfo }: ProfilePageProps) {
                   </label>
                   <div className="p-3 bg-gray-50 rounded-lg border">
                     <span className="text-[#000033] font-medium">
-                      {membershipInfo?.renewalDate ? new Date(membershipInfo.renewalDate).toLocaleDateString('fr-CA') : '2025-01-01'}
+                      {new Date(membershipInfo.renewalDate).toLocaleDateString('fr-CA')}
                     </span>
                   </div>
                 </div>

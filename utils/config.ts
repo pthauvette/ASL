@@ -153,7 +153,7 @@ export const DEV_CONFIG = {
   SIMULATE_LATENCY: true,
   MIN_LATENCY: 200,
   MAX_LATENCY: 800,
-  DEMO_MODE_FORCE: true // Mode démo forcé pour éviter les erreurs réseau en développement
+  DEMO_MODE_FORCE: true // Force le mode démo temporairement pour éviter les erreurs 400
 };
 
 // Utilitaires pour la gestion des dates Membri
@@ -244,11 +244,8 @@ export function getEnvironmentConfig() {
     window.location.port === '3000'
   );
 
-  // Mode démo désactivé - utilisation de l'API de production
-  const forceDemo = DEV_CONFIG.DEMO_MODE_FORCE;
-  
-  // Force offline si on est en développement ou si forceDemo est activé
-  const forceOffline = isDevelopment || forceDemo;
+  // Force le mode démo temporairement en développement pour éviter les erreurs API
+  const forceDemo = isDevelopment || DEV_CONFIG.DEMO_MODE_FORCE;
 
   return {
     isClient,
@@ -256,7 +253,6 @@ export function getEnvironmentConfig() {
     hostname: isClient ? window.location.hostname : 'server',
     port: isClient ? window.location.port : null,
     forceDemo,
-    forceOffline,
     // Variables d'environnement Vite (disponibles uniquement côté client avec préfixe VITE_)
     orgId: (isClient && typeof import.meta !== 'undefined' && import.meta.env?.VITE_MEMBRI_ORG_ID) || MEMBRI_CONFIG.ORG_ID,
     apiUrl: (isClient && typeof import.meta !== 'undefined' && import.meta.env?.VITE_MEMBRI_API_URL) || MEMBRI_CONFIG.BASE_URL

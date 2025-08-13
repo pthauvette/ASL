@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Badge } from '../../ui/badge';
 import { Activity, CheckCircle } from 'lucide-react';
 import { RecentActivity } from '../types/portal-types';
-import { getActivityIcon } from '../utils/portal-utils.tsx';
+import { getActivityIcon } from '../utils/portal-utils';
 
 interface DashboardRecentActivitiesProps {
   activities: RecentActivity[];

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Calendar, MapPin, Clock, Users, Ticket, Loader2, Filter, Search, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Clock, Users, Ticket, Loader2, Filter, Search, ArrowRight, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Alert, AlertDescription } from "./ui/alert";
 import { ContentPageLayout } from "./PageLayout";
 import { membriApi } from "../utils/membriApi";
+import { toast } from "sonner@2.0.3";
 import type { BreadcrumbItem } from "../utils/form-types";
 
 interface NavigationHandlers {
@@ -391,21 +393,11 @@ export const EventsPage = ({ navigationHandlers }: EventsPageProps) => {
       try {
         setIsLoading(true);
         const eventsData = await membriApi.getEvents();
-        
-        if (eventsData && Array.isArray(eventsData)) {
-          setEvents(eventsData);
-          setFilteredEvents(eventsData);
-          console.log(`✅ ${eventsData.length} événements chargés avec succès`);
-        } else {
-          console.warn('⚠️ Données d\'événements invalides, utilisation des valeurs par défaut');
-          setEvents([]);
-          setFilteredEvents([]);
-        }
+        setEvents(eventsData);
+        setFilteredEvents(eventsData);
       } catch (error) {
-        console.error('❌ Erreur lors du chargement des événements:', error);
-        // En cas d'erreur, utiliser des données vides plutôt que de planter
-        setEvents([]);
-        setFilteredEvents([]);
+        console.error('Erreur lors du chargement des événements:', error);
+        toast.error('Une erreur s\'est produite lors du chargement des événements.');
       } finally {
         setIsLoading(false);
       }

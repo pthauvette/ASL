@@ -5,37 +5,137 @@ import { Label } from './ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { Checkbox } from './ui/checkbox';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Loader2, AlertCircle, X, Check, Users, Building2, Ship, CreditCard, Banknote, Mail, Phone, MapPin, Globe, Calendar, Hash, UserPlus, CalendarDays, Clock, MapPin as MapPinIcon, DollarSign, Info } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { membriApi, type Province, type City, type MembershipType, type MembershipPackage, type SectorCategory, type Event, type MembershipFormData } from '../utils/membriApi';
+import { membriApi, Province, City, MembershipType, MembershipPackage, SectorCategory, Event, MembershipFormData } from '../utils/membriApi';
 import { useLanguage } from '../utils/languageContext';
 import { toast } from 'sonner';
-import type { FormData } from '../utils/form-types';
+import type { StepStatus } from '../App';
+
+interface FormData {
+  // Organisation info - Base fields
+  membershipTypeId: string;
+  membershipPackageId: string;
+  emailBilling: string;
+  accountName: string;
+  address: string;
+  addressLine2: string;
+  cityId: string;
+  provinceId: string;
+  postalCode: string;
+  neq: string;
+  email: string;
+  phone: string;
+  fax: string;
+  website: string;
+  description: string;
+  
+  // Additional business info fields
+  employeeCount: string;
+  yearFounded: string;
+  sectorId: string;
+  
+  // Business characteristics
+  isNewBusiness: boolean;
+  isSelfEmployed: boolean;
+  isExporter: boolean;
+  isManufacturer: boolean;
+  
+  // Privacy/visibility preferences
+  showInfoOnWebsite: boolean;
+  showAddressOnWeb: boolean;
+  showEmailOnWeb: boolean;
+  showPhoneOnWeb: boolean;
+  showSocialMediaOnWeb: boolean;
+  showFaxOnWeb: boolean;
+  showWebsiteOnWeb: boolean;
+  showDescriptionOnWeb: boolean;
+  
+  // Membership options
+  autoRenewal: boolean;
+  
+  // Social media links
+  facebook: string;
+  twitter: string;
+  linkedin: string;
+  instagram: string;
+  
+  // Sponsorship options
+  bronzeSponsorship: boolean;
+  silverSponsorship: boolean;
+  goldSponsorship: boolean;
+  platinumSponsorship: boolean;
+  
+  // Contact information
+  mainContact: {
+    civility: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    cell: string;
+    jobtitle: string;
+    department: string;
+    showEmailOnWeb: boolean;
+    showPhoneOnWeb: boolean;
+    showCellphoneOnWeb: boolean;
+  };
+  
+  // Delegates with enhanced info
+  delegates: Array<{
+    civility: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    cell: string;
+    jobtitle: string;
+    department: string;
+  }>;
+  
+  // Events and activities
+  selectedEvents: Array<{
+    eventId: string;
+    attendeeCount: number;
+    specialRequests?: string;
+  }>;
+  
+  // Billing/Payment info
+  paymentMethod: string; // 'cheque' or 'transfert'
+  billingContact: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    department: string;
+  };
+  
+  // Final consent and preferences
+  finalConsent: boolean;
+  marketingConsent: boolean;
+  newsletterSubscription: boolean;
+}
 
 interface SignupFormProps {
   currentStep: number;
+  setCurrentStep: (step: number) => void;
   formData: FormData;
   setFormData: (data: FormData | ((prev: FormData) => FormData)) => void;
-  onNext: () => void;
-  onPrevious: () => void;
-  isInitialLoad: boolean;
-  canProceed: boolean;
-  isLastStep: boolean;
   allStepsCompleted: boolean;
+  getStepStatus: (stepId: number) => StepStatus;
+  hasActiveEvents: boolean;
+  maxSteps: number;
 }
 
 export function SignupForm({ 
   currentStep, 
+  setCurrentStep, 
   formData, 
   setFormData, 
-  onNext,
-  onPrevious,
-  isInitialLoad,
-  canProceed,
-  isLastStep,
-  allStepsCompleted
+  allStepsCompleted,
+  getStepStatus,
+  hasActiveEvents,
+  maxSteps
 }: SignupFormProps) {
   const { t } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +145,6 @@ export function SignupForm({
   const [showApiError, setShowApiError] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, boolean>>({});
   const [hasTriedAdvance, setHasTriedAdvance] = useState<Record<number, boolean>>({});
-  const [hasActiveEvents, setHasActiveEvents] = useState(true);
   
   // API Data
   const [provinces, setProvinces] = useState<Province[]>([]);
@@ -67,48 +166,45 @@ export function SignupForm({
     setShowApiError(false);
     
     try {
-      console.log('🔍 Test de connexion API Membri 365...');
+      console.log('Testing API connection...');
+      console.log('API Configuration:', membriApi.getConfig());
       
-      // Test the connection first
       const connectionTest = await membriApi.testConnection();
-      console.log('Test de connexion:', connectionTest);
-      
-      // Even if connection test fails, try to load demo data
+      if (!connectionTest) {
+        throw new Error('Impossible de se connecter à l\'API Membri');
+      }
+
       const promises = [
-        membriApi.fetchProvinces().catch(() => []),
-        membriApi.fetchCities().catch(() => []),
-        membriApi.fetchMembershipTypes().catch(() => []),
-        membriApi.fetchSectorCategories().catch(() => []),
-        membriApi.fetchActiveEvents().catch(() => [])
+        membriApi.fetchProvinces(),
+        membriApi.fetchCities(),
+        membriApi.fetchMembershipTypes(),
+        membriApi.fetchSectorCategories()
       ];
 
-      const [provincesData, citiesData, membershipTypesData, sectorsData, eventsData] = await Promise.all(promises);
+      // Only fetch events if there are active events
+      if (hasActiveEvents) {
+        promises.push(membriApi.fetchActiveEvents());
+      }
+
+      const results = await Promise.all(promises);
       
-      setProvinces(provincesData);
-      setCities(citiesData);
-      setMembershipTypes(membershipTypesData);
-      setSectors(sectorsData);
-      setEvents(eventsData);
+      setProvinces(results[0]);
+      setCities(results[1]);
+      setMembershipTypes(results[2]);
+      setSectors(results[3]);
       
-      console.log('📊 Données chargées:', {
-        provinces: provincesData.length,
-        cities: citiesData.length,
-        membershipTypes: membershipTypesData.length,
-        sectors: sectorsData.length,
-        events: eventsData.length
-      });
-      
-      setApiStatus('success');
-      
-      if (!connectionTest) {
-        setErrorMessage('Mode démonstration activé - données de test utilisées');
-        setShowApiError(true);
+      if (hasActiveEvents && results[4]) {
+        setEvents(results[4]);
+        console.log('Events loaded in SignupForm:', results[4].length);
       }
       
+      setApiStatus('success');
+      console.log('API data loaded successfully');
+      
     } catch (error) {
-      console.error('❌ Erreur lors du chargement des données:', error);
+      console.error('Error loading API data:', error);
       setApiStatus('error');
-      setErrorMessage('Impossible de charger les données. Mode démonstration activé.');
+      setErrorMessage(error instanceof Error ? error.message : 'Erreur de connexion API');
       setShowApiError(true);
     } finally {
       setIsLoading(false);
@@ -160,6 +256,7 @@ export function SignupForm({
     }));
   };
 
+  // Event management functions
   const addEventSelection = (eventId: string) => {
     setFormData(prev => ({
       ...prev,
@@ -231,12 +328,10 @@ export function SignupForm({
         }
       };
 
-      console.log('🚀 Soumission de la demande d\'adhésion:', membershipData);
       const result = await membriApi.submitMembership(membershipData);
       
       if (typeof result === 'string') {
         if (result.startsWith('http')) {
-          console.log('🔗 Redirection vers le paiement:', result);
           window.location.href = result;
         } else if (result === 'success') {
           toast.success('Demande d\'adhésion soumise avec succès!');
@@ -245,13 +340,14 @@ export function SignupForm({
         toast.success('Demande d\'adhésion soumise avec succès!');
       }
     } catch (error) {
-      console.error('❌ Erreur lors de la soumission:', error);
+      console.error('Error submitting membership:', error);
       toast.error('Erreur lors de la soumission. Veuillez réessayer.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Validation functions
   const validateCurrentStep = (): { isValid: boolean; errors: Record<string, boolean> } => {
     const errors: Record<string, boolean> = {};
     let isValid = true;
@@ -279,13 +375,16 @@ export function SignupForm({
         if (!formData.mainContact.email) { errors.mainContactEmail = true; isValid = false; }
         break;
       case 5:
+        // Events step validation (if it exists)
         if (hasActiveEvents) {
           // Events step is always valid since it's optional
         } else {
+          // This is the final step when no events
           if (!formData.finalConsent) { errors.finalConsent = true; isValid = false; }
         }
         break;
       case 6:
+        // Final step when events are available
         if (!formData.finalConsent) { errors.finalConsent = true; isValid = false; }
         break;
     }
@@ -296,36 +395,35 @@ export function SignupForm({
   const goToNextStep = () => {
     const { isValid, errors } = validateCurrentStep();
     
+    // Mark that user tried to advance from this step
     setHasTriedAdvance(prev => ({ ...prev, [currentStep]: true }));
     
     if (!isValid) {
       setValidationErrors(errors);
-      const firstError = Object.keys(errors)[0];
-      const element = document.getElementById(firstError);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        element.focus();
-      }
       return;
     }
     
+    // Clear validation errors if step is valid
     setValidationErrors({});
     
-    if (isLastStep) {
+    if (currentStep < maxSteps) {
+      setCurrentStep(currentStep + 1);
+    } else {
       handleSubmit();
-    } else if (canProceed) {
-      onNext();
     }
   };
 
   const goToPreviousStep = () => {
-    onPrevious();
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
   const shouldShowError = (fieldName: string): boolean => {
     return hasTriedAdvance[currentStep] && validationErrors[fieldName];
   };
 
+  // Helper function to check if membership type is Actif
   const isActiveMembershipType = (typeName: string): boolean => {
     return typeName && (typeName.toLowerCase().includes('actif') || typeName.toLowerCase().includes('active'));
   };
@@ -339,12 +437,14 @@ export function SignupForm({
       (pkg.id?.toString() || pkg.ID?.toString()) === formData.membershipPackageId
     );
     
+    // If it's Actif membership, price is 0 (billed later based on fleet size)
     if (selectedType && isActiveMembershipType(selectedType.name || selectedType.Name || '')) {
       basePrice = 0;
     } else if (selectedPackage) {
       basePrice = selectedPackage.annualPrice || selectedPackage.AnnualPrice || 0;
     }
 
+    // Add sponsorship costs
     let sponsorshipCosts = 0;
     if (formData.bronzeSponsorship) sponsorshipCosts += 500;
     if (formData.silverSponsorship) sponsorshipCosts += 1500;
@@ -353,12 +453,14 @@ export function SignupForm({
 
     let total = basePrice + sponsorshipCosts;
 
+    // Apply auto-renewal discount only if there's a base price
     let discount = 0;
     if (formData.autoRenewal && total > 0) {
-      discount = total * 0.05;
+      discount = total * 0.05; // 5% discount
       total = total * 0.95;
     }
 
+    // Add event costs
     let eventCosts = 0;
     formData.selectedEvents.forEach(selectedEvent => {
       const event = events.find(e => (e.id?.toString() || e.ID?.toString()) === selectedEvent.eventId);
@@ -378,12 +480,7 @@ export function SignupForm({
     return (
       <div className="flex flex-col justify-center items-center py-12 space-y-4">
         <Loader2 className="h-8 w-8 animate-spin text-[#000033]" />
-        <div className="text-center space-y-2">
-          <h3>Chargement des données...</h3>
-          <p className="text-sm text-muted-foreground">
-            Connexion à l'API Membri 365 en cours
-          </p>
-        </div>
+        <span className="text-lg">Chargement...</span>
       </div>
     );
   }
@@ -392,17 +489,14 @@ export function SignupForm({
   if (apiStatus === 'error') {
     return (
       <div className="py-12">
-        <Alert className="mb-6 border-orange-200 bg-orange-50">
-          <AlertCircle className="h-4 w-4 text-orange-600" />
-          <AlertDescription className="text-orange-800">
-            <strong>Mode démonstration activé:</strong><br />
+        <Alert variant="destructive" className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            <strong>Impossible de charger les données:</strong><br />
             {errorMessage}
           </AlertDescription>
         </Alert>
-        <div className="text-center space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Vous pouvez continuer avec des données de démonstration ou réessayer la connexion.
-          </p>
+        <div className="text-center">
           <Button onClick={loadApiData} variant="outline">
             Réessayer la connexion
           </Button>
@@ -412,17 +506,18 @@ export function SignupForm({
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="space-y-6">
+      {/* API Connection Warning */}
       {showApiError && apiStatus === 'success' && (
-        <Alert className="mb-4 border-orange-200 bg-orange-50">
-          <AlertCircle className="h-4 w-4 text-orange-600" />
-          <AlertDescription className="flex items-center justify-between text-orange-800">
-            <span>{errorMessage}</span>
+        <Alert variant="destructive" className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription className="flex items-center justify-between">
+            <span>Connexion API instable. Certaines fonctionnalités pourraient être limitées.</span>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowApiError(false)}
-              className="h-auto p-1 ml-2 text-orange-600 hover:text-orange-700"
+              className="h-auto p-1 ml-2"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -430,20 +525,16 @@ export function SignupForm({
         </Alert>
       )}
 
-      {/* Step 1: Informations sur l'organisation */}
+      {/* Step 1: Informations sur l'organisation - ENRICHIES */}
       {currentStep === 1 && (
         <div className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-[#000033]">
-                <Building2 className="w-5 h-5 mr-2" />
-                Informations de l'entreprise
-              </CardTitle>
-              <CardDescription>
-                Renseignements de base sur votre organisation
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          {/* Section 1: Informations de base */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg flex items-center">
+              <Building2 className="w-5 h-5 mr-2" />
+              Informations de l'entreprise
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="accountName">Nom de l'entreprise / organisation *</Label>
                 <Input
@@ -451,11 +542,7 @@ export function SignupForm({
                   value={formData.accountName}
                   onChange={(e) => setFormData(prev => ({ ...prev, accountName: e.target.value }))}
                   className={shouldShowError('accountName') ? 'border-red-300 focus:border-red-500' : ''}
-                  placeholder="Nom complet de votre organisation"
                 />
-                {shouldShowError('accountName') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -514,17 +601,16 @@ export function SignupForm({
                   placeholder="Décrivez brièvement votre entreprise et ses activités..."
                 />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-[#000033]">
-                <MapPin className="w-5 h-5 mr-2" />
-                Adresse
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          {/* Section 2: Adresse */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg flex items-center">
+              <MapPin className="w-5 h-5 mr-2" />
+              Adresse
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="address">Adresse *</Label>
                 <Input
@@ -532,11 +618,7 @@ export function SignupForm({
                   value={formData.address}
                   onChange={(e) => setFormData(prev => ({ ...prev, address: e.target.value }))}
                   className={shouldShowError('address') ? 'border-red-300 focus:border-red-500' : ''}
-                  placeholder="Numéro et nom de rue"
                 />
-                {shouldShowError('address') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
               </div>
 
               <div className="space-y-2">
@@ -545,7 +627,6 @@ export function SignupForm({
                   id="addressLine2"
                   value={formData.addressLine2}
                   onChange={(e) => setFormData(prev => ({ ...prev, addressLine2: e.target.value }))}
-                  placeholder="Bureau, suite, étage..."
                 />
               </div>
 
@@ -564,9 +645,6 @@ export function SignupForm({
                       ))}
                     </SelectContent>
                   </Select>
-                  {shouldShowError('cityId') && (
-                    <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -583,9 +661,6 @@ export function SignupForm({
                       ))}
                     </SelectContent>
                   </Select>
-                  {shouldShowError('provinceId') && (
-                    <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -595,11 +670,7 @@ export function SignupForm({
                     value={formData.postalCode}
                     onChange={(e) => setFormData(prev => ({ ...prev, postalCode: e.target.value }))}
                     className={shouldShowError('postalCode') ? 'border-red-300 focus:border-red-500' : ''}
-                    placeholder="G1A 1A1"
                   />
-                  {shouldShowError('postalCode') && (
-                    <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                  )}
                 </div>
               </div>
 
@@ -612,388 +683,812 @@ export function SignupForm({
                   placeholder="Ex: 1234567890"
                 />
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-[#000033]">
-                <Phone className="w-5 h-5 mr-2" />
-                Coordonnées
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Courriel principal *</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className={shouldShowError('email') ? 'border-red-300 focus:border-red-500' : ''}
-                    placeholder="contact@exemple.com"
-                  />
-                  {shouldShowError('email') && (
-                    <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="phone">Téléphone principal *</Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                    className={shouldShowError('phone') ? 'border-red-300 focus:border-red-500' : ''}
-                    placeholder="(418) 123-4567"
-                  />
-                  {shouldShowError('phone') && (
-                    <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="fax">Télécopieur</Label>
-                  <Input
-                    id="fax"
-                    type="tel"
-                    value={formData.fax}
-                    onChange={(e) => setFormData(prev => ({ ...prev, fax: e.target.value }))}
-                    placeholder="(418) 123-4568"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="website">Site web</Label>
-                  <Input
-                    id="website"
-                    type="url"
-                    value={formData.website}
-                    onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
-                    placeholder="https://www.exemple.com"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-[#000033]">
-                <Globe className="w-5 h-5 mr-2" />
-                Réseaux sociaux
-              </CardTitle>
-              <CardDescription>
-                Liens optionnels vers vos profils de réseaux sociaux
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="facebook">Facebook</Label>
-                  <Input
-                    id="facebook"
-                    value={formData.facebook}
-                    onChange={(e) => setFormData(prev => ({ ...prev, facebook: e.target.value }))}
-                    placeholder="https://facebook.com/votre-page"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="twitter">Twitter/X</Label>
-                  <Input
-                    id="twitter"
-                    value={formData.twitter}
-                    onChange={(e) => setFormData(prev => ({ ...prev, twitter: e.target.value }))}
-                    placeholder="https://twitter.com/votre-compte"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="linkedin">LinkedIn</Label>
-                  <Input
-                    id="linkedin"
-                    value={formData.linkedin}
-                    onChange={(e) => setFormData(prev => ({ ...prev, linkedin: e.target.value }))}
-                    placeholder="https://linkedin.com/company/votre-entreprise"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="instagram">Instagram</Label>
-                  <Input
-                    id="instagram"
-                    value={formData.instagram}
-                    onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
-                    placeholder="https://instagram.com/votre-compte"
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Step 2: Type de membership et paiement */}
-      {currentStep === 2 && (
-        <div className="space-y-8">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-[#000033]">
-                <Ship className="w-5 h-5 mr-2" />
-                Type d'adhésion
-              </CardTitle>
-              <CardDescription>
-                Sélectionnez le type d'adhésion qui correspond à votre organisation
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          {/* Section 3: Coordonnées */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg flex items-center">
+              <Phone className="w-5 h-5 mr-2" />
+              Coordonnées
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="membershipTypeId">Type d'adhésion *</Label>
-                <Select value={formData.membershipTypeId} onValueChange={handleMembershipTypeChange}>
-                  <SelectTrigger className={shouldShowError('membershipTypeId') ? 'border-red-300 focus:border-red-500' : ''}>
-                    <SelectValue placeholder="Sélectionner un type d'adhésion" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {membershipTypes.map((type) => (
-                      <SelectItem key={type.id || type.ID} value={(type.id || type.ID)?.toString() || ''}>
-                        <div className="flex flex-col">
-                          <span>{type.name || type.Name}</span>
-                          {(type.description || type.Description) && (
-                            <span className="text-sm text-muted-foreground">
-                              {type.description || type.Description}
-                            </span>
-                          )}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {shouldShowError('membershipTypeId') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
-              </div>
-
-              {formData.membershipTypeId && membershipPackages.length > 0 && (
-                <div className="space-y-2">
-                  <Label htmlFor="membershipPackageId">Forfait d'adhésion *</Label>
-                  <Select value={formData.membershipPackageId} onValueChange={(value) => setFormData(prev => ({ ...prev, membershipPackageId: value }))}>
-                    <SelectTrigger className={shouldShowError('membershipPackageId') ? 'border-red-300 focus:border-red-500' : ''}>
-                      <SelectValue placeholder="Sélectionner un forfait" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {membershipPackages.map((pkg) => {
-                        const price = pkg.annualPrice || pkg.AnnualPrice || 0;
-                        return (
-                          <SelectItem key={pkg.id || pkg.ID} value={(pkg.id || pkg.ID)?.toString() || ''}>
-                            <div className="flex flex-col">
-                              <div className="flex items-center justify-between">
-                                <span>{pkg.name || pkg.Name}</span>
-                                <span className="ml-2 font-medium">
-                                  {price === 0 ? 'Sur mesure' : `${price.toLocaleString('fr-CA')} $ / an`}
-                                </span>
-                              </div>
-                              {(pkg.description || pkg.Description) && (
-                                <span className="text-sm text-muted-foreground">
-                                  {pkg.description || pkg.Description}
-                                </span>
-                              )}
-                            </div>
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                  {shouldShowError('membershipPackageId') && (
-                    <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center text-[#000033]">
-                <CreditCard className="w-5 h-5 mr-2" />
-                Facturation et paiement
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="space-y-2">
-                <Label htmlFor="emailBilling">Courriel de facturation *</Label>
+                <Label htmlFor="email">Courriel principal *</Label>
                 <Input
-                  id="emailBilling"
+                  id="email"
                   type="email"
-                  value={formData.emailBilling}
-                  onChange={(e) => setFormData(prev => ({ ...prev, emailBilling: e.target.value }))}
-                  className={shouldShowError('emailBilling') ? 'border-red-300 focus:border-red-500' : ''}
-                  placeholder="facturation@exemple.com"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  className={shouldShowError('email') ? 'border-red-300 focus:border-red-500' : ''}
                 />
-                {shouldShowError('emailBilling') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
               </div>
 
-              <div className="space-y-3">
-                <Label>Méthode de paiement *</Label>
-                <RadioGroup 
-                  value={formData.paymentMethod} 
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, paymentMethod: value }))}
-                  className={shouldShowError('paymentMethod') ? 'border border-red-300 rounded p-3' : 'space-y-2'}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="cheque" id="cheque" />
-                    <Label htmlFor="cheque" className="flex items-center cursor-pointer">
-                      <Banknote className="w-4 h-4 mr-2" />
-                      Chèque
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="transfert" id="transfert" />
-                    <Label htmlFor="transfert" className="flex items-center cursor-pointer">
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Virement bancaire
-                    </Label>
-                  </div>
-                </RadioGroup>
-                {shouldShowError('paymentMethod') && (
-                  <p className="text-sm text-red-600">Veuillez sélectionner une méthode de paiement</p>
-                )}
+              <div className="space-y-2">
+                <Label htmlFor="phone">Téléphone principal *</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                  className={shouldShowError('phone') ? 'border-red-300 focus:border-red-500' : ''}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="fax">Télécopieur</Label>
+                <Input
+                  id="fax"
+                  type="tel"
+                  value={formData.fax}
+                  onChange={(e) => setFormData(prev => ({ ...prev, fax: e.target.value }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="website">Site web</Label>
+                <Input
+                  id="website"
+                  type="url"
+                  value={formData.website}
+                  onChange={(e) => setFormData(prev => ({ ...prev, website: e.target.value }))}
+                  placeholder="https://"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Réseaux sociaux */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg flex items-center">
+              <Globe className="w-5 h-5 mr-2" />
+              Réseaux sociaux
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="facebook">Facebook</Label>
+                <Input
+                  id="facebook"
+                  type="url"
+                  value={formData.facebook}
+                  onChange={(e) => setFormData(prev => ({ ...prev, facebook: e.target.value }))}
+                  placeholder="https://facebook.com/votre-page"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="linkedin">LinkedIn</Label>
+                <Input
+                  id="linkedin"
+                  type="url"
+                  value={formData.linkedin}
+                  onChange={(e) => setFormData(prev => ({ ...prev, linkedin: e.target.value }))}
+                  placeholder="https://linkedin.com/company/votre-entreprise"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="twitter">Twitter / X</Label>
+                <Input
+                  id="twitter"
+                  type="url"
+                  value={formData.twitter}
+                  onChange={(e) => setFormData(prev => ({ ...prev, twitter: e.target.value }))}
+                  placeholder="https://twitter.com/votre-compte"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="instagram">Instagram</Label>
+                <Input
+                  id="instagram"
+                  type="url"
+                  value={formData.instagram}
+                  onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
+                  placeholder="https://instagram.com/votre-compte"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 5: Caractéristiques de l'entreprise */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg">Caractéristiques de l'entreprise</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isNewBusiness"
+                  checked={formData.isNewBusiness}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isNewBusiness: checked as boolean }))}
+                />
+                <Label htmlFor="isNewBusiness">Nouvelle entreprise (moins de 2 ans)</Label>
               </div>
 
               <div className="flex items-center space-x-2">
                 <Checkbox
-                  id="autoRenewal"
-                  checked={formData.autoRenewal}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, autoRenewal: checked as boolean }))}
+                  id="isSelfEmployed"
+                  checked={formData.isSelfEmployed}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isSelfEmployed: checked as boolean }))}
                 />
-                <Label htmlFor="autoRenewal" className="text-sm cursor-pointer">
-                  Renouvellement automatique (5% de rabais)
-                </Label>
+                <Label htmlFor="isSelfEmployed">Travailleur autonome</Label>
               </div>
 
-              {formData.membershipPackageId && (
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <h4 className="font-medium mb-3">Résumé des coûts</h4>
-                  <div className="space-y-2 text-sm">
-                    {(() => {
-                      const { basePrice, sponsorshipCosts, eventCosts, total, discount } = calculateTotalPrice();
-                      return (
-                        <>
-                          <div className="flex justify-between">
-                            <span>Cotisation annuelle:</span>
-                            <span>{basePrice === 0 ? 'Sur mesure *' : `${basePrice.toLocaleString('fr-CA')} $`}</span>
-                          </div>
-                          {sponsorshipCosts > 0 && (
-                            <div className="flex justify-between">
-                              <span>Commandites:</span>
-                              <span>{sponsorshipCosts.toLocaleString('fr-CA')} $</span>
-                            </div>
-                          )}
-                          {eventCosts > 0 && (
-                            <div className="flex justify-between">
-                              <span>Événements:</span>
-                              <span>{eventCosts.toLocaleString('fr-CA')} $</span>
-                            </div>
-                          )}
-                          {discount > 0 && (
-                            <div className="flex justify-between text-green-600">
-                              <span>Rabais renouvellement auto:</span>
-                              <span>-{discount.toLocaleString('fr-CA')} $</span>
-                            </div>
-                          )}
-                          <hr className="my-2" />
-                          <div className="flex justify-between font-medium">
-                            <span>Total:</span>
-                            <span>{total === 0 ? 'Sur mesure *' : `${total.toLocaleString('fr-CA')} $`}</span>
-                          </div>
-                          {basePrice === 0 && (
-                            <p className="text-xs text-muted-foreground mt-2">
-                              * La cotisation pour les membres actifs est calculée selon la taille de la flotte et sera facturée séparément.
-                            </p>
-                          )}
-                        </>
-                      );
-                    })()}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isExporter"
+                  checked={formData.isExporter}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isExporter: checked as boolean }))}
+                />
+                <Label htmlFor="isExporter">Entreprise exportatrice</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="isManufacturer"
+                  checked={formData.isManufacturer}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isManufacturer: checked as boolean }))}
+                />
+                <Label htmlFor="isManufacturer">Entreprise manufacturière</Label>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 6: Préférences d'affichage */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg">Préférences d'affichage web</h3>
+            <p className="text-sm text-gray-600">Choisissez quelles informations vous souhaitez afficher sur le site web de l'ASL</p>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showInfoOnWebsite"
+                  checked={formData.showInfoOnWebsite}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showInfoOnWebsite: checked as boolean }))}
+                />
+                <Label htmlFor="showInfoOnWebsite">Afficher les informations de base</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showAddressOnWeb"
+                  checked={formData.showAddressOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showAddressOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showAddressOnWeb">Afficher l'adresse</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showEmailOnWeb"
+                  checked={formData.showEmailOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showEmailOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showEmailOnWeb">Afficher le courriel</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showPhoneOnWeb"
+                  checked={formData.showPhoneOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showPhoneOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showPhoneOnWeb">Afficher le téléphone</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showFaxOnWeb"
+                  checked={formData.showFaxOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showFaxOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showFaxOnWeb">Afficher le télécopieur</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showWebsiteOnWeb"
+                  checked={formData.showWebsiteOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showWebsiteOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showWebsiteOnWeb">Afficher le site web</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showDescriptionOnWeb"
+                  checked={formData.showDescriptionOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showDescriptionOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showDescriptionOnWeb">Afficher la description</Label>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showSocialMediaOnWeb"
+                  checked={formData.showSocialMediaOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, showSocialMediaOnWeb: checked as boolean }))}
+                />
+                <Label htmlFor="showSocialMediaOnWeb">Afficher les réseaux sociaux</Label>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* Step 3: Contact principal */}
-      {currentStep === 3 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-[#000033]">
-              <Users className="w-5 h-5 mr-2" />
-              Contact principal
-            </CardTitle>
-            <CardDescription>
-              Personne-ressource principale pour votre organisation
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="mainContactCivility">Civilité *</Label>
+      {/* Step 2: Choix de la catégorie d'adhésion - ENRICHI avec contact de facturation */}
+      {currentStep === 2 && (
+        <div className="space-y-8">
+          <p className="text-[#43464b]">
+            Sélectionnez la catégorie qui correspond le mieux à votre profil et à vos besoins.
+          </p>
+
+          {/* Membership Type Cards (connectées à l'API) */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+            {membershipTypes.map((membershipType, index) => {
+              const typeId = (membershipType.id || membershipType.ID)?.toString() || '';
+              const typeName = membershipType.name || membershipType.Name || '';
+              const typeDescription = membershipType.description || membershipType.Description || '';
+              const packages = membershipType.packages || membershipType.Packages || [];
+              const isSelected = formData.membershipTypeId === typeId;
+              const isActiveType = isActiveMembershipType(typeName);
+
+              // Determine icon based on type name
+              const getIcon = () => {
+                if (typeName.toLowerCase().includes('associé')) return Users;
+                if (typeName.toLowerCase().includes('grand') || typeName.toLowerCase().includes('partenaire')) return Building2;
+                if (isActiveType) return Ship;
+                return Users; // default
+              };
+              const Icon = getIcon();
+
+              return (
+                <div 
+                  key={typeId}
+                  className={`relative rounded-lg border-2 p-6 cursor-pointer transition-all duration-200 ${
+                    isSelected 
+                      ? 'border-[#000033] bg-[#000033]/5' 
+                      : shouldShowError('membershipTypeId') 
+                        ? 'border-red-300' 
+                        : 'border-gray-200 hover:border-gray-300'
+                  } ${isActiveType && !isSelected ? 'border-[#000033] bg-[#000033]/5' : ''}`}
+                  onClick={() => handleMembershipTypeChange(typeId)}
+                >
+
+                  <input 
+                    type="radio" 
+                    className="absolute top-4 right-4 w-4 h-4"
+                    checked={isSelected}
+                    onChange={() => {}}
+                  />
+                  
+                  <div className="mb-6">
+                    <div className="w-12 h-12 bg-[#000033]/10 rounded-full flex items-center justify-center mb-4">
+                      <Icon className="w-6 h-6 text-[#000033]" />
+                    </div>
+                    <h3 className="font-bold text-xl text-[#000033] mb-2">{typeName}</h3>
+                    <p className="text-[#43464b] text-sm">
+                      {isActiveType 
+                        ? "Exclusive aux armateurs (propriétaires de navires)" 
+                        : typeDescription
+                      }
+                    </p>
+                  </div>
+                  
+                  {packages.length > 0 && (
+                    <div className="mb-6">
+                      {isActiveType ? (
+                        <>
+                          <div className="text-[#000033] font-bold text-2xl">Facturé</div>
+                          <span className="text-[#43464b] text-sm">ultérieurement selon la flotte</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="text-[#000033] font-bold text-3xl">
+                            ${packages[0].annualPrice || packages[0].AnnualPrice || 0}
+                          </div>
+                          <span className="text-[#43464b] text-sm">/année</span>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Feature list based on membership type */}
+                  <ul className="space-y-3 mb-6">
+                    {typeName.toLowerCase().includes('associé') && (
+                      <>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Réseautage professionnel
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Accès aux événements
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Bulletins d'information
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Opportunités de partenariat
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Répertoire des membres
+                        </li>
+                      </>
+                    )}
+
+                    {typeName.toLowerCase().includes('grand') && (
+                      <>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Tous les avantages Associé
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Visibilité premium
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Commandite d'événements
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Accès aux dirigeants
+                        </li>
+                        <li className="flex items-start text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                          Gestionnaire de compte dédié
+                        </li>
+                      </>
+                    )}
+
+                    {isActiveType && (
+                      <>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Droits de vote aux assemblées
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Participation au conseil d'administration
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Influence sur les décisions sectorielles
+                        </li>
+                        <li className="flex items-center text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0" />
+                          Représentation exclusive armateurs
+                        </li>
+                        <li className="flex items-start text-sm">
+                          <Check className="w-3.5 h-3.5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                          Cotisation basée sur la taille de flotte
+                        </li>
+                      </>
+                    )}
+                  </ul>
+
+                  <Button 
+                    variant={isSelected ? "default" : "outline"} 
+                    className="w-full"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMembershipTypeChange(typeId);
+                    }}
+                  >
+                    {isSelected ? 'Sélectionné' : 'Choisir cette catégorie'}
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Package Selection */}
+          {formData.membershipTypeId && membershipPackages.length > 0 && (
+            <div className="space-y-4">
+              <h3 className="font-medium text-[#000033]">Sélectionner un forfait</h3>
               <Select 
-                value={formData.mainContact.civility} 
-                onValueChange={(value) => setFormData(prev => ({ 
-                  ...prev, 
-                  mainContact: { ...prev.mainContact, civility: value } 
-                }))}
+                value={formData.membershipPackageId} 
+                onValueChange={(value) => setFormData(prev => ({ ...prev, membershipPackageId: value }))}
               >
-                <SelectTrigger className={shouldShowError('mainContactCivility') ? 'border-red-300 focus:border-red-500' : ''}>
-                  <SelectValue placeholder="Sélectionner" />
+                <SelectTrigger className={shouldShowError('membershipPackageId') ? 'border-red-300 focus:border-red-500' : ''}>
+                  <SelectValue placeholder="Choisir un forfait" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="M.">M.</SelectItem>
-                  <SelectItem value="Mme">Mme</SelectItem>
-                  <SelectItem value="Dr.">Dr.</SelectItem>
-                  <SelectItem value="Prof.">Prof.</SelectItem>
+                  {membershipPackages.map((pkg) => (
+                    <SelectItem key={pkg.id || pkg.ID} value={(pkg.id || pkg.ID)?.toString() || ''}>
+                      {pkg.name || pkg.Name} - ${pkg.annualPrice || pkg.AnnualPrice || 0}/année
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-              {shouldShowError('mainContactCivility') && (
-                <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-              )}
             </div>
+          )}
 
+          {/* Email for billing */}
+          <div className="space-y-4">
+            <h3 className="font-medium text-[#000033]">Courriel de facturation</h3>
+            <div className="space-y-2">
+              <Label htmlFor="emailBilling">Adresse courriel pour la facturation *</Label>
+              <Input
+                id="emailBilling"
+                type="email"
+                value={formData.emailBilling}
+                onChange={(e) => setFormData(prev => ({ ...prev, emailBilling: e.target.value }))}
+                className={shouldShowError('emailBilling') ? 'border-red-300 focus:border-red-500' : ''}
+                placeholder="facturation@votre-entreprise.com"
+              />
+              <p className="text-xs text-gray-500">Cette adresse recevra les factures et rappels de paiement.</p>
+            </div>
+          </div>
+
+          {/* Separate Billing Contact */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg">Contact pour la facturation (optionnel)</h3>
+            <p className="text-sm text-gray-600">Si différent du contact principal, veuillez indiquer les coordonnées du responsable de la facturation.</p>
+            
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="mainContactFirstName">Prénom *</Label>
+                <Label htmlFor="billingContactFirstName">Prénom</Label>
                 <Input
-                  id="mainContactFirstName"
-                  value={formData.mainContact.firstName}
+                  id="billingContactFirstName"
+                  value={formData.billingContact.firstName}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
-                    mainContact: { ...prev.mainContact, firstName: e.target.value } 
+                    billingContact: { ...prev.billingContact, firstName: e.target.value }
                   }))}
-                  className={shouldShowError('mainContactFirstName') ? 'border-red-300 focus:border-red-500' : ''}
                 />
-                {shouldShowError('mainContactFirstName') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mainContactLastName">Nom de famille *</Label>
+                <Label htmlFor="billingContactLastName">Nom</Label>
                 <Input
-                  id="mainContactLastName"
+                  id="billingContactLastName"
+                  value={formData.billingContact.lastName}
+                  onChange={(e) => setFormData(prev => ({ 
+                    ...prev, 
+                    billingContact: { ...prev.billingContact, lastName: e.target.value }
+                  }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="billingContactEmail">Courriel</Label>
+                <Input
+                  id="billingContactEmail"
+                  type="email"
+                  value={formData.billingContact.email}
+                  onChange={(e) => setFormData(prev => ({ 
+                    ...prev, 
+                    billingContact: { ...prev.billingContact, email: e.target.value }
+                  }))}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="billingContactPhone">Téléphone</Label>
+                <Input
+                  id="billingContactPhone"
+                  type="tel"
+                  value={formData.billingContact.phone}
+                  onChange={(e) => setFormData(prev => ({ 
+                    ...prev, 
+                    billingContact: { ...prev.billingContact, phone: e.target.value }
+                  }))}
+                />
+              </div>
+
+              <div className="space-y-2 lg:col-span-2">
+                <Label htmlFor="billingContactDepartment">Département</Label>
+                <Input
+                  id="billingContactDepartment"
+                  value={formData.billingContact.department}
+                  onChange={(e) => setFormData(prev => ({ 
+                    ...prev, 
+                    billingContact: { ...prev.billingContact, department: e.target.value }
+                  }))}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Additional Options */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033]">Options supplémentaires</h3>
+            
+            {/* Auto-renewal option */}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="autoRenewal"
+                checked={formData.autoRenewal}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, autoRenewal: checked as boolean }))}
+              />
+              <Label htmlFor="autoRenewal">Renouvellement automatique (5% de rabais)</Label>
+            </div>
+
+            {/* Sponsorship Options */}
+            <div className="space-y-4">
+              <h4 className="font-medium text-[#43464b]">Options de commandite</h4>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="bronzeSponsorship"
+                    checked={formData.bronzeSponsorship}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, bronzeSponsorship: checked as boolean }))}
+                  />
+                  <Label htmlFor="bronzeSponsorship">Commandite Bronze (+$500)</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="silverSponsorship"
+                    checked={formData.silverSponsorship}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, silverSponsorship: checked as boolean }))}
+                  />
+                  <Label htmlFor="silverSponsorship">Commandite Argent (+$1,500)</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="goldSponsorship"
+                    checked={formData.goldSponsorship}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, goldSponsorship: checked as boolean }))}
+                  />
+                  <Label htmlFor="goldSponsorship">Commandite Or (+$3,000)</Label>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="platinumSponsorship"
+                    checked={formData.platinumSponsorship}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, platinumSponsorship: checked as boolean }))}
+                  />
+                  <Label htmlFor="platinumSponsorship">Commandite Platine (+$5,000)</Label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Method Selection */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#43464b] text-lg">Méthode de paiement</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Cheque Payment Option */}
+              <div 
+                className={`border-2 rounded-lg p-6 cursor-pointer transition-all duration-200 ${
+                  formData.paymentMethod === 'cheque' 
+                    ? 'border-[#000033] bg-[#000033]/5' 
+                    : shouldShowError('paymentMethod') 
+                      ? 'border-red-300' 
+                      : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'cheque' }))}
+              >
+                <div className="flex items-start space-x-4">
+                  <input 
+                    type="radio" 
+                    className="mt-1 w-4 h-4"
+                    checked={formData.paymentMethod === 'cheque'}
+                    onChange={() => {}}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-10 h-10 bg-[#000033]/10 rounded-full flex items-center justify-center">
+                        <CreditCard className="w-5 h-5 text-[#000033]" />
+                      </div>
+                      <h4 className="font-semibold text-[#000033]">Paiement par chèque</h4>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4">
+                      Envoyez votre chèque à l'ordre de l'ASL aux coordonnées suivantes :
+                    </p>
+                    
+                    <div className="bg-white rounded border p-4 space-y-2 text-sm">
+                      <div className="flex items-start space-x-2">
+                        <Building2 className="w-4 h-4 text-[#000033] mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-medium">Association de la Sécurité Logistique</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start space-x-2">
+                        <MapPin className="w-4 h-4 text-[#000033] mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p>1234 Rue du Port</p>
+                          <p>Montréal, QC H3C 2A1</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-4 h-4 text-[#000033] flex-shrink-0" />
+                        <p>(514) 123-4567</p>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Mail className="w-4 h-4 text-[#000033] flex-shrink-0" />
+                        <p>facturation@asl.org</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bank Transfer Option */}
+              <div 
+                className={`border-2 rounded-lg p-6 cursor-pointer transition-all duration-200 ${
+                  formData.paymentMethod === 'transfert' 
+                    ? 'border-[#000033] bg-[#000033]/5' 
+                    : shouldShowError('paymentMethod') 
+                      ? 'border-red-300' 
+                      : 'border-gray-200 hover:border-gray-300'
+                }`}
+                onClick={() => setFormData(prev => ({ ...prev, paymentMethod: 'transfert' }))}
+              >
+                <div className="flex items-start space-x-4">
+                  <input 
+                    type="radio" 
+                    className="mt-1 w-4 h-4"
+                    checked={formData.paymentMethod === 'transfert'}
+                    onChange={() => {}}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center space-x-3 mb-3">
+                      <div className="w-10 h-10 bg-[#000033]/10 rounded-full flex items-center justify-center">
+                        <Banknote className="w-5 h-5 text-[#000033]" />
+                      </div>
+                      <h4 className="font-semibold text-[#000033]">Transfert bancaire</h4>
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 mb-4">
+                      Effectuez votre transfert avec les coordonnées bancaires suivantes :
+                    </p>
+                    
+                    <div className="bg-white rounded border p-4 space-y-2 text-sm">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="font-medium text-gray-600">Banque</p>
+                          <p>Banque Royale du Canada</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-600">Institution</p>
+                          <p>003</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-600">Transit</p>
+                          <p>02471</p>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-600">Compte</p>
+                          <p>1234567</p>
+                        </div>
+                      </div>
+                      <hr className="my-3" />
+                      <div>
+                        <p className="font-medium text-gray-600">Bénéficiaire</p>
+                        <p>Association de la Sécurité Logistique</p>
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-600">Référence</p>
+                        <p>Adhésion - {formData.accountName || '[Nom de l\'entreprise]'}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Payment Summary */}
+          {formData.membershipTypeId && formData.membershipPackageId && (
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-[#43464b] mb-4">Résumé de paiement</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span>Adhésion {membershipTypes.find(t => (t.id?.toString() || t.ID?.toString()) === formData.membershipTypeId)?.name || membershipTypes.find(t => (t.id?.toString() || t.ID?.toString()) === formData.membershipTypeId)?.Name}</span>
+                  <span>
+                    {calculateTotalPrice().basePrice === 0 
+                      ? 'Facturé ultérieurement selon la flotte' 
+                      : `$${calculateTotalPrice().basePrice.toFixed(2)}`}
+                  </span>
+                </div>
+                
+                {calculateTotalPrice().sponsorshipCosts > 0 && (
+                  <div className="flex justify-between">
+                    <span>Options de commandite</span>
+                    <span>+${calculateTotalPrice().sponsorshipCosts.toFixed(2)}</span>
+                  </div>
+                )}
+                
+                {formData.autoRenewal && calculateTotalPrice().discount > 0 && (
+                  <div className="flex justify-between">
+                    <span>Rabais renouvellement automatique (5%)</span>
+                    <span className="text-green-600">-${calculateTotalPrice().discount.toFixed(2)}</span>
+                  </div>
+                )}
+                
+                <hr />
+                <div className="flex justify-between font-bold">
+                  <span>Total à payer</span>
+                  <span>
+                    {calculateTotalPrice().basePrice === 0 && calculateTotalPrice().sponsorshipCosts === 0
+                      ? 'Facturé ultérieurement selon la flotte' 
+                      : `$${calculateTotalPrice().total.toFixed(2)} CAD`}
+                  </span>
+                </div>
+                
+                {/* Payment instructions */}
+                <div className="mt-4 p-3 bg-blue-50 rounded border-l-4 border-blue-400">
+                  <p className="text-sm text-blue-800">
+                    <strong>Important :</strong> 
+                    {calculateTotalPrice().basePrice === 0 && calculateTotalPrice().sponsorshipCosts === 0
+                      ? ' Pour les membres Actifs, la facturation sera effectuée ultérieurement selon la taille de votre flotte.'
+                      : ` Une facture sera émise suite à votre inscription. Aucun paiement n'est requis maintenant.`}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 3: Contact principal - ENRICHI */}
+      {currentStep === 3 && (
+        <div className="space-y-8">
+          <p className="text-[#43464b]">
+            Renseignez les informations du contact principal de votre organisation.
+          </p>
+
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg flex items-center">
+              <Users className="w-5 h-5 mr-2" />
+              Informations du contact principal
+            </h3>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="civility">Civilité *</Label>
+                <Select 
+                  value={formData.mainContact.civility} 
+                  onValueChange={(value) => setFormData(prev => ({ 
+                    ...prev, 
+                    mainContact: { ...prev.mainContact, civility: value }
+                  }))}
+                >
+                  <SelectTrigger className={shouldShowError('mainContactCivility') ? 'border-red-300 focus:border-red-500' : ''}>
+                    <SelectValue placeholder="Sélectionner" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="monsieur">Monsieur</SelectItem>
+                    <SelectItem value="madame">Madame</SelectItem>
+                    <SelectItem value="docteur">Docteur</SelectItem>
+                    <SelectItem value="professeur">Professeur</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="firstName">Prénom *</Label>
+                <Input
+                  id="firstName"
+                  value={formData.mainContact.firstName}
+                  onChange={(e) => setFormData(prev => ({ 
+                    ...prev, 
+                    mainContact: { ...prev.mainContact, firstName: e.target.value }
+                  }))}
+                  className={shouldShowError('mainContactFirstName') ? 'border-red-300 focus:border-red-500' : ''}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Nom *</Label>
+                <Input
+                  id="lastName"
                   value={formData.mainContact.lastName}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
-                    mainContact: { ...prev.mainContact, lastName: e.target.value } 
+                    mainContact: { ...prev.mainContact, lastName: e.target.value }
                   }))}
                   className={shouldShowError('mainContactLastName') ? 'border-red-300 focus:border-red-500' : ''}
                 />
-                {shouldShowError('mainContactLastName') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
               </div>
             </div>
 
@@ -1006,13 +1501,10 @@ export function SignupForm({
                   value={formData.mainContact.email}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
-                    mainContact: { ...prev.mainContact, email: e.target.value } 
+                    mainContact: { ...prev.mainContact, email: e.target.value }
                   }))}
                   className={shouldShowError('mainContactEmail') ? 'border-red-300 focus:border-red-500' : ''}
                 />
-                {shouldShowError('mainContactEmail') && (
-                  <p className="text-sm text-red-600">Ce champ est obligatoire</p>
-                )}
               </div>
 
               <div className="space-y-2">
@@ -1023,7 +1515,7 @@ export function SignupForm({
                   value={formData.mainContact.phone}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
-                    mainContact: { ...prev.mainContact, phone: e.target.value } 
+                    mainContact: { ...prev.mainContact, phone: e.target.value }
                   }))}
                 />
               </div>
@@ -1036,438 +1528,773 @@ export function SignupForm({
                   value={formData.mainContact.cell}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
-                    mainContact: { ...prev.mainContact, cell: e.target.value } 
+                    mainContact: { ...prev.mainContact, cell: e.target.value }
                   }))}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="mainContactJobtitle">Titre / Poste</Label>
+                <Label htmlFor="mainContactJobtitle">Titre du poste</Label>
                 <Input
                   id="mainContactJobtitle"
                   value={formData.mainContact.jobtitle}
                   onChange={(e) => setFormData(prev => ({ 
                     ...prev, 
-                    mainContact: { ...prev.mainContact, jobtitle: e.target.value } 
+                    mainContact: { ...prev.mainContact, jobtitle: e.target.value }
                   }))}
+                  placeholder="Ex: Directeur général, Président, etc."
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="mainContactDepartment">Département / Division</Label>
+              <Label htmlFor="mainContactDepartment">Département</Label>
               <Input
                 id="mainContactDepartment"
                 value={formData.mainContact.department}
                 onChange={(e) => setFormData(prev => ({ 
                   ...prev, 
-                  mainContact: { ...prev.mainContact, department: e.target.value } 
+                  mainContact: { ...prev.mainContact, department: e.target.value }
                 }))}
+                placeholder="Ex: Direction générale, Ressources humaines, etc."
               />
             </div>
+          </div>
 
-            <div className="space-y-3">
-              <Label>Préférences d'affichage sur le site web</Label>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="mainContactShowEmailOnWeb"
-                    checked={formData.mainContact.showEmailOnWeb}
-                    onCheckedChange={(checked) => setFormData(prev => ({ 
-                      ...prev, 
-                      mainContact: { ...prev.mainContact, showEmailOnWeb: checked as boolean } 
-                    }))}
-                  />
-                  <Label htmlFor="mainContactShowEmailOnWeb" className="text-sm cursor-pointer">
-                    Afficher le courriel sur le site web
-                  </Label>
-                </div>
+          {/* Contact Display Preferences */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg">Préférences d'affichage du contact</h3>
+            <p className="text-sm text-gray-600">Choisissez quelles informations du contact principal afficher sur le site web</p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showContactEmailOnWeb"
+                  checked={formData.mainContact.showEmailOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ 
+                    ...prev, 
+                    mainContact: { ...prev.mainContact, showEmailOnWeb: checked as boolean }
+                  }))}
+                />
+                <Label htmlFor="showContactEmailOnWeb">Afficher le courriel du contact</Label>
+              </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="mainContactShowPhoneOnWeb"
-                    checked={formData.mainContact.showPhoneOnWeb}
-                    onCheckedChange={(checked) => setFormData(prev => ({ 
-                      ...prev, 
-                      mainContact: { ...prev.mainContact, showPhoneOnWeb: checked as boolean } 
-                    }))}
-                  />
-                  <Label htmlFor="mainContactShowPhoneOnWeb" className="text-sm cursor-pointer">
-                    Afficher le téléphone sur le site web
-                  </Label>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showContactPhoneOnWeb"
+                  checked={formData.mainContact.showPhoneOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ 
+                    ...prev, 
+                    mainContact: { ...prev.mainContact, showPhoneOnWeb: checked as boolean }
+                  }))}
+                />
+                <Label htmlFor="showContactPhoneOnWeb">Afficher le téléphone du contact</Label>
+              </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="mainContactShowCellphoneOnWeb"
-                    checked={formData.mainContact.showCellphoneOnWeb}
-                    onCheckedChange={(checked) => setFormData(prev => ({ 
-                      ...prev, 
-                      mainContact: { ...prev.mainContact, showCellphoneOnWeb: checked as boolean } 
-                    }))}
-                  />
-                  <Label htmlFor="mainContactShowCellphoneOnWeb" className="text-sm cursor-pointer">
-                    Afficher le cellulaire sur le site web
-                  </Label>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="showContactCellphoneOnWeb"
+                  checked={formData.mainContact.showCellphoneOnWeb}
+                  onCheckedChange={(checked) => setFormData(prev => ({ 
+                    ...prev, 
+                    mainContact: { ...prev.mainContact, showCellphoneOnWeb: checked as boolean }
+                  }))}
+                />
+                <Label htmlFor="showContactCellphoneOnWeb">Afficher le cellulaire du contact</Label>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      {/* Step 4: Délégués */}
+      {/* Step 4: Délégués supplémentaires - ENRICHI */}
       {currentStep === 4 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-[#000033]">
-              <UserPlus className="w-5 h-5 mr-2" />
-              Délégués additionnels
-            </CardTitle>
-            <CardDescription>
-              Ajoutez des délégués qui représenteront votre organisation (optionnel)
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {formData.delegates.length === 0 ? (
-              <div className="text-center py-8">
-                <UserPlus className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-medium mb-2">Aucun délégué ajouté</h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Les délégués peuvent participer aux événements et représenter votre organisation.
-                </p>
-                <Button onClick={addDelegate} variant="outline">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Ajouter un délégué
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {formData.delegates.map((delegate, index) => (
-                  <Card key={index} className="p-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <h4 className="font-medium">Délégué {index + 1}</h4>
-                      <Button
-                        onClick={() => removeDelegate(index)}
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-600 hover:text-red-700"
+        <div className="space-y-8">
+          <div>
+            <p className="text-[#43464b] mb-6">
+              Ajoutez des délégués qui représenteront votre organisation aux événements et activités de l'ASL.
+            </p>
+            
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+              <p className="text-sm text-blue-800">
+                <strong>Facultatif :</strong> Vous pouvez ajouter des délégués maintenant ou plus tard depuis votre espace membre.
+              </p>
+            </div>
+          </div>
+
+          {/* Delegates List */}
+          {formData.delegates.length > 0 && (
+            <div className="space-y-6">
+              <h3 className="font-medium text-[#000033] text-lg flex items-center">
+                <UserPlus className="w-5 h-5 mr-2" />
+                Délégués ajoutés ({formData.delegates.length})
+              </h3>
+              
+              {formData.delegates.map((delegate, index) => (
+                <div key={index} className="border rounded-lg p-6 bg-gray-50">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="font-medium text-[#000033]">Délégué {index + 1}</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => removeDelegate(index)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      Supprimer
+                    </Button>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-civility-${index}`}>Civilité</Label>
+                      <Select 
+                        value={delegate.civility} 
+                        onValueChange={(value) => updateDelegate(index, 'civility', value)}
                       >
-                        <X className="w-4 h-4" />
-                      </Button>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="monsieur">Monsieur</SelectItem>
+                          <SelectItem value="madame">Madame</SelectItem>
+                          <SelectItem value="docteur">Docteur</SelectItem>
+                          <SelectItem value="professeur">Professeur</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
-                    
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                          <Label>Civilité</Label>
-                          <Select
-                            value={delegate.civility}
-                            onValueChange={(value) => updateDelegate(index, 'civility', value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Sélectionner" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="M.">M.</SelectItem>
-                              <SelectItem value="Mme">Mme</SelectItem>
-                              <SelectItem value="Dr.">Dr.</SelectItem>
-                              <SelectItem value="Prof.">Prof.</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Prénom</Label>
-                          <Input
-                            value={delegate.firstName}
-                            onChange={(e) => updateDelegate(index, 'firstName', e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Nom de famille</Label>
-                          <Input
-                            value={delegate.lastName}
-                            onChange={(e) => updateDelegate(index, 'lastName', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>Courriel</Label>
-                          <Input
-                            type="email"
-                            value={delegate.email}
-                            onChange={(e) => updateDelegate(index, 'email', e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Téléphone</Label>
-                          <Input
-                            type="tel"
-                            value={delegate.phone}
-                            onChange={(e) => updateDelegate(index, 'phone', e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Cellulaire</Label>
-                          <Input
-                            type="tel"
-                            value={delegate.cell}
-                            onChange={(e) => updateDelegate(index, 'cell', e.target.value)}
-                          />
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <Label>Titre / Poste</Label>
-                          <Input
-                            value={delegate.jobtitle}
-                            onChange={(e) => updateDelegate(index, 'jobtitle', e.target.value)}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label>Département / Division</Label>
-                        <Input
-                          value={delegate.department}
-                          onChange={(e) => updateDelegate(index, 'department', e.target.value)}
-                        />
-                      </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-firstName-${index}`}>Prénom</Label>
+                      <Input
+                        id={`delegate-firstName-${index}`}
+                        value={delegate.firstName}
+                        onChange={(e) => updateDelegate(index, 'firstName', e.target.value)}
+                      />
                     </div>
-                  </Card>
-                ))}
-                
-                <div className="text-center">
-                  <Button onClick={addDelegate} variant="outline">
-                    <UserPlus className="w-4 h-4 mr-2" />
-                    Ajouter un autre délégué
-                  </Button>
+
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-lastName-${index}`}>Nom</Label>
+                      <Input
+                        id={`delegate-lastName-${index}`}
+                        value={delegate.lastName}
+                        onChange={(e) => updateDelegate(index, 'lastName', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-email-${index}`}>Courriel</Label>
+                      <Input
+                        id={`delegate-email-${index}`}
+                        type="email"
+                        value={delegate.email}
+                        onChange={(e) => updateDelegate(index, 'email', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-phone-${index}`}>Téléphone</Label>
+                      <Input
+                        id={`delegate-phone-${index}`}
+                        type="tel"
+                        value={delegate.phone}
+                        onChange={(e) => updateDelegate(index, 'phone', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-cell-${index}`}>Cellulaire</Label>
+                      <Input
+                        id={`delegate-cell-${index}`}
+                        type="tel"
+                        value={delegate.cell}
+                        onChange={(e) => updateDelegate(index, 'cell', e.target.value)}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor={`delegate-jobtitle-${index}`}>Titre du poste</Label>
+                      <Input
+                        id={`delegate-jobtitle-${index}`}
+                        value={delegate.jobtitle}
+                        onChange={(e) => updateDelegate(index, 'jobtitle', e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`delegate-department-${index}`}>Département</Label>
+                    <Input
+                      id={`delegate-department-${index}`}
+                      value={delegate.department}
+                      onChange={(e) => updateDelegate(index, 'department', e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              ))}
+            </div>
+          )}
+
+          {/* Add Delegate Button */}
+          <div className="text-center">
+            <Button 
+              variant="outline" 
+              onClick={addDelegate}
+              className="w-full lg:w-auto"
+            >
+              <UserPlus className="w-4 h-4 mr-2" />
+              Ajouter un délégué
+            </Button>
+          </div>
+
+          {formData.delegates.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              <UserPlus className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+              <p>Aucun délégué ajouté pour le moment</p>
+              <p className="text-sm">Cliquez sur le bouton ci-dessus pour ajouter votre premier délégué</p>
+            </div>
+          )}
+        </div>
       )}
 
-      {/* Step 5: Événements */}
+      {/* Step 5: Événements et activités - NOUVELLE ÉTAPE */}
       {currentStep === 5 && hasActiveEvents && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-[#000033]">
+        <div className="space-y-8">
+          <div>
+            <p className="text-[#43464b] mb-6">
+              Découvrez les événements et activités à venir de l'ASL. Inscrivez-vous dès maintenant pour réserver vos places.
+            </p>
+            
+            <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+              <p className="text-sm text-blue-800">
+                <strong>Optionnel :</strong> L'inscription aux événements est facultative. Vous pourrez également vous inscrire plus tard depuis votre espace membre.
+              </p>
+            </div>
+          </div>
+
+          {/* Events List */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg flex items-center">
               <CalendarDays className="w-5 h-5 mr-2" />
-              Événements disponibles
-            </CardTitle>
-            <CardDescription>
-              Sélectionnez les événements auxquels vous souhaitez participer (optionnel)
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {events.length === 0 ? (
-              <div className="text-center py-8">
-                <Calendar className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-medium mb-2">Aucun événement disponible</h3>
-                <p className="text-sm text-muted-foreground">
-                  Il n'y a actuellement aucun événement ouvert aux inscriptions.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {events.map((event) => {
-                  const eventId = (event.id || event.ID)?.toString() || '';
-                  const isSelected = isEventSelected(eventId);
-                  const selectedEvent = formData.selectedEvents.find(e => e.eventId === eventId);
-                  
-                  return (
-                    <Card key={eventId} className={`p-4 ${isSelected ? 'border-blue-500 bg-blue-50' : ''}`}>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-3 mb-2">
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  addEventSelection(eventId);
-                                } else {
-                                  removeEventSelection(eventId);
-                                }
-                              }}
-                            />
-                            <div>
-                              <h4 className="font-medium">{event.name || event.Name}</h4>
-                              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                                <span className="flex items-center">
-                                  <Calendar className="w-4 h-4 mr-1" />
-                                  {new Date(event.date || event.Date || event.StartTime || '').toLocaleDateString('fr-CA')}
-                                </span>
-                                <span className="flex items-center">
-                                  <MapPinIcon className="w-4 h-4 mr-1" />
-                                  {event.venue || event.Venue || event.location || event.Location}
-                                </span>
-                                {(event.price || event.Price) && (
-                                  <span className="flex items-center">
-                                    <DollarSign className="w-4 h-4 mr-1" />
-                                    {(event.price || event.Price)?.toLocaleString('fr-CA')} $
-                                  </span>
-                                )}
+              Événements disponibles ({events.length})
+            </h3>
+            
+            {events.length > 0 ? (
+              <div>
+                <div className="mb-4 p-4 bg-blue-50 border-l-4 border-blue-400">
+                  <p className="text-sm text-blue-800">
+                    <strong>Événements chargés via l'API Membri 365 :</strong> {events.length} événement{events.length > 1 ? 's' : ''} disponible{events.length > 1 ? 's' : ''}.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {events.map((event) => {
+                    const eventId = (event.id || event.ID)?.toString() || '';
+                    const eventName = event.name || event.Name || '';
+                    const eventDescription = event.description || event.Description || '';
+                    const eventDate = event.date || event.Date || '';
+                    const eventLocation = event.location || event.Location || '';
+                    const eventPrice = event.price || event.Price || 0;
+                    const eventCapacity = event.capacity || event.Capacity || 0;
+                    const registeredCount = event.registeredCount || event.RegisteredCount || 0;
+                    const category = event.category || event.Category || 'Événement';
+                    const isSelected = isEventSelected(eventId);
+                    const selectedEvent = formData.selectedEvents.find(e => e.eventId === eventId);
+                    const spotsLeft = eventCapacity - registeredCount;
+
+                    return (
+                      <div 
+                        key={eventId}
+                        className={`relative rounded-lg border-2 p-6 transition-all duration-200 ${
+                          isSelected 
+                            ? 'border-[#000033] bg-[#000033]/5' 
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        {/* Event Category Badge */}
+                        <div className="absolute top-4 right-4">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#000033] text-white">
+                            {category}
+                          </span>
+                        </div>
+
+                        <div className="mb-4">
+                          <h4 className="font-bold text-xl text-[#000033] mb-2 pr-20">{eventName}</h4>
+                          <p className="text-[#43464b] text-sm mb-4">{eventDescription}</p>
+                          
+                          {/* Event Details */}
+                          <div className="space-y-2 text-sm">
+                            {eventDate && (
+                              <div className="flex items-center text-gray-600">
+                                <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
+                                <span>{new Date(eventDate).toLocaleDateString('fr-CA', { 
+                                  year: 'numeric', 
+                                  month: 'long', 
+                                  day: 'numeric' 
+                                })}</span>
                               </div>
+                            )}
+                            
+                            {eventLocation && (
+                              <div className="flex items-center text-gray-600">
+                                <MapPinIcon className="w-4 h-4 mr-2 flex-shrink-0" />
+                                <span>{eventLocation}</span>
+                              </div>
+                            )}
+                            
+                            <div className="flex items-center text-gray-600">
+                              <DollarSign className="w-4 h-4 mr-2 flex-shrink-0" />
+                              <span>{eventPrice > 0 ? `${eventPrice} $ CAD par personne` : 'Gratuit'}</span>
                             </div>
+                            
+                            {eventCapacity > 0 && (
+                              <div className="flex items-center text-gray-600">
+                                <Users className="w-4 h-4 mr-2 flex-shrink-0" />
+                                <span>
+                                  {spotsLeft > 0 
+                                    ? `${spotsLeft} places disponibles sur ${eventCapacity}`
+                                    : 'Complet'
+                                  }
+                                </span>
+                              </div>
+                            )}
                           </div>
-                          
-                          {(event.description || event.Description) && (
-                            <p className="text-sm text-gray-600 mb-3 ml-6">
-                              {event.description || event.Description}
-                            </p>
-                          )}
-                          
-                          {isSelected && (
-                            <div className="ml-6 space-y-3">
-                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                  <Label>Nombre de participants</Label>
+                        </div>
+
+                        {/* Selection Controls */}
+                        <div className="space-y-4">
+                          {!isSelected ? (
+                            <Button 
+                              variant="outline" 
+                              className="w-full"
+                              onClick={() => addEventSelection(eventId)}
+                              disabled={spotsLeft <= 0}
+                            >
+                              {spotsLeft <= 0 ? 'Complet' : 'S\'inscrire à cet événement'}
+                            </Button>
+                          ) : (
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                <div className="flex items-center">
+                                  <Check className="w-4 h-4 text-green-600 mr-2" />
+                                  <span className="text-sm font-medium text-green-800">Inscrit à cet événement</span>
+                                </div>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removeEventSelection(eventId)}
+                                  className="text-red-600 hover:text-red-700"
+                                >
+                                  <X className="w-4 h-4" />
+                                </Button>
+                              </div>
+
+                              {/* Attendee Count */}
+                              <div className="space-y-2">
+                                <Label htmlFor={`attendees-${eventId}`}>Nombre de participants</Label>
+                                <div className="flex items-center space-x-2">
                                   <Input
+                                    id={`attendees-${eventId}`}
                                     type="number"
                                     min="1"
+                                    max={spotsLeft + (selectedEvent?.attendeeCount || 0)}
                                     value={selectedEvent?.attendeeCount || 1}
                                     onChange={(e) => updateEventSelection(eventId, 'attendeeCount', parseInt(e.target.value) || 1)}
+                                    className="w-20"
                                   />
+                                  <span className="text-sm text-gray-500">
+                                    participant{(selectedEvent?.attendeeCount || 1) > 1 ? 's' : ''}
+                                  </span>
                                 </div>
+                                {eventPrice > 0 && (
+                                  <p className="text-xs text-gray-600">
+                                    Coût total: {eventPrice * (selectedEvent?.attendeeCount || 1)} $ CAD
+                                  </p>
+                                )}
                               </div>
-                              
+
+                              {/* Special Requests */}
                               <div className="space-y-2">
-                                <Label>Demandes spéciales (optionnel)</Label>
+                                <Label htmlFor={`requests-${eventId}`}>Demandes spéciales (optionnel)</Label>
                                 <Textarea
+                                  id={`requests-${eventId}`}
                                   value={selectedEvent?.specialRequests || ''}
                                   onChange={(e) => updateEventSelection(eventId, 'specialRequests', e.target.value)}
-                                  placeholder="Allergies, besoins spéciaux, etc."
                                   rows={2}
+                                  placeholder="Allergies alimentaires, besoins d'accessibilité, etc."
+                                  className="text-sm"
                                 />
                               </div>
                             </div>
                           )}
                         </div>
                       </div>
-                    </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <CalendarDays className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                <p>Aucun événement disponible pour le moment</p>
+                <p className="text-sm">De nouveaux événements seront ajoutés régulièrement</p>
+              </div>
+            )}
+          </div>
+
+          {/* Selected Events Summary */}
+          {formData.selectedEvents.length > 0 && (
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-[#000033] mb-4">
+                Résumé de vos inscriptions ({formData.selectedEvents.length})
+              </h3>
+              <div className="space-y-3">
+                {formData.selectedEvents.map((selectedEvent) => {
+                  const event = events.find(e => (e.id?.toString() || e.ID?.toString()) === selectedEvent.eventId);
+                  if (!event) return null;
+                  
+                  const eventName = event.name || event.Name || '';
+                  const eventPrice = event.price || event.Price || 0;
+                  const totalCost = eventPrice * selectedEvent.attendeeCount;
+
+                  return (
+                    <div key={selectedEvent.eventId} className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium">{eventName}</p>
+                        <p className="text-sm text-gray-600">
+                          {selectedEvent.attendeeCount} participant{selectedEvent.attendeeCount > 1 ? 's' : ''}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium">
+                          {totalCost > 0 ? `${totalCost} $ CAD` : 'Gratuit'}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+                
+                <hr className="my-3" />
+                <div className="flex justify-between items-center font-semibold">
+                  <span>Total événements:</span>
+                  <span>
+                    {calculateTotalPrice().eventCosts > 0 
+                      ? `${calculateTotalPrice().eventCosts} $ CAD` 
+                      : 'Gratuit'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Step 6: Revue et soumission - ENRICHI (ou Step 5 si pas d'événements) */}
+      {((currentStep === 6 && hasActiveEvents) || (currentStep === 5 && !hasActiveEvents)) && (
+        <div className="space-y-8">
+          <p className="text-[#43464b]">
+            Vérifiez vos informations et finalisez votre demande d'adhésion.
+          </p>
+
+          {/* Organization Summary */}
+          <div className="bg-gray-50 rounded-lg p-6">
+            <h3 className="font-medium text-[#000033] mb-4 flex items-center">
+              <Building2 className="w-5 h-5 mr-2" />
+              Informations de l'organisation
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p><strong>Nom:</strong> {formData.accountName}</p>
+                <p><strong>Adresse:</strong> {formData.address}</p>
+                {formData.addressLine2 && <p><strong>Adresse 2:</strong> {formData.addressLine2}</p>}
+                <p><strong>Ville:</strong> {cities.find(c => (c.id?.toString() || c.ID?.toString()) === formData.cityId)?.name || cities.find(c => (c.id?.toString() || c.ID?.toString()) === formData.cityId)?.Name}</p>
+                <p><strong>Province:</strong> {provinces.find(p => (p.id?.toString() || p.ID?.toString()) === formData.provinceId)?.name || provinces.find(p => (p.id?.toString() || p.ID?.toString()) === formData.provinceId)?.Name}</p>
+                <p><strong>Code postal:</strong> {formData.postalCode}</p>
+                {formData.neq && <p><strong>NEQ:</strong> {formData.neq}</p>}
+              </div>
+              <div>
+                <p><strong>Courriel:</strong> {formData.email}</p>
+                <p><strong>Téléphone:</strong> {formData.phone}</p>
+                {formData.fax && <p><strong>Télécopieur:</strong> {formData.fax}</p>}
+                {formData.website && <p><strong>Site web:</strong> {formData.website}</p>}
+                {formData.yearFounded && <p><strong>Année de fondation:</strong> {formData.yearFounded}</p>}
+                {formData.employeeCount && <p><strong>Nombre d'employés:</strong> {formData.employeeCount}</p>}
+                {formData.sectorId && <p><strong>Secteur:</strong> {sectors.find(s => (s.id?.toString() || s.ID?.toString()) === formData.sectorId)?.name || sectors.find(s => (s.id?.toString() || s.ID?.toString()) === formData.sectorId)?.Name}</p>}
+              </div>
+            </div>
+            {formData.description && (
+              <div className="mt-4">
+                <p><strong>Description:</strong></p>
+                <p className="text-gray-600 mt-1">{formData.description}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Social Media Summary */}
+          {(formData.facebook || formData.linkedin || formData.twitter || formData.instagram) && (
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-[#000033] mb-4 flex items-center">
+                <Globe className="w-5 h-5 mr-2" />
+                Réseaux sociaux
+              </h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 text-sm">
+                {formData.facebook && <p><strong>Facebook:</strong> {formData.facebook}</p>}
+                {formData.linkedin && <p><strong>LinkedIn:</strong> {formData.linkedin}</p>}
+                {formData.twitter && <p><strong>Twitter:</strong> {formData.twitter}</p>}
+                {formData.instagram && <p><strong>Instagram:</strong> {formData.instagram}</p>}
+              </div>
+            </div>
+          )}
+
+          {/* Contact Summary */}
+          <div className="bg-gray-50 rounded-lg p-6">
+            <h3 className="font-medium text-[#000033] mb-4 flex items-center">
+              <Users className="w-5 h-5 mr-2" />
+              Contact principal
+            </h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+              <div>
+                <p><strong>Nom complet:</strong> {formData.mainContact.civility} {formData.mainContact.firstName} {formData.mainContact.lastName}</p>
+                <p><strong>Courriel:</strong> {formData.mainContact.email}</p>
+                {formData.mainContact.phone && <p><strong>Téléphone:</strong> {formData.mainContact.phone}</p>}
+                {formData.mainContact.cell && <p><strong>Cellulaire:</strong> {formData.mainContact.cell}</p>}
+              </div>
+              <div>
+                {formData.mainContact.jobtitle && <p><strong>Titre:</strong> {formData.mainContact.jobtitle}</p>}
+                {formData.mainContact.department && <p><strong>Département:</strong> {formData.mainContact.department}</p>}
+              </div>
+            </div>
+          </div>
+
+          {/* Billing Contact Summary */}
+          {(formData.billingContact.firstName || formData.billingContact.lastName || formData.billingContact.email) && (
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-[#000033] mb-4">Contact de facturation</h3>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 text-sm">
+                <div>
+                  {(formData.billingContact.firstName || formData.billingContact.lastName) && (
+                    <p><strong>Nom:</strong> {formData.billingContact.firstName} {formData.billingContact.lastName}</p>
+                  )}
+                  {formData.billingContact.email && <p><strong>Courriel:</strong> {formData.billingContact.email}</p>}
+                </div>
+                <div>
+                  {formData.billingContact.phone && <p><strong>Téléphone:</strong> {formData.billingContact.phone}</p>}
+                  {formData.billingContact.department && <p><strong>Département:</strong> {formData.billingContact.department}</p>}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Delegates Summary */}
+          {formData.delegates.length > 0 && (
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-[#000033] mb-4">Délégués ({formData.delegates.length})</h3>
+              <div className="space-y-3">
+                {formData.delegates.map((delegate, index) => (
+                  <div key={index} className="bg-white rounded p-3">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-2 text-sm">
+                      <div>
+                        <p><strong>Nom:</strong> {delegate.civility} {delegate.firstName} {delegate.lastName}</p>
+                        <p><strong>Courriel:</strong> {delegate.email}</p>
+                      </div>
+                      <div>
+                        {delegate.jobtitle && <p><strong>Titre:</strong> {delegate.jobtitle}</p>}
+                        {delegate.department && <p><strong>Département:</strong> {delegate.department}</p>}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Selected Events Summary (if any) */}
+          {hasActiveEvents && formData.selectedEvents.length > 0 && (
+            <div className="bg-gray-50 rounded-lg p-6">
+              <h3 className="font-medium text-[#000033] mb-4 flex items-center">
+                <CalendarDays className="w-5 h-5 mr-2" />
+                Événements sélectionnés ({formData.selectedEvents.length})
+              </h3>
+              <div className="space-y-3">
+                {formData.selectedEvents.map((selectedEvent) => {
+                  const event = events.find(e => (e.id?.toString() || e.ID?.toString()) === selectedEvent.eventId);
+                  if (!event) return null;
+                  
+                  const eventName = event.name || event.Name || '';
+                  const eventPrice = event.price || event.Price || 0;
+                  const totalCost = eventPrice * selectedEvent.attendeeCount;
+
+                  return (
+                    <div key={selectedEvent.eventId} className="bg-white rounded p-3">
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <p className="font-medium">{eventName}</p>
+                          <p className="text-sm text-gray-600">
+                            {selectedEvent.attendeeCount} participant{selectedEvent.attendeeCount > 1 ? 's' : ''}
+                          </p>
+                          {selectedEvent.specialRequests && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              <strong>Demandes spéciales:</strong> {selectedEvent.specialRequests}
+                            </p>
+                          )}
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium">
+                            {totalCost > 0 ? `${totalCost} $ CAD` : 'Gratuit'}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   );
                 })}
               </div>
-            )}
-          </CardContent>
-        </Card>
-      )}
+            </div>
+          )}
 
-      {/* Step 6 ou Step 5 (si pas d'événements): Confirmation finale */}
-      {(currentStep === 6 || (currentStep === 5 && !hasActiveEvents)) && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center text-[#000033]">
-              <Check className="w-5 h-5 mr-2" />
-              Confirmation et consentements
-            </CardTitle>
-            <CardDescription>
-              Veuillez confirmer votre demande d'adhésion
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium mb-3">Résumé de votre demande</h4>
+          {/* Membership Summary */}
+          <div className="bg-gray-50 rounded-lg p-6">
+            <div className="space-y-3">
+              <h4 className="font-medium text-[#000033]">Adhésion sélectionnée</h4>
+              <div className="flex justify-between">
+                <span>Type d'adhésion:</span>
+                <span className="font-medium">
+                  {membershipTypes.find(t => (t.id?.toString() || t.ID?.toString()) === formData.membershipTypeId)?.name || membershipTypes.find(t => (t.id?.toString() || t.ID?.toString()) === formData.membershipTypeId)?.Name}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Méthode de paiement:</span>
+                <span className="font-medium">
+                  {formData.paymentMethod === 'cheque' ? 'Chèque' : formData.paymentMethod === 'transfert' ? 'Transfert bancaire' : 'Non sélectionnée'}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span>Courriel de facturation:</span>
+                <span className="font-medium">{formData.emailBilling}</span>
+              </div>
+              
+              {/* Detailed breakdown */}
+              <hr />
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span>Organisation:</span>
-                  <span className="font-medium">{formData.accountName}</span>
+                  <span>Adhésion annuelle:</span>
+                  <span>
+                    {calculateTotalPrice().basePrice === 0 
+                      ? 'Facturé selon flotte' 
+                      : `${calculateTotalPrice().basePrice.toFixed(2)} $ CAD`}
+                  </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Type d'adhésion:</span>
-                  <span>{membershipTypes.find(t => (t.id || t.ID)?.toString() === formData.membershipTypeId)?.name || membershipTypes.find(t => (t.id || t.ID)?.toString() === formData.membershipTypeId)?.Name}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Contact principal:</span>
-                  <span>{formData.mainContact.firstName} {formData.mainContact.lastName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Délégués:</span>
-                  <span>{formData.delegates.length}</span>
-                </div>
-                {formData.selectedEvents.length > 0 && (
+                
+                {calculateTotalPrice().sponsorshipCosts > 0 && (
                   <div className="flex justify-between">
-                    <span>Événements sélectionnés:</span>
-                    <span>{formData.selectedEvents.length}</span>
+                    <span>Commandites:</span>
+                    <span>+${calculateTotalPrice().sponsorshipCosts.toFixed(2)} $ CAD</span>
+                  </div>
+                )}
+                
+                {hasActiveEvents && calculateTotalPrice().eventCosts > 0 && (
+                  <div className="flex justify-between">
+                    <span>Événements:</span>
+                    <span>+${calculateTotalPrice().eventCosts.toFixed(2)} $ CAD</span>
+                  </div>
+                )}
+                
+                {formData.autoRenewal && calculateTotalPrice().discount > 0 && (
+                  <div className="flex justify-between text-green-600">
+                    <span>Rabais auto-renouvellement (5%):</span>
+                    <span>-${calculateTotalPrice().discount.toFixed(2)} $ CAD</span>
                   </div>
                 )}
               </div>
+              
+              <hr />
+              <div className="flex justify-between font-semibold text-lg">
+                <span>Total à payer:</span>
+                <span className="text-[#000033]">
+                  {calculateTotalPrice().basePrice === 0 && calculateTotalPrice().sponsorshipCosts === 0 && calculateTotalPrice().eventCosts === 0
+                    ? 'Facturé ultérieurement selon la flotte' 
+                    : `${calculateTotalPrice().total.toFixed(2)} $ CAD`}
+                </span>
+              </div>
             </div>
+          </div>
 
+          {/* Final Consent and Preferences */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-[#000033] text-lg">Consentements et préférences</h3>
+            
             <div className="space-y-4">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-start space-x-3">
                 <Checkbox
                   id="finalConsent"
                   checked={formData.finalConsent}
                   onCheckedChange={(checked) => setFormData(prev => ({ ...prev, finalConsent: checked as boolean }))}
                   className={shouldShowError('finalConsent') ? 'border-red-300' : ''}
                 />
-                <Label htmlFor="finalConsent" className="text-sm cursor-pointer">
-                  Je confirme que toutes les informations fournies sont exactes et complètes. 
-                  J'accepte les termes et conditions d'adhésion des Armateurs du Saint-Laurent. *
-                </Label>
+                <div className="space-y-1">
+                  <Label 
+                    htmlFor="finalConsent" 
+                    className={`text-sm leading-relaxed ${shouldShowError('finalConsent') ? 'text-red-600' : ''}`}
+                  >
+                    J'accepte les termes et conditions d'adhésion à l'ASL et je confirme l'exactitude des informations fournies. *
+                  </Label>
+                </div>
               </div>
-              {shouldShowError('finalConsent') && (
-                <p className="text-sm text-red-600 ml-6">Ce consentement est obligatoire</p>
-              )}
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-start space-x-3">
                 <Checkbox
                   id="marketingConsent"
                   checked={formData.marketingConsent}
                   onCheckedChange={(checked) => setFormData(prev => ({ ...prev, marketingConsent: checked as boolean }))}
                 />
-                <Label htmlFor="marketingConsent" className="text-sm cursor-pointer">
-                  J'accepte de recevoir des communications marketing de la part des Armateurs du Saint-Laurent
-                </Label>
+                <div className="space-y-1">
+                  <Label htmlFor="marketingConsent" className="text-sm leading-relaxed">
+                    J'accepte de recevoir des communications marketing de l'ASL (événements, promotions, nouvelles)
+                  </Label>
+                </div>
               </div>
 
-              <div className="flex items-center space-x-2">
+              <div className="flex items-start space-x-3">
                 <Checkbox
                   id="newsletterSubscription"
                   checked={formData.newsletterSubscription}
                   onCheckedChange={(checked) => setFormData(prev => ({ ...prev, newsletterSubscription: checked as boolean }))}
                 />
-                <Label htmlFor="newsletterSubscription" className="text-sm cursor-pointer">
-                  Je souhaite m'abonner à l'infolettre des Armateurs du Saint-Laurent
-                </Label>
+                <div className="space-y-1">
+                  <Label htmlFor="newsletterSubscription" className="text-sm leading-relaxed">
+                    Je souhaite m'abonner au bulletin d'information de l'ASL
+                  </Label>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      {/* Navigation buttons */}
+      {/* Navigation Buttons */}
       <div className="flex justify-between pt-6 border-t">
-        <Button
+        <Button 
+          variant="outline" 
           onClick={goToPreviousStep}
-          variant="outline"
           disabled={currentStep === 1}
         >
-          Précédent
+          Étape précédente
         </Button>
 
-        <Button
+        <Button 
           onClick={goToNextStep}
           disabled={isSubmitting}
-          className="bg-[#000033] hover:bg-[#000033]/90"
+          className="min-w-[150px]"
         >
           {isSubmitting ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Soumission en cours...
+              Traitement...
             </>
-          ) : isLastStep ? (
+          ) : currentStep === maxSteps ? (
             'Finaliser l\'inscription'
           ) : (
-            'Suivant'
+            'Étape suivante'
           )}
         </Button>
       </div>

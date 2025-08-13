@@ -49,7 +49,7 @@ import {
   getContactInfo, 
   getConversationTitle, 
   getConversationAvatar 
-} from './utils/messaging-utils.tsx';
+} from './utils/messaging-utils';
 
 export function MessagingSystem({ 
   currentUser, 

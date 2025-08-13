@@ -1,6 +1,6 @@
 import { Card, CardContent } from '../../ui/card';
 import { MemberHighlight } from '../types/portal-types';
-import { getHighlightIcon } from '../utils/portal-utils.tsx';
+import { getHighlightIcon } from '../utils/portal-utils';
 
 interface DashboardHighlightsProps {
   highlights: MemberHighlight[];

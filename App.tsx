@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from "./utils/authContext";
 import { membriApi } from "./utils/membriApi";
 import { AppRouter } from "./components/AppRouter";
 import { AuthLoadingScreen, SystemLoadingScreen } from "./components/LoadingScreens";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { getStepTitles, PAGES_NEEDING_SYSTEM_READY } from "./utils/app-constants";
 import { createInitialFormData, type AppView, type FormData } from "./utils/form-types";
 import { getStepStatus, allStepsCompleted } from "./utils/form-validation";
@@ -12,6 +13,7 @@ function AppContent() {
   const [currentView, setCurrentView] = useState<AppView>('website');
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
   
+  // États pour le processus d'inscription
   const [currentStep, setCurrentStep] = useState(1);
   const [visitedSteps, setVisitedSteps] = useState<number[]>([1]);
   const [stepChangeKey, setStepChangeKey] = useState(0);
@@ -23,14 +25,17 @@ function AppContent() {
   const [isSystemReady, setIsSystemReady] = useState(false);
   const [formData, setFormData] = useState<FormData>(createInitialFormData());
 
+  // Ref to track if component is mounted
   const isMountedRef = useRef(true);
 
+  // Cleanup effect
   useEffect(() => {
     return () => {
       isMountedRef.current = false;
     };
   }, []);
 
+  // Déterminer la vue initiale
   useEffect(() => {
     if (!authLoading) {
       if (isAuthenticated) {
@@ -45,45 +50,40 @@ function AppContent() {
     }
   }, [isAuthenticated, authLoading]);
 
+  // Initialize system
   useEffect(() => {
-    const initializeSystem = async () => {
+    const initializeSystem = () => {
       try {
+        console.log("🚀 Initialisation système Armateurs du Saint-Laurent (mode sécurisé)...");
+
         const config = membriApi.getConfig();
         if (isMountedRef.current) {
           setSystemConfig(config);
         }
 
-        let connectionTest = false;
-        let status: "demo" | "connected" = "demo";
-        
-        try {
-          connectionTest = await membriApi.testConnection();
-          if (connectionTest) {
-            status = "connected";
-          }
-        } catch (error) {
-          // Fallback to demo mode
-        }
-
-        let eventsAvailable = false;
-        try {
-          const events = await membriApi.fetchActiveEvents();
-          if (events && Array.isArray(events)) {
-            eventsAvailable = events.length > 0;
-          } else {
-            eventsAvailable = true;
-          }
-        } catch (error) {
-          eventsAvailable = true;
-        }
+        const isDemoMode = membriApi.isUsingDemoMode();
+        const status: "demo" | "connected" = isDemoMode ? "demo" : "connected";
         
         if (isMountedRef.current) {
           setApiStatus(status);
-          setHasActiveEvents(eventsAvailable);
-          setMaxSteps(eventsAvailable ? 6 : 5);
+          setHasActiveEvents(true);
+          setMaxSteps(6);
+
+          console.log(`✅ Système initialisé (mode sécurisé):`, {
+            mode: config.mode,
+            environment: config.environment,
+            status: status,
+            events: 5,
+            steps: 6,
+            hostname: config.hostname,
+            offline: config.forceOffline || false
+          });
+
           setIsSystemReady(true);
         }
       } catch (error) {
+        console.warn("Avertissement initialisation (fallback garanti):", error);
+
         if (isMountedRef.current) {
           setApiStatus("demo");
           setHasActiveEvents(true);
@@ -102,6 +102,7 @@ function AppContent() {
     initializeSystem();
   }, []);
 
+  // Handle initial load animation
   useEffect(() => {
     const timer = setTimeout(() => {
       if (isMountedRef.current) {
@@ -112,8 +113,10 @@ function AppContent() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Generate step titles
   const stepTitles = getStepTitles(hasActiveEvents || false);
 
+  // Handle step change
   const handleStepChange = (newStep: number) => {
     if (newStep >= 1 && newStep <= maxSteps && newStep !== currentStep) {
       setCurrentStep(newStep);
@@ -125,12 +128,15 @@ function AppContent() {
     }
   };
 
+  // Step status function
   const getStepStatusFn = (stepId: number) => 
     getStepStatus(stepId, currentStep, formData, visitedSteps, hasActiveEvents || false);
 
+  // All steps completed function
   const allStepsCompletedFn = () => 
     allStepsCompleted(maxSteps, currentStep, formData, visitedSteps, hasActiveEvents || false);
 
+  // Navigation handlers - Maintenant complets avec toutes les pages
   const navigationHandlers = {
     onNavigateToWebsite: () => {
       setCurrentView('website');
@@ -175,10 +181,6 @@ function AppContent() {
     onNavigateToSignup: () => {
       setCurrentView('signup');
       setSelectedMemberId(null);
-      setFormData(createInitialFormData());
-      setCurrentStep(1);
-      setVisitedSteps([1]);
-      setStepChangeKey(prev => prev + 1);
     },
     onNavigateToLogin: () => {
       setCurrentView('login');
@@ -206,14 +208,17 @@ function AppContent() {
     }
   };
 
+  // Show loading state during auth check
   if (authLoading) {
     return <AuthLoadingScreen />;
   }
 
+  // Show system loading for pages that need API data
   if (PAGES_NEEDING_SYSTEM_READY.includes(currentView) && !isSystemReady) {
     return <SystemLoadingScreen currentView={currentView} systemConfig={systemConfig} />;
   }
 
+  // Render the appropriate view
   return (
     <AppRouter 
       currentView={currentView}
@@ -228,16 +233,18 @@ function AppContent() {
       handleStepChange={handleStepChange}
       getStepStatus={getStepStatusFn}
       allStepsCompleted={allStepsCompletedFn}
-      isDevelopment={membriApi.isInDevelopment()}
       visitedSteps={visitedSteps}
+      isDevelopment={membriApi.isInDevelopment()}
     />
   );
 }
 
 export default function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }

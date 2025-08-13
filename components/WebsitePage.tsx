@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { ChevronLeft, ChevronRight, Play, ArrowRight, MapPin, Clock, Calendar, Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
@@ -7,6 +7,7 @@ import { Card, CardContent } from "./ui/card";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { HeroPageLayout } from "./PageLayout";
 import { membriApi } from "../utils/membriApi";
+import { toast } from "sonner@2.0.3";
 
 // Import des composants et assets Figma
 import svgPaths from "../imports/svg-xevomu9hph";
@@ -77,8 +78,8 @@ const MEMBER_PHOTOS_POOL = [
 // Images pour les logos des membres
 const MEMBER_IMAGES = [
   imgImg5, imgImg6, imgImg7, imgImg8, imgImg9, imgImg10, imgImg11, imgImg12,
-  imgImg13, imgImg14, imgImg15, imgImg16, imgImg17, imgImg18, imgImg5, imgImg6,
-  imgImg7, imgImg8
+  imgImg5, imgImg6, imgImg7, imgImg8, imgImg9, imgImg10, imgImg11, imgImg12,
+  imgImg5, imgImg6
 ];
 
 // Couleurs pour les cartes des membres
@@ -101,7 +102,7 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
   const [randomMemberPhotos] = useState(() => getRandomMemberPhotos());
 
   return (
-    <section className="relative h-[800px] flex items-center overflow-hidden">
+    <section className="relative min-h-[100vh] sm:min-h-[80vh] lg:h-[800px] flex items-center overflow-hidden">
       {/* Background avec animation */}
       <motion.div 
         className="absolute inset-0"
@@ -122,25 +123,24 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 w-full">
-        <div className="max-w-7xl mx-auto px-8">
+      <div className="relative z-10 w-full pt-20 sm:pt-24 lg:pt-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl">
             {/* Title avec photos de membres */}
-            <div className="mb-8">
-              <div className="flex items-center gap-8 mb-6">
+            <div className="mb-6 sm:mb-8">
+              <div className="flex items-center gap-3 sm:gap-4 lg:gap-8 mb-4 sm:mb-6">
                 <motion.h1 
-                  className="text-8xl font-serif leading-none text-white font-normal" 
+                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif leading-tight lg:leading-none text-white font-normal flex-shrink-0" 
                   style={{ fontFamily: 'Playfair Display' }}
                   initial={{ x: -100, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ duration: 1, delay: 0.3, type: "spring", stiffness: 100 }}
                 >
-                  La Force
+                La Force
                 </motion.h1>
-                
-                {/* 3 photos de membres avec animations */}
-                <motion.div 
-                  className="flex -space-x-4"
+             
+    <motion.div 
+                  className="flex -space-x-2 sm:-space-x-4 flex-shrink-0"
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.8 }}
@@ -148,7 +148,7 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
                   {randomMemberPhotos.map((photo, index) => (
                     <motion.div
                       key={index}
-                      className="w-20 h-20 rounded-full border-2 border-white bg-cover bg-center shadow-xl"
+                      className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full border-2 border-white bg-cover bg-center shadow-xl"
                       style={{ backgroundImage: `url('${photo}')` }}
                       initial={{ scale: 0, rotate: 180 }}
                       animate={{ scale: 1, rotate: 0 }}
@@ -165,7 +165,7 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
               </div>
               
               <motion.h2 
-                className="text-8xl font-serif leading-none mb-4 text-white font-normal" 
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-serif leading-tight lg:leading-none mb-2 sm:mb-4 text-white font-normal whitespace-nowrap" 
                 style={{ fontFamily: 'Playfair Display' }}
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -175,7 +175,7 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
               </motion.h2>
               
               <motion.h3 
-                className="text-5xl font-serif leading-none mb-8 text-gray-100 font-normal" 
+                className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif leading-tight mb-6 sm:mb-8 text-gray-100 font-normal" 
                 style={{ fontFamily: 'Playfair Display' }}
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -187,7 +187,7 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
 
             {/* Description */}
             <motion.p 
-              className="text-lg text-gray-200 leading-relaxed max-w-4xl mb-12"
+              className="text-lg sm:text-xl md:text-2xl text-gray-200 leading-relaxed max-w-4xl mb-8 sm:mb-12"
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.2 }}
@@ -199,34 +199,37 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
 
             {/* Action Buttons */}
             <motion.div 
-              className="flex gap-6"
+              className="flex flex-col sm:flex-row gap-4 sm:gap-6"
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 1.4 }}
             >
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full sm:w-auto"
               >
                 <Button 
                   onClick={onNavigateToSignup}
-                  className="bg-white text-blue-900 hover:bg-gray-100 px-10 py-6 text-xl font-semibold rounded-full shadow-2xl transition-all duration-300"
+                  className="bg-white text-blue-900 hover:bg-gray-100 w-full sm:w-auto px-8 sm:px-10 lg:px-12 py-4 sm:py-5 lg:py-7 text-lg sm:text-xl lg:text-2xl font-semibold rounded-full shadow-2xl transition-all duration-300 min-h-[56px]"
                 >
-                  <ArrowRight className="w-4 h-4 mr-2" />
+                  <ArrowRight className="w-5 h-5 mr-2" />
                   Devenir membre
                 </Button>
               </motion.div>
               
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full sm:w-auto"
               >
                 <Button 
                   variant="outline"
-                  className="border-white text-white hover:bg-white/10 px-10 py-6 text-xl font-semibold rounded-full bg-transparent backdrop-blur-sm shadow-2xl transition-all duration-300"
+                  className="border-white text-white hover:bg-white/10 w-full sm:w-auto px-8 sm:px-10 lg:px-12 py-4 sm:py-5 lg:py-7 text-lg sm:text-xl lg:text-2xl font-semibold rounded-full bg-transparent backdrop-blur-sm shadow-2xl transition-all duration-300 min-h-[56px]"
                 >
-                  <Play className="w-4 h-4 mr-2" />
-                  Découvrir les Armateurs
+                  <Play className="w-5 h-5 mr-2" />
+                  <span className="hidden sm:inline">Découvrir les Armateurs</span>
+                  <span className="sm:hidden">Découvrir</span>
                 </Button>
               </motion.div>
             </motion.div>
@@ -234,9 +237,9 @@ const HeroSection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void })
         </div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator - masqué sur mobile */}
       <motion.div
-        className="absolute bottom-6 left-1/2 transform -translate-x-1/2"
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 hidden lg:block"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 1.8 }}
@@ -279,26 +282,26 @@ const PartnersSection = () => {
 
   return (
     <motion.section 
-      className="py-20 bg-white"
+      className="py-12 sm:py-16 lg:py-20 bg-white"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-12 lg:mb-16"
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <p className="text-base text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600">
             Partenaires officiels des Armateurs du Saint-Laurent
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8 items-center">
           {partners.map((partner, index) => (
             <motion.div 
               key={partner} 
@@ -308,10 +311,12 @@ const PartnersSection = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="flex items-center justify-center h-16 mb-4">
-                <div className="w-8 h-8 bg-gray-400 rounded" />
+              <div className="flex items-center justify-center h-12 sm:h-16 mb-3 sm:mb-4">
+                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gray-400 rounded" />
               </div>
-              <h3 className="text-xl font-bold text-gray-700">{partner}</h3>
+              <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-700 leading-tight">
+                {partner}
+              </h3>
             </motion.div>
           ))}
         </div>
@@ -356,71 +361,59 @@ const StatsMarquee = () => {
 };
 
 // About Section avec animations
-const AboutSection = ({ navigationHandlers }: { navigationHandlers: NavigationHandlers }) => {
+const AboutSection = () => {
   return (
     <motion.section 
-      className="py-24 bg-white"
+      className="py-12 sm:py-16 lg:py-24 bg-white"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <div className="max-w-7xl mx-auto px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
           <motion.div
             initial={{ x: -50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl font-serif leading-tight text-gray-900 mb-6" style={{ fontFamily: 'Playfair Display' }}>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif leading-tight text-gray-900 mb-4 sm:mb-6" style={{ fontFamily: 'Playfair Display' }}>
               Depuis 1936
             </h2>
-            <div className="w-24 h-1 bg-blue-600 mb-8" />
-            <p className="text-lg text-gray-700 leading-relaxed mb-8">
-              Acteur incontournable du transport maritime depuis 1936, les Armateurs du Saint-Laurent 
-              (ASL) représentent les propriétaires et opérateurs de navires domestiques qui transportent 
-              des marchandises et des passagers sur les eaux du Saint-Laurent, les Grands Lacs, 
-              dans l'Arctique et dans les provinces maritimes.
+            <div className="w-16 sm:w-20 lg:w-24 h-1 bg-gray-400 mb-6 sm:mb-8" />
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 sm:mb-8">
+              Acteur incontournable du transport maritime depuis 1936, ASL est une association 
+              représentant 12 propriétaires et opérateurs de navires domestiques, qui transportent 
+              des marchandises et des passagers sur les eaux du Saint-Laurent, mais également sur 
+              les Grands Lacs, dans l'Arctique et dans les provinces maritimes.
             </p>
-            <p className="text-base text-gray-600 leading-relaxed mb-8">
-              Notre mission est de soutenir la croissance de nos membres et du transport maritime 
-              en assurant la représentation et la promotion des priorités des armateurs canadiens 
-              auprès des instances gouvernementales et des partenaires de l'industrie.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  onClick={navigationHandlers.onNavigateToAssociation}
-                  className="bg-blue-900 text-white hover:bg-blue-800 rounded-full px-8 w-full sm:w-auto"
-                >
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button className="bg-black text-white hover:bg-gray-800 rounded-full px-6 sm:px-8 w-full sm:w-auto min-h-[48px] touch-manipulation">
                   <ArrowRight className="w-4 h-4 mr-2" />
                   L'organisation
                 </Button>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  onClick={navigationHandlers.onNavigateToMembers}
-                  variant="outline"
-                  className="border-blue-900 text-blue-900 hover:bg-blue-50 rounded-full px-8 w-full sm:w-auto"
-                >
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button className="bg-black text-white hover:bg-gray-800 rounded-full px-6 sm:px-8 w-full sm:w-auto min-h-[48px] touch-manipulation">
                   <ArrowRight className="w-4 h-4 mr-2" />
-                  Nos membres
+                  L'équipe
                 </Button>
               </motion.div>
             </div>
           </motion.div>
           
           <motion.div 
-            className="relative"
+            className="relative order-first lg:order-last"
             initial={{ x: 50, opacity: 0 }}
             whileInView={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <div className="rounded-2xl overflow-hidden shadow-xl">
+            <div className="rounded-xl sm:rounded-2xl overflow-hidden shadow-xl">
               <div 
-                className="w-full h-[500px] bg-cover bg-center"
+                className="w-full h-64 sm:h-80 lg:h-[500px] bg-cover bg-center"
                 style={{ backgroundImage: `url('${imgImg4}')` }}
               />
             </div>
@@ -431,7 +424,7 @@ const AboutSection = ({ navigationHandlers }: { navigationHandlers: NavigationHa
   );
 };
 
-// Members Section avec appels API et tri alphabétique
+// Members Section avec appels API rétablis
 const MembersSection = ({ onNavigateToMemberDetail }: { onNavigateToMemberDetail?: (memberId: string) => void }) => {
   const [members, setMembers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -460,40 +453,26 @@ const MembersSection = ({ onNavigateToMemberDetail }: { onNavigateToMemberDetail
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Charger les membres depuis l'API Membri 365
+  // Charger les membres depuis l'API
   useEffect(() => {
     const fetchMembers = async () => {
       try {
         setIsLoading(true);
-        console.log("🔄 Chargement des membres actifs depuis l'API Membri 365...");
-        
-        // Récupérer les membres actifs pour l'org ID spécifique
-        const membersData = await membriApi.getActiveMembers();
-        console.log("✅ Membres récupérés:", membersData.length);
-        
-        // Trier alphabétiquement et prendre les 18 premiers
-        const sortedMembers = membersData
-          .sort((a, b) => {
-            const nameA = (a.AccountName || a.accountName || a.Name || a.name || '').toLowerCase();
-            const nameB = (b.AccountName || b.accountName || b.Name || b.name || '').toLowerCase();
-            return nameA.localeCompare(nameB);
-          })
-          .slice(0, 18);
+        const membersData = await membriApi.getMembers();
         
         // Enrichir les données membres avec images et couleurs
-        const enrichedMembers = sortedMembers.map((member: any, index: number) => ({
+        const enrichedMembers = membersData.slice(0, 18).map((member: any, index: number) => ({
           ...member,
           image: MEMBER_IMAGES[index] || MEMBER_IMAGES[0],
           color: MEMBER_COLORS[index] || MEMBER_COLORS[0],
-          displayName: member.AccountName || member.accountName || member.Name || member.name || 'Membre ASL',
+          displayName: member.AccountName || member.accountName || member.Name || member.name,
           shortDescription: member.Description || member.description || 'Membre des Armateurs du Saint-Laurent',
           sector: member.SectorCategory?.Name || member.sectorCategory?.name || 'Transport maritime'
         }));
         
         setMembers(enrichedMembers);
-        console.log("✅ Membres enrichis et triés:", enrichedMembers.length);
       } catch (error) {
-        console.warn('⚠️ Erreur lors du chargement des membres:', error);
+        console.warn('Erreur lors du chargement des membres:', error);
       } finally {
         setIsLoading(false);
       }
@@ -569,7 +548,7 @@ const MembersSection = ({ onNavigateToMemberDetail }: { onNavigateToMemberDetail
             <p className="text-xl text-gray-600">{members.length} armateurs du Saint-Laurent</p>
           </div>
           
-          {/* Navigation arrows */}
+          {/* Navigation arrows seulement */}
           <div className="flex space-x-2">
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
               <Button
@@ -692,33 +671,66 @@ const FeaturedEventSection = () => {
               viewport={{ once: true }}
             >
               <Badge className="bg-white/20 text-white mb-4">ÉVÉNEMENT À VENIR</Badge>
-              <h2 className="text-4xl font-serif leading-tight mb-4" style={{ fontFamily: 'Playfair Display' }}>
-                Assemblée Générale Annuelle 2024
-              </h2>
-              <p className="text-xl mb-8 opacity-90">
-                Joignez-vous à nous pour notre assemblée annuelle et découvrez les dernières 
-                avancées du transport maritime sur le Saint-Laurent.
-              </p>
-              
-              <div className="flex items-center space-x-8 mb-8">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="w-5 h-5" />
-                  <span>15 novembre 2024</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-5 h-5" />
-                  <span>9h00 - 17h00</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MapPin className="w-5 h-5" />
-                  <span>Montréal, QC</span>
-                </div>
+              <span className="text-base text-white/80 ml-4">15 FÉVRIER 2024</span>
+            </motion.div>
+            
+            <motion.h2 
+              className="text-5xl font-serif leading-tight mb-6 mt-8" 
+              style={{ fontFamily: 'Playfair Display' }}
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              Conférence Maritime 2025
+            </motion.h2>
+            
+            <motion.p 
+              className="text-lg text-white/90 leading-relaxed mb-8 max-w-2xl"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              viewport={{ once: true }}
+            >
+              Forum annuel sur l'avenir du transport maritime sur les Grands Lacs et la 
+              Voie Maritime du Saint-Laurent. Rejoignez les leaders de l'industrie pour 
+              discuter des innovations et défis du secteur.
+            </motion.p>
+            
+            <motion.div 
+              className="flex items-center space-x-8 mb-12"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <div className="flex items-center">
+                <MapPin className="w-4 h-4 mr-2" />
+                <span>Centre des congrès de Québec</span>
               </div>
-              
+              <div className="flex items-center">
+                <Clock className="w-4 h-4 mr-2" />
+                <span>9h00 - 17h00</span>
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              className="flex space-x-4"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1 }}
+              viewport={{ once: true }}
+            >
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button className="bg-white text-blue-900 hover:bg-gray-100 px-8 py-3 font-semibold rounded-full">
+                <Button className="bg-white text-blue-900 hover:bg-gray-100 rounded-full px-8">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  Billeterie
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button variant="outline" className="border-white text-white hover:bg-white/10 rounded-full px-8 bg-transparent">
                   <ArrowRight className="w-4 h-4 mr-2" />
-                  S'inscrire maintenant
+                  En savoir plus
                 </Button>
               </motion.div>
             </motion.div>
@@ -729,37 +741,141 @@ const FeaturedEventSection = () => {
   );
 };
 
-// CTA Section finale
-const CTASection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void }) => {
+// News Section avec animations
+const NewsSection = () => {
+  const newsArticles = [
+    {
+      id: '1',
+      title: 'Investissements de 250M$ pour moderniser la Voie Maritime',
+      excerpt: 'Le gouvernement annonce des investissements majeurs pour améliorer l\'infrastructure de la Voie Maritime du Saint-Laurent.',
+      date: '8 janvier 2024',
+      category: 'COMMUNIQUÉ',
+      categoryColor: 'bg-blue-900',
+      image: imgImg13
+    },
+    {
+      id: '2',
+      title: 'Initiative Verte: Réduction des émissions de 30%',
+      excerpt: 'Lancement d\'un programme collaboratif pour réduire l\'empreinte carbone du transport maritime sur le Saint-Laurent.',
+      date: '5 janvier 2024',
+      category: 'PROJET',
+      categoryColor: 'bg-green-600',
+      image: imgImg14
+    },
+    {
+      id: '3',
+      title: 'Bilan 2023: Record de tonnage transporté',
+      excerpt: 'Les membres d\'ASL ont transporté plus de 42 millions de tonnes en 2023, un record historique pour l\'association.',
+      date: '2 janvier 2024',
+      category: 'ÉVÉNEMENT',
+      categoryColor: 'bg-orange-500',
+      image: imgImg15
+    },
+    {
+      id: '4',
+      title: 'Programme de formation en sécurité maritime',
+      excerpt: 'Nouveau programme de certification pour les équipages naviguant sur la Voie Maritime du Saint-Laurent.',
+      date: '28 décembre 2023',
+      category: 'FORMATION',
+      categoryColor: 'bg-blue-600',
+      image: imgImg16
+    },
+    {
+      id: '5',
+      title: 'Digitalisation des opérations portuaires',
+      excerpt: 'Mise en place de systèmes de suivi en temps réel pour optimiser les opérations de chargement et déchargement.',
+      date: '22 décembre 2023',
+      category: 'INNOVATION',
+      categoryColor: 'bg-purple-600',
+      image: imgImg17
+    },
+    {
+      id: '6',
+      title: 'Accord de coopération avec les ports européens',
+      excerpt: 'Signature d\'un protocole d\'entente pour faciliter les échanges commerciaux entre le Saint-Laurent et l\'Europe.',
+      date: '18 décembre 2023',
+      category: 'PARTENARIAT',
+      categoryColor: 'bg-red-600',
+      image: imgImg18
+    }
+  ];
+
   return (
     <motion.section 
-      className="py-24 bg-gray-50"
+      className="py-24 bg-white"
       initial={{ opacity: 0 }}
       whileInView={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true }}
     >
-      <div className="max-w-7xl mx-auto px-8 text-center">
-        <motion.div
+      <div className="max-w-7xl mx-auto px-8">
+        <motion.div 
+          className="text-center mb-16"
           initial={{ y: 30, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-5xl font-serif leading-tight text-gray-900 mb-6" style={{ fontFamily: 'Playfair Display' }}>
-            Rejoignez l'avenir du transport maritime
+          <h2 className="text-5xl font-serif leading-tight text-gray-900" style={{ fontFamily: 'Playfair Display' }}>
+            Dernières actualités
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-10">
-            Devenez membre des Armateurs du Saint-Laurent et participez au développement 
-            durable du transport maritime canadien.
-          </p>
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button 
-              onClick={onNavigateToSignup}
-              className="bg-blue-900 text-white hover:bg-blue-800 px-10 py-4 text-lg font-semibold rounded-full shadow-xl"
+        </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {newsArticles.map((article, index) => (
+            <motion.div
+              key={article.id}
+              initial={{ y: 30, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              whileHover={{ y: -5, scale: 1.02 }}
             >
-              <ArrowRight className="w-5 h-5 mr-3" />
-              Commencer l'inscription
+              <Card className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                <CardContent className="p-0">
+                  <div 
+                    className="h-48 bg-cover bg-center"
+                    style={{ backgroundImage: `url('${article.image}')` }}
+                  />
+                  
+                  <div className="p-6">
+                    <div className="flex items-center mb-4">
+                      <Badge className={`${article.categoryColor} text-white text-xs`}>
+                        {article.category}
+                      </Badge>
+                      <span className="text-sm text-gray-500 ml-2">{article.date}</span>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
+                      {article.title}
+                    </h3>
+                    
+                    <p className="text-sm text-gray-600 leading-relaxed mb-4">
+                      {article.excerpt}
+                    </p>
+                    
+                    <motion.div whileHover={{ x: 5 }}>
+                      <Button variant="link" className="text-blue-900 p-0 h-auto">
+                        Lire la suite <ArrowRight className="w-3 h-3 ml-1" />
+                      </Button>
+                    </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+        
+        <motion.div 
+          className="text-center"
+          initial={{ y: 30, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Button className="bg-blue-900 text-white hover:bg-blue-800 rounded-full px-12 py-4 text-lg">
+              Voir toutes les actualités
             </Button>
           </motion.div>
         </motion.div>
@@ -770,14 +886,17 @@ const CTASection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void }) 
 
 export function WebsitePage({ navigationHandlers }: WebsitePageProps) {
   return (
-    <HeroPageLayout navigationHandlers={navigationHandlers}>
+    <HeroPageLayout
+      currentView="website"
+      navigationHandlers={navigationHandlers}
+    >
       <HeroSection onNavigateToSignup={navigationHandlers.onNavigateToSignup} />
       <PartnersSection />
       <StatsMarquee />
-      <AboutSection navigationHandlers={navigationHandlers} />
+      <AboutSection />
       <MembersSection onNavigateToMemberDetail={navigationHandlers.onNavigateToMemberDetail} />
       <FeaturedEventSection />
-      <CTASection onNavigateToSignup={navigationHandlers.onNavigateToSignup} />
+      <NewsSection />
     </HeroPageLayout>
   );
 }

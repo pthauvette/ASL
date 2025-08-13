@@ -49,14 +49,14 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
       {/* Breadcrumbs */}
       {showBreadcrumbs && breadcrumbItems.length > 0 && (
         <div className="bg-white border-b border-gray-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
             <Breadcrumb items={breadcrumbItems} />
           </div>
         </div>
       )}
 
       {/* Main Content */}
-      <main className="relative">
+      <main className="relative pb-safe">
         {children}
       </main>
 

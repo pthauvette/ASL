@@ -4,9 +4,10 @@ import { ArrowLeft, ArrowRight, ExternalLink, Mail, Phone, MapPin, Calendar, Use
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
-import { PageLayout } from "./PageLayout";
 import { membriApi } from "../utils/membriApi";
-import type { AppView } from "../utils/form-types";
+
+// Import des SVG et assets du site principal
+import svgPaths from "../imports/svg-xevomu9hph";
 
 // Images des membres du Figma
 import imgMemberCSL from "figma:asset/9223fea86145e6dfbb549fa5928c67909467f2cd.png";
@@ -14,25 +15,11 @@ import imgMemberAlgoma from "figma:asset/c92c7f2328b345106c14a5fa435dd017c4af9f8
 import imgMemberLowerLakes from "figma:asset/9fb4a6e1053e905ce9ea6f07407f88df6ff41652.png";
 import imgMemberMcKeil from "figma:asset/7fddb0fa231bcf8173fc8f5cefa9238927f45a3e.png";
 
-interface NavigationHandlers {
-  onNavigateToWebsite: () => void;
-  onNavigateToAssociation: () => void;
-  onNavigateToSaintLaurent: () => void;
-  onNavigateToMembers: () => void;
-  onNavigateToEvents: () => void;
-  onNavigateToContact: () => void;
-  onNavigateToDossiers: () => void;
-  onNavigateToPrivacyPolicy: () => void;
-  onNavigateToTerms: () => void;
-  onNavigateToSitemap: () => void;
-  onNavigateToLogin: () => void;
-  onNavigateToSignup: () => void;
-}
-
 interface MemberDetailPageProps {
   memberId: string;
-  navigationHandlers: NavigationHandlers;
   onNavigateBack: () => void;
+  onNavigateToLogin: () => void;
+  onNavigateToSignup: () => void;
 }
 
 interface MemberDetail {
@@ -87,16 +74,102 @@ const MEMBER_COLORS = [
   "bg-teal-100"
 ];
 
+// Header complet du site avec navigation
+const SiteHeader = ({ onNavigateBack, onNavigateToLogin, onNavigateToSignup }: {
+  onNavigateBack: () => void;
+  onNavigateToLogin: () => void;
+  onNavigateToSignup: () => void;
+}) => {
+  return (
+    <motion.header 
+      className="absolute top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 h-[110px]"
+      initial={{ y: -110, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <div className="max-w-7xl mx-auto px-8">
+        <div className="flex items-center justify-between h-[110px]">
+          {/* Logo et bouton retour */}
+          <motion.div 
+            className="flex items-center"
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            {/* Bouton retour */}
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onNavigateBack}
+              className="text-blue-900 hover:text-blue-700 mr-4"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Retour
+            </Button>
+            
+            {/* Logo */}
+            <div className="w-8 h-8 mr-3">
+              <svg className="w-full h-full" viewBox="0 0 39 21" fill="none">
+                <path d={svgPaths.p3d807000} fill="#1e40af" />
+                <path d={svgPaths.p31e6aa00} fill="#1e40af" />
+                <path d={svgPaths.p33541480} fill="#1e40af" />
+                <path d={svgPaths.p34b29d80} fill="#1e40af" />
+              </svg>
+            </div>
+            <h1 className="text-2xl font-bold text-blue-900">
+              Armateurs Saint-Laurent
+            </h1>
+          </motion.div>
+
+          {/* Navigation */}
+          <motion.nav 
+            className="hidden md:flex space-x-8"
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            {["L'Association", "Le Saint-Laurent", "Dossiers", "Événements", "Contact"].map((item, index) => (
+              <motion.button
+                key={item}
+                className="text-gray-700 text-base hover:text-blue-900 transition-colors"
+                initial={{ y: -10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
+              >
+                {item}
+              </motion.button>
+            ))}
+          </motion.nav>
+
+          {/* Portail Membre Button */}
+          <motion.div
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <Button 
+              onClick={onNavigateToLogin}
+              className="border border-blue-900 text-blue-900 hover:bg-blue-50 bg-transparent rounded-full px-6 py-2 transition-all duration-300 hover:scale-105"
+            >
+              Portail Membre
+            </Button>
+          </motion.div>
+        </div>
+      </div>
+    </motion.header>
+  );
+};
+
 // Section Hero du membre
 const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
   return (
-    <section className="relative h-96 overflow-hidden">
+    <section className="relative h-96 overflow-hidden mt-[110px]">
       {/* Image de fond */}
       <div 
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url('${member.heroImage}')` }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary/60" />
+      <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-blue-700/80" />
 
       {/* Contenu */}
       <div className="relative z-10 h-full flex items-center">
@@ -109,7 +182,7 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
-                <Badge className="bg-primary-foreground/20 text-primary-foreground border-primary-foreground/20">
+                <Badge className="bg-white/20 text-white border-white/20">
                   {member.membershipType}
                 </Badge>
                 <Badge className="bg-green-600 text-white">
@@ -118,7 +191,7 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
               </motion.div>
 
               <motion.h1 
-                className="text-5xl font-bold text-primary-foreground mb-4"
+                className="text-5xl font-bold text-white mb-4 font-serif"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
@@ -127,7 +200,7 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
               </motion.h1>
 
               <motion.p 
-                className="text-xl text-primary-foreground/90 mb-6 leading-relaxed max-w-3xl"
+                className="text-xl text-white/90 mb-6 leading-relaxed max-w-3xl"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
@@ -144,7 +217,7 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
                 {member.website && (
                   <Button 
                     size="lg"
-                    className="bg-primary-foreground text-primary hover:bg-primary-foreground/90"
+                    className="bg-white text-blue-900 hover:bg-gray-100"
                     asChild
                   >
                     <a href={member.website} target="_blank" rel="noopener noreferrer">
@@ -157,7 +230,7 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
                   <Button 
                     variant="outline"
                     size="lg"
-                    className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 bg-transparent"
+                    className="border-white text-white hover:bg-white/10 bg-transparent"
                     asChild
                   >
                     <a href={`mailto:${member.email}`}>
@@ -175,7 +248,7 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
             >
-              <div className="w-48 h-48 rounded-full border-4 border-primary-foreground/20 overflow-hidden bg-primary-foreground/10 backdrop-blur-sm">
+              <div className="w-48 h-48 rounded-full border-4 border-white/20 overflow-hidden bg-white/10 backdrop-blur-sm">
                 <img 
                   src={member.logoImage}
                   alt={`Logo ${member.organization}`}
@@ -193,16 +266,16 @@ const MemberHeroSection = ({ member }: { member: MemberDetail }) => {
 // Section Informations détaillées
 const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
   return (
-    <section className="py-16 bg-background">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Informations principales */}
           <div className="lg:col-span-2 space-y-8">
             <div>
-              <h2 className="text-3xl font-bold text-foreground mb-6">
+              <h2 className="text-3xl font-bold text-gray-900 mb-6">
                 À propos de {member.organization}
               </h2>
-              <div className="prose prose-lg text-muted-foreground">
+              <div className="prose prose-lg text-gray-600">
                 <p className="mb-4">
                   {member.description || `${member.organization} est un membre actif des Armateurs du Saint-Laurent, spécialisé dans le secteur ${member.sector.toLowerCase()}.`}
                 </p>
@@ -215,12 +288,12 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
             {/* Services proposés */}
             {member.services && member.services.length > 0 && (
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">Services</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Services</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {member.services.map((service, index) => (
                     <div key={index} className="flex items-center space-x-3">
-                      <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0" />
-                      <span className="text-muted-foreground">{service}</span>
+                      <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0" />
+                      <span className="text-gray-700">{service}</span>
                     </div>
                   ))}
                 </div>
@@ -230,12 +303,12 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
             {/* Réalisations */}
             {member.achievements && member.achievements.length > 0 && (
               <div>
-                <h3 className="text-2xl font-bold text-foreground mb-4">Réalisations</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">Réalisations</h3>
                 <div className="space-y-3">
                   {member.achievements.map((achievement, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <Award className="w-5 h-5 text-yellow-500 mt-1 flex-shrink-0" />
-                      <span className="text-muted-foreground">{achievement}</span>
+                      <span className="text-gray-700">{achievement}</span>
                     </div>
                   ))}
                 </div>
@@ -249,27 +322,27 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
             {member.contactName && (
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Contact principal</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact principal</h3>
                   <div className="space-y-3">
                     <div className="flex items-center space-x-3">
-                      <Users className="w-5 h-5 text-muted-foreground" />
+                      <Users className="w-5 h-5 text-gray-400" />
                       <div>
-                        <p className="font-medium text-foreground">{member.contactName}</p>
-                        {member.title && <p className="text-sm text-muted-foreground">{member.title}</p>}
+                        <p className="font-medium text-gray-900">{member.contactName}</p>
+                        {member.title && <p className="text-sm text-gray-600">{member.title}</p>}
                       </div>
                     </div>
                     {member.email && (
                       <div className="flex items-center space-x-3">
-                        <Mail className="w-5 h-5 text-muted-foreground" />
-                        <a href={`mailto:${member.email}`} className="text-primary hover:text-primary/80">
+                        <Mail className="w-5 h-5 text-gray-400" />
+                        <a href={`mailto:${member.email}`} className="text-blue-600 hover:text-blue-800">
                           {member.email}
                         </a>
                       </div>
                     )}
                     {member.phone && (
                       <div className="flex items-center space-x-3">
-                        <Phone className="w-5 h-5 text-muted-foreground" />
-                        <a href={`tel:${member.phone}`} className="text-primary hover:text-primary/80">
+                        <Phone className="w-5 h-5 text-gray-400" />
+                        <a href={`tel:${member.phone}`} className="text-blue-600 hover:text-blue-800">
                           {member.phone}
                         </a>
                       </div>
@@ -282,26 +355,26 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
             {/* Informations de l'entreprise */}
             <Card>
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Informations</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Informations</h3>
                 <div className="space-y-3">
                   <div className="flex items-center space-x-3">
-                    <Building className="w-5 h-5 text-muted-foreground" />
-                    <span className="text-muted-foreground">{member.sector}</span>
+                    <Building className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-700">{member.sector}</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Calendar className="w-5 h-5 text-muted-foreground" />
-                    <span className="text-muted-foreground">Membre depuis {new Date(member.memberSince).getFullYear()}</span>
+                    <Calendar className="w-5 h-5 text-gray-400" />
+                    <span className="text-gray-700">Membre depuis {new Date(member.memberSince).getFullYear()}</span>
                   </div>
                   {member.yearFounded && (
                     <div className="flex items-center space-x-3">
-                      <Star className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-muted-foreground">Fondée en {member.yearFounded}</span>
+                      <Star className="w-5 h-5 text-gray-400" />
+                      <span className="text-gray-700">Fondée en {member.yearFounded}</span>
                     </div>
                   )}
                   {member.employeeCount && (
                     <div className="flex items-center space-x-3">
-                      <Users className="w-5 h-5 text-muted-foreground" />
-                      <span className="text-muted-foreground">{member.employeeCount} employés</span>
+                      <Users className="w-5 h-5 text-gray-400" />
+                      <span className="text-gray-700">{member.employeeCount} employés</span>
                     </div>
                   )}
                 </div>
@@ -312,10 +385,10 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
             {(member.address || member.city) && (
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold text-foreground mb-4">Adresse</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Adresse</h3>
                   <div className="flex items-start space-x-3">
-                    <MapPin className="w-5 h-5 text-muted-foreground mt-1" />
-                    <div className="text-muted-foreground">
+                    <MapPin className="w-5 h-5 text-gray-400 mt-1" />
+                    <div className="text-gray-700">
                       {member.address && <p>{member.address}</p>}
                       <p>
                         {member.city}
@@ -331,7 +404,7 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
             {/* Liens utiles */}
             <Card>
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Liens utiles</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Liens utiles</h3>
                 <div className="space-y-3">
                   {member.website && (
                     <Button variant="outline" className="w-full justify-start" asChild>
@@ -364,18 +437,18 @@ const MemberInfoSection = ({ member }: { member: MemberDetail }) => {
 // Section CTA pour devenir membre
 const CTASection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void }) => {
   return (
-    <section className="py-16 bg-gradient-to-r from-primary to-primary/80">
+    <section className="py-16 bg-gradient-to-r from-blue-900 to-blue-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-bold text-primary-foreground mb-4">
+        <h2 className="text-3xl font-bold text-white mb-4">
           Rejoignez les Armateurs du Saint-Laurent
         </h2>
-        <p className="text-xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto">
+        <p className="text-xl text-white/90 mb-8 max-w-3xl mx-auto">
           Devenez membre d'une association qui représente et promeut les intérêts des armateurs canadiens depuis 1936.
         </p>
         <Button 
           size="lg"
           onClick={onNavigateToSignup}
-          className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 px-8 py-4"
+          className="bg-white text-blue-900 hover:bg-gray-100 px-8 py-4"
         >
           <ArrowRight className="w-5 h-5 mr-2" />
           Commencer ma demande d'adhésion
@@ -385,7 +458,28 @@ const CTASection = ({ onNavigateToSignup }: { onNavigateToSignup: () => void }) 
   );
 };
 
-export const MemberDetailPage = ({ memberId, navigationHandlers, onNavigateBack }: MemberDetailPageProps) => {
+// Footer simple pour la page membre
+const SimpleFooter = () => {
+  return (
+    <footer className="bg-gray-900 text-white py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h3 className="text-xl font-bold mb-4">Armateurs du Saint-Laurent</h3>
+          <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
+            Association représentant les armateurs canadiens depuis 1936. Nous soutenons le développement du transport maritime sur le Saint-Laurent et les Grands Lacs.
+          </p>
+          <div className="flex justify-center space-x-6 text-sm text-gray-400">
+            <a href="#" className="hover:text-white transition-colors">Politique de confidentialité</a>
+            <a href="#" className="hover:text-white transition-colors">Conditions d'utilisation</a>
+            <a href="#" className="hover:text-white transition-colors">Contact</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export const MemberDetailPage = ({ memberId, onNavigateBack, onNavigateToLogin, onNavigateToSignup }: MemberDetailPageProps) => {
   const [member, setMember] = useState<MemberDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -470,68 +564,61 @@ export const MemberDetailPage = ({ memberId, navigationHandlers, onNavigateBack 
 
   if (isLoading) {
     return (
-      <PageLayout
-        currentView="member-detail"
-        navigationHandlers={navigationHandlers}
-        className="bg-background"
-      >
-        <div className="flex items-center justify-center h-96">
+      <div className="min-h-screen bg-gray-50 relative">
+        <SiteHeader 
+          onNavigateBack={onNavigateBack}
+          onNavigateToLogin={onNavigateToLogin}
+          onNavigateToSignup={onNavigateToSignup}
+        />
+        <div className="flex items-center justify-center h-96 mt-[110px]">
           <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
-            <p className="text-muted-foreground">Chargement des informations du membre...</p>
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-900" />
+            <p className="text-gray-600">Chargement des informations du membre...</p>
           </div>
         </div>
-      </PageLayout>
+      </div>
     );
   }
 
   if (error || !member) {
     return (
-      <PageLayout
-        currentView="member-detail"
-        navigationHandlers={navigationHandlers}
-        className="bg-background"
-      >
-        <div className="flex items-center justify-center h-96">
+      <div className="min-h-screen bg-gray-50 relative">
+        <SiteHeader 
+          onNavigateBack={onNavigateBack}
+          onNavigateToLogin={onNavigateToLogin}
+          onNavigateToSignup={onNavigateToSignup}
+        />
+        <div className="flex items-center justify-center h-96 mt-[110px]">
           <div className="text-center">
-            <p className="text-destructive mb-4">{error || 'Membre non trouvé'}</p>
+            <p className="text-red-600 mb-4">{error || 'Membre non trouvé'}</p>
             <Button onClick={onNavigateBack} variant="outline">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Retour à la liste des membres
             </Button>
           </div>
         </div>
-      </PageLayout>
+      </div>
     );
   }
 
   return (
-    <PageLayout
-      currentView="member-detail"
-      navigationHandlers={navigationHandlers}
-      className="bg-background"
-    >
+    <div className="min-h-screen bg-gray-50 relative">
+      <SiteHeader 
+        onNavigateBack={onNavigateBack}
+        onNavigateToLogin={onNavigateToLogin}
+        onNavigateToSignup={onNavigateToSignup}
+      />
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        {/* Bouton retour dans le contenu */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <Button 
-            variant="ghost" 
-            onClick={onNavigateBack}
-            className="mb-4"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Retour à la liste des membres
-          </Button>
-        </div>
-        
         <MemberHeroSection member={member} />
         <MemberInfoSection member={member} />
-        <CTASection onNavigateToSignup={navigationHandlers.onNavigateToSignup} />
+        <CTASection onNavigateToSignup={onNavigateToSignup} />
+        <SimpleFooter />
       </motion.div>
-    </PageLayout>
+    </div>
   );
 };

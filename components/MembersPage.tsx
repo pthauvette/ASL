@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { ArrowLeft, Search, Filter, MapPin, Globe, Mail, Phone, Loader2, Grid, List } from "lucide-react";
+import { ArrowLeft, Search, Filter, MapPin, Globe, Mail, Phone, Loader2, Grid, List, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Alert, AlertDescription } from "./ui/alert";
 import { membriApi } from "../utils/membriApi";
+import { toast } from "sonner@2.0.3";
 
 // Import des SVG et assets
 import svgPaths from "../imports/svg-xevomu9hph";
@@ -478,7 +480,7 @@ export const MembersPage = ({ onNavigateToLogin, onNavigateToSignup, onNavigateT
     const fetchMembers = async () => {
       try {
         setIsLoading(true);
-        const membersData = await membriApi.fetchMembers();
+        const membersData = await membriApi.getMembers();
         
         // Enrichir les données avec images et couleurs
         const enrichedMembers = membersData.map((member: any, index: number) => ({
@@ -491,6 +493,7 @@ export const MembersPage = ({ onNavigateToLogin, onNavigateToSignup, onNavigateT
         setFilteredMembers(enrichedMembers);
       } catch (error) {
         console.error('Erreur lors du chargement des membres:', error);
+        toast.error("Une erreur s'est produite lors du chargement des membres.");
       } finally {
         setIsLoading(false);
       }

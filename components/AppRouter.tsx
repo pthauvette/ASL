@@ -1,5 +1,4 @@
 import { LanguageProvider } from "../utils/languageContext";
-import { useAuth } from "../utils/authContext";
 import { Toaster } from "./ui/sonner";
 import { WebsitePage } from "./WebsitePage";
 import { AssociationPage } from "./AssociationPage";
@@ -14,8 +13,13 @@ import { SitemapPage } from "./SitemapPage";
 import { MemberDetailPage } from "./MemberDetailPage";
 import { LoginPage } from "./LoginPage";
 import { ForgotPasswordPage } from "./ForgotPasswordPage";
-import { SignupPage } from "./SignupPage";
 import { MemberPortal } from "./MemberPortal";
+import { Header } from "./Header";
+import { ProgressHeader } from "./ProgressHeader";
+import { StepsSidebar } from "./StepsSidebar";
+import { SignupForm } from "./SignupForm";
+import { WhyJoinSection } from "./WhyJoinSection";
+import { Footer } from "./Footer";
 import type { AppView, FormData, StepInfo } from "../utils/form-types";
 
 interface NavigationHandlers {
@@ -52,8 +56,8 @@ interface AppRouterProps {
   handleStepChange?: (step: number) => void;
   getStepStatus?: (stepId: number) => any;
   allStepsCompleted?: () => boolean;
-  isDevelopment?: boolean;
   visitedSteps?: number[];
+  isDevelopment?: boolean;
 }
 
 const ToasterWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -82,11 +86,9 @@ export const AppRouter = ({
   handleStepChange,
   getStepStatus,
   allStepsCompleted,
-  isDevelopment,
-  visitedSteps
+  visitedSteps,
+  isDevelopment
 }: AppRouterProps) => {
-  const { user } = useAuth();
-  
   const {
     onNavigateToWebsite,
     onNavigateToAssociation,
@@ -197,8 +199,15 @@ export const AppRouter = ({
       <ToasterWrapper>
         <MemberDetailPage 
           memberId={selectedMemberId}
-          navigationHandlers={navigationHandlers}
           onNavigateBack={onNavigateBackFromMemberDetail}
+          onNavigateToLogin={onNavigateToLogin}
+          onNavigateToSignup={onNavigateToSignup}
+          onNavigateToWebsite={onNavigateToWebsite}
+          onNavigateToAssociation={onNavigateToAssociation}
+          onNavigateToSaintLaurent={onNavigateToSaintLaurent}
+          onNavigateToMembers={onNavigateToMembers}
+          onNavigateToEvents={onNavigateToEvents}
+          onNavigateToContact={onNavigateToContact}
         />
       </ToasterWrapper>
     );
@@ -223,7 +232,6 @@ export const AppRouter = ({
       <ToasterWrapper>
         <ForgotPasswordPage 
           onNavigateToLogin={onNavigateToLogin}
-          onNavigateToSignup={onNavigateToSignup}
           onNavigateToWebsite={onNavigateToWebsite}
         />
       </ToasterWrapper>
@@ -234,28 +242,63 @@ export const AppRouter = ({
   if (currentView === 'portal') {
     return (
       <ToasterWrapper>
-        <MemberPortal user={user} onLogout={onLogout} />
+        <MemberPortal onLogout={onLogout} />
       </ToasterWrapper>
     );
   }
 
-  // Signup form avec PageLayout unifié
-  if (currentView === 'signup' && formData && setFormData && currentStep && stepTitles && handleStepChange && getStepStatus && allStepsCompleted && visitedSteps) {
+  // Signup form (garde l'ancien layout pour le processus d'inscription)
+  if (currentView === 'signup' && formData && setFormData && currentStep && stepTitles && handleStepChange && getStepStatus && allStepsCompleted) {
+    const currentStepInfo = stepTitles.find((step) => step.id === currentStep) || stepTitles[0];
+
     return (
-      <SignupPage
-        navigationHandlers={navigationHandlers}
-        formData={formData}
-        setFormData={setFormData}
-        currentStep={currentStep}
-        stepTitles={stepTitles}
-        stepChangeKey={stepChangeKey || 0}
-        isInitialLoad={isInitialLoad || false}
-        handleStepChange={handleStepChange}
-        getStepStatus={getStepStatus}
-        allStepsCompleted={allStepsCompleted}
-        isDevelopment={isDevelopment || false}
-        visitedSteps={visitedSteps}
-      />
+      <ToasterWrapper>
+        <div className="min-h-screen bg-[#fafaf0] flex flex-col">
+          <Header onNavigateToWebsite={onNavigateToWebsite} />
+          
+          <ProgressHeader
+            currentStep={currentStep}
+            getStepStatus={getStepStatus}
+            allStepsCompleted={allStepsCompleted()}
+            stepChangeKey={stepChangeKey || 0}
+            maxSteps={stepTitles.length}
+          />
+
+          <div className="flex-1 flex">
+            <StepsSidebar
+              currentStep={currentStep}
+              getStepStatus={getStepStatus}
+              onStepClick={handleStepChange}
+              stepChangeKey={stepChangeKey || 0}
+              isInitialLoad={isInitialLoad || false}
+              visitedSteps={visitedSteps || []}
+              stepTitles={stepTitles}
+              maxSteps={stepTitles.length}
+            />
+
+            <main className="flex-1 p-8">
+              <SignupForm
+                key={stepChangeKey}
+                currentStep={currentStep}
+                formData={formData}
+                setFormData={setFormData}
+                onNext={() => handleStepChange(currentStep + 1)}
+                onPrevious={() => handleStepChange(currentStep - 1)}
+                isInitialLoad={isInitialLoad || false}
+                canProceed={currentStep < stepTitles.length}
+                isLastStep={currentStep === stepTitles.length}
+                allStepsCompleted={allStepsCompleted()}
+              />
+            </main>
+
+            <aside className="w-80 p-8">
+              <WhyJoinSection />
+            </aside>
+          </div>
+
+          <Footer isDevelopment={isDevelopment || false} />
+        </div>
+      </ToasterWrapper>
     );
   }
 

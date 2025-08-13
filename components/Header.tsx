@@ -26,16 +26,16 @@ export function Header() {
           {/* Desktop Navigation and Language Selector */}
           <div className="hidden lg:flex items-center space-x-6">
             <nav className="flex space-x-6">
-              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-sm font-medium">
+              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-sm font-medium">
                 Accueil
               </a>
-              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-sm font-medium">
+              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-sm font-medium">
                 Services
               </a>
-              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-sm font-medium">
+              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-sm font-medium">
                 À propos
               </a>
-              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-sm font-medium">
+              <a href="#" className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-sm font-medium">
                 Contact
               </a>
             </nav>
@@ -43,7 +43,7 @@ export function Header() {
             {/* Desktop Language Selector */}
             <div className="flex items-center">
               <Select value={currentLang} onValueChange={setLanguage}>
-                <SelectTrigger className="w-24 h-8 text-sm border-[#000033]/20 hover:border-[#000033]/40 transition-colors duration-150">
+                <SelectTrigger className="w-24 h-8 text-sm border-[#000033]/20 hover:border-[#000033]/40 transition-colors duration-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -91,28 +91,28 @@ export function Header() {
             <nav className="flex flex-col space-y-3 pt-4">
               <a 
                 href="#" 
-                className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-base font-medium py-2 px-1"
+                className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-base font-medium py-2 px-1"
                 onClick={() => setIsMobileNavOpen(false)}
               >
                 Accueil
               </a>
               <a 
                 href="#" 
-                className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-base font-medium py-2 px-1"
+                className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-base font-medium py-2 px-1"
                 onClick={() => setIsMobileNavOpen(false)}
               >
                 Services
               </a>
               <a 
                 href="#" 
-                className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-base font-medium py-2 px-1"
+                className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-base font-medium py-2 px-1"
                 onClick={() => setIsMobileNavOpen(false)}
               >
                 À propos
               </a>
               <a 
                 href="#" 
-                className="text-[#43464b] hover:text-[#000033] transition-colors duration-150 text-base font-medium py-2 px-1"
+                className="text-[#43464b] hover:text-[#000033] transition-colors duration-200 text-base font-medium py-2 px-1"
                 onClick={() => setIsMobileNavOpen(false)}
               >
                 Contact
@@ -127,7 +127,7 @@ export function Header() {
         @keyframes mobile-nav-slide-down {
           from {
             opacity: 0;
-            transform: translateY(-5px);
+            transform: translateY(-10px);
             max-height: 0;
           }
           to {
@@ -138,16 +138,16 @@ export function Header() {
         }
 
         .animate-mobile-nav-slide-down {
-          animation: mobile-nav-slide-down 0.2s ease-out forwards;
+          animation: mobile-nav-slide-down 0.3s ease-out forwards;
         }
 
         /* Smooth transitions for mobile menu */
         nav a {
-          transition: all 0.15s ease-out;
+          transition: all 0.2s ease-out;
         }
 
         nav a:hover {
-          transform: translateX(2px);
+          transform: translateX(4px);
         }
 
         /* Ensure proper touch targets on mobile */

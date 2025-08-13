@@ -33,7 +33,7 @@ import {
   DEMO_MEMBER_HIGHLIGHTS,
   DEFAULT_MEMBERSHIP_INFO 
 } from './member/constants/portal-constants';
-import { getStatusBadge, getPageTitle, getPageDescription } from './member/utils/portal-utils.tsx';
+import { getStatusBadge, getPageTitle, getPageDescription } from './member/utils/portal-utils';
 
 interface MemberPortalProps {
   user: any;
@@ -41,13 +41,6 @@ interface MemberPortalProps {
 }
 
 export function MemberPortal({ user, onLogout }: MemberPortalProps) {
-  // Fallback pour user en cas d'objet incomplet
-  const safeUser = {
-    name: 'Membre',
-    email: '',
-    id: '',
-    ...user
-  };
   const [currentPage, setCurrentPage] = useState<PortalPage>('dashboard');
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [selectedMemberId, setSelectedMemberId] = useState<string | null>(null);
@@ -106,7 +99,7 @@ export function MemberPortal({ user, onLogout }: MemberPortalProps) {
   const renderPageContent = () => {
     switch (currentPage) {
       case 'profile':
-        return <ProfilePage user={safeUser} membershipInfo={membershipInfo} />;
+        return <ProfilePage user={user} membershipInfo={membershipInfo} />;
       case 'events':
         return <EventsPage upcomingEvents={upcomingEvents} onEventClick={handleEventClick} />;
       case 'event-detail':
@@ -124,7 +117,7 @@ export function MemberPortal({ user, onLogout }: MemberPortalProps) {
         return selectedMemberId ? (
           <MemberProfileDetailPage 
             memberId={selectedMemberId}
-            currentUser={safeUser}
+            currentUser={user}
             onBack={handleBackFromMemberProfile}
             onStartConversation={handleStartConversation}
           />
@@ -132,7 +125,7 @@ export function MemberPortal({ user, onLogout }: MemberPortalProps) {
       case 'messaging':
         return (
           <MessagingSystem 
-            currentUser={safeUser}
+            currentUser={user}
             onBack={handleBackFromMessaging}
             initialConversationId={initialConversationId}
             initialContactId={initialContactId}
@@ -141,7 +134,7 @@ export function MemberPortal({ user, onLogout }: MemberPortalProps) {
       case 'network':
         return (
           <NetworkConnectionsPage 
-            currentUser={safeUser}
+            currentUser={user}
             onViewProfile={handleViewMemberProfile}
             onStartConversation={handleStartConversation}
           />
@@ -149,7 +142,7 @@ export function MemberPortal({ user, onLogout }: MemberPortalProps) {
       case 'notifications':
         return (
           <NotificationSystem 
-            currentUser={safeUser}
+            currentUser={user}
             onViewProfile={handleViewMemberProfile}
             onStartConversation={handleStartConversation}
             onViewEvent={handleEventClick}
@@ -455,7 +448,7 @@ export function MemberPortal({ user, onLogout }: MemberPortalProps) {
                   {getPageTitle(currentPage)}
                 </h1>
                 <p className="text-white/80 text-lg">
-                  {getPageDescription(currentPage, safeUser.name || 'Membre')}
+                  {getPageDescription(currentPage, user.name)}
                 </p>
                 {currentPage === 'dashboard' && (
                   <div className="flex items-center gap-4 mt-2">

@@ -3,315 +3,1031 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
-    <title>Armateurs du Saint-Laurent | Transport maritime au Canada</title>
-    <meta name="description" content="Association représentant les propriétaires et opérateurs de navires sur le Saint-Laurent. Soutenir la croissance du transport maritime canadien depuis 1936.">
-    <meta name="keywords" content="armateurs, saint-laurent, transport maritime, navigation, canada, québec, grands lacs, voie maritime">
-    <meta name="author" content="Armateurs du Saint-Laurent">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Armateurs du Saint-Laurent | Transport maritime au Canada">
-    <meta property="og:description" content="Association représentant les propriétaires et opérateurs de navires sur le Saint-Laurent. Soutenir la croissance du transport maritime canadien depuis 1936.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://armateurs-saint-laurent.ca">
-    <meta property="og:locale" content="fr_CA">
-    <meta property="og:site_name" content="Armateurs du Saint-Laurent">
-    
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Armateurs du Saint-Laurent | Transport maritime au Canada">
-    <meta name="twitter:description" content="Association représentant les propriétaires et opérateurs de navires sur le Saint-Laurent depuis 1936.">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    
-    <!-- Preconnect to external domains -->
+    <title>Devenir membre - ASL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'asl-primary': '#000033',
+                        'asl-bg': '#fafaf0',
+                        'asl-text': '#43464b'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui']
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://images.unsplash.com">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Performance and Security -->
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    
-    <!-- DNS Prefetch -->
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
-    <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link rel="dns-prefetch" href="//images.unsplash.com">
-    
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "Armateurs du Saint-Laurent",
-      "alternateName": "ASL",
-      "url": "https://armateurs-saint-laurent.ca",
-      "foundingDate": "1936",
-      "description": "Association représentant les propriétaires et opérateurs de navires domestiques sur les eaux du Saint-Laurent, les Grands Lacs, l'Arctique et les provinces maritimes.",
-      "address": {
-        "@type": "PostalAddress",
-        "addressCountry": "CA",
-        "addressRegion": "QC"
-      },
-      "sameAs": [
-        "https://www.linkedin.com/company/armateurs-saint-laurent"
-      ],
-      "industry": "Maritime Transportation",
-      "numberOfEmployees": "12+ members",
-      "areaServed": {
-        "@type": "Place",
-        "name": "Canada - Saint-Laurent, Grands Lacs, Arctique, Provinces Maritimes"
-      }
-    }
-    </script>
-    
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#030213">
-    <meta name="msapplication-TileColor" content="#030213">
-    
-    <!-- Disable zoom on mobile for better UX -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Critical CSS - Loading State */
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
-            color: #030213;
-            line-height: 1.6;
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
-        /* Loading Animation */
-        .app-loading {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, #030213 0%, #1e3a8a 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
-        .loading-content {
-            text-align: center;
-            color: white;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
-        .loading-logo {
-            width: 80px;
-            height: 80px;
-            background: white;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 24px;
-            font-weight: 700;
-            color: #030213;
-            animation: pulse 2s ease-in-out infinite;
+        @keyframes slideOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
         }
         
-        .loading-text {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            opacity: 0.9;
+        .animate-shimmer {
+            animation: shimmer 1.5s infinite ease-in-out;
+            animation-delay: 2s;
         }
         
-        .loading-subtitle {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-bottom: 32px;
+        .animate-fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+        
+        .animate-slide-in {
+            animation: slideIn 0.4s ease-in-out forwards;
+        }
+        
+        .animate-slide-out {
+            animation: slideOut 0.4s ease-in-out forwards;
+        }
+        
+        .progress-bar {
+            transition: width 0.8s ease-in-out;
+        }
+        
+        .step-indicator {
+            transition: all 0.3s ease-out;
+        }
+        
+        .step-indicator.active {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 51, 0.3);
+        }
+        
+        .step-connector {
+            transition: background-color 0.5s ease-in-out;
+        }
+        
+        .form-section {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .form-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.4s ease-out;
+        }
+        
+        .benefit-card {
+            transition: all 0.3s ease-out;
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .benefit-icon {
+            transition: all 0.2s ease-out;
+        }
+        
+        .benefit-card:hover .benefit-icon {
+            transform: scale(1.1);
+            background-color: rgba(0, 0, 51, 0.15);
+        }
+        
+        .btn-hover {
+            transition: all 0.2s ease-out;
+        }
+        
+        .btn-hover:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn-hover:active {
+            transform: scale(0.98);
+        }
+        
+        .hidden-step {
+            display: none;
         }
         
         .loading-spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top: 3px solid white;
-            border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
         }
         
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Hide loading when app is ready */
-        .app-loaded .app-loading {
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        /* Critical layout prevention */
-        #root {
-            min-height: 100vh;
-        }
-        
-        /* Performance optimizations */
-        * {
-            box-sizing: border-box;
-        }
-        
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-        
-        /* Prevent layout shift */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-        
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            body {
-                background-color: #030213;
-                color: #ffffff;
-            }
-        }
-        
-        /* Accessibility */
-        @media (prefers-reduced-motion: reduce) {
-            .loading-logo,
-            .loading-spinner {
-                animation: none;
-            }
-        }
-        
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-            .loading-logo {
-                width: 60px;
-                height: 60px;
-                font-size: 20px;
-            }
-            
-            .loading-text {
-                font-size: 16px;
-            }
-            
-            .loading-subtitle {
-                font-size: 13px;
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
-<body>
-    <!-- Loading Screen -->
-    <div class="app-loading" id="app-loading">
-        <div class="loading-content">
-            <div class="loading-logo">ASL</div>
-            <div class="loading-text">Armateurs du Saint-Laurent</div>
-            <div class="loading-subtitle">Transport maritime depuis 1936</div>
-            <div class="loading-spinner"></div>
+<body class="min-h-screen bg-asl-bg font-sans">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-asl-primary rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-xl">ASL</span>
+                    </div>
+                    <span class="text-xl font-semibold text-asl-primary">Association de la Sécurité Logistique</span>
+                </div>
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="text-asl-text hover:text-asl-primary">Accueil</a>
+                    <a href="#" class="text-asl-text hover:text-asl-primary">Services</a>
+                    <a href="#" class="text-asl-text hover:text-asl-primary">À propos</a>
+                    <a href="#" class="text-asl-text hover:text-asl-primary">Contact</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Header -->
+    <div class="bg-white border-b">
+        <div class="max-w-7xl mx-auto px-8 py-10">
+            <div class="flex justify-between items-center mb-11 opacity-0 animate-fade-in-up">
+                <h1 class="text-3xl font-bold text-asl-primary">Devenir membre</h1>
+                <span id="step-counter" class="text-sm text-asl-text">Étape 1 sur 5</span>
+            </div>
+            
+            <div class="relative">
+                <div class="w-full h-2.5 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-2.5 bg-asl-primary rounded-full relative progress-bar" style="width: 20%">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
+                    </div>
+                </div>
+                <div class="mt-2 text-right">
+                    <span id="progress-text" class="text-xs text-asl-text font-medium">20% terminé</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Application Root -->
-    <div id="root"></div>
+    <main class="max-w-7xl mx-auto px-8 py-10">
+        <div class="flex gap-8">
+            <!-- Sidebar -->
+            <div class="flex-shrink-0">
+                <div class="bg-white rounded-lg shadow-sm border p-6 w-64 h-fit opacity-0 animate-fade-in-up" style="animation-delay: 0.2s">
+                    <h2 class="text-lg font-bold text-asl-primary mb-6">Étapes d'inscription</h2>
+                    
+                    <div class="space-y-6">
+                        <div class="step-item flex items-start space-x-3" data-step="1">
+                            <div class="flex flex-col items-center">
+                                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-asl-primary text-white active">
+                                    <span class="step-number">1</span>
+                                    <svg class="step-check w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="step-connector w-0.5 h-6 bg-gray-200 mt-2"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-asl-primary">Informations sur l'organisation</p>
+                                <p class="text-xs text-asl-primary mt-1 step-status">En cours</p>
+                            </div>
+                        </div>
 
-    <!-- Error Fallback -->
-    <noscript>
-        <div style="
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: #030213;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            font-family: Inter, sans-serif;
-        ">
-            <div>
-                <h1 style="margin-bottom: 16px;">JavaScript requis</h1>
-                <p style="margin-bottom: 24px;">
-                    Veuillez activer JavaScript dans votre navigateur pour accéder au site des Armateurs du Saint-Laurent.
-                </p>
-                <p style="font-size: 14px; opacity: 0.8;">
-                    Pour plus d'informations, contactez-nous à info@armateurs-saint-laurent.ca
-                </p>
+                        <div class="step-item flex items-start space-x-3" data-step="2">
+                            <div class="flex flex-col items-center">
+                                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">
+                                    <span class="step-number">2</span>
+                                    <svg class="step-check w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="step-connector w-0.5 h-6 bg-gray-200 mt-2"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-500">Choix de la catégorie d'adhésion</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item flex items-start space-x-3" data-step="3">
+                            <div class="flex flex-col items-center">
+                                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">
+                                    <span class="step-number">3</span>
+                                    <svg class="step-check w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="step-connector w-0.5 h-6 bg-gray-200 mt-2"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-500">Contact principal</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item flex items-start space-x-3" data-step="4">
+                            <div class="flex flex-col items-center">
+                                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">
+                                    <span class="step-number">4</span>
+                                    <svg class="step-check w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="step-connector w-0.5 h-6 bg-gray-200 mt-2"></div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-500">Délégués supplémentaires</p>
+                            </div>
+                        </div>
+
+                        <div class="step-item flex items-start space-x-3" data-step="5">
+                            <div class="flex flex-col items-center">
+                                <div class="step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium bg-gray-200 text-gray-500">
+                                    <span class="step-number">5</span>
+                                    <svg class="step-check w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-gray-500">Revue et soumission</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Help section -->
+                    <div class="mt-12 pt-6 border-t border-gray-200">
+                        <div class="flex items-start space-x-3">
+                            <svg class="w-4 h-4 text-asl-primary mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <h3 class="text-sm font-medium text-asl-primary mb-2">Besoin d'aide?</h3>
+                                <p class="text-xs text-gray-600 leading-4">
+                                    Si vous avez besoin d'assistance, veuillez contacter notre équipe de support à support@asl.org
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="flex-1 space-y-8">
+                <!-- Form Section -->
+                <div class="bg-white rounded-lg shadow-sm border overflow-hidden">
+                    <div class="p-8">
+                        <div class="mb-8">
+                            <h2 id="step-title" class="text-2xl font-bold text-asl-primary mb-2">
+                                Informations sur l'organisation / le compte
+                            </h2>
+                            <p id="step-description" class="text-asl-text">
+                                Veuillez fournir les informations sur votre entreprise ou organisation.
+                            </p>
+                        </div>
+                        
+                        <!-- Form Container -->
+                        <div id="form-container" class="min-h-[400px] relative overflow-hidden">
+                            <!-- Step 1: Organisation Info -->
+                            <div id="step-1" class="step-content">
+                                <div class="space-y-6">
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Informations de base</h3>
+                                        <div class="grid grid-cols-1 gap-4">
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Nom officiel de l'entreprise ou de l'individu *</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <label class="block text-sm font-medium text-gray-700">Courriel général *</label>
+                                                    <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label class="block text-sm font-medium text-gray-700">Téléphone *</label>
+                                                    <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                                </div>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Courriel de facturation</label>
+                                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Adresse</h3>
+                                        <div class="grid grid-cols-1 gap-4">
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Adresse *</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Adresse ligne 2 (optionnel)</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <label class="block text-sm font-medium text-gray-700">Ville *</label>
+                                                    <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                                        <option value="">Sélectionner une ville</option>
+                                                        <option value="montreal">Montréal</option>
+                                                        <option value="quebec">Québec</option>
+                                                        <option value="laval">Laval</option>
+                                                        <option value="gatineau">Gatineau</option>
+                                                    </select>
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label class="block text-sm font-medium text-gray-700">Code postal *</label>
+                                                    <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Détails de l'entreprise</h3>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Télécopie</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Nombre d'employés</label>
+                                                <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                                    <option value="">Sélectionner</option>
+                                                    <option value="1-5">1-5</option>
+                                                    <option value="6-20">6-20</option>
+                                                    <option value="21-50">21-50</option>
+                                                    <option value="51+">51+</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Caractéristiques</h3>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="nouvelle-entreprise" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary">
+                                                <label for="nouvelle-entreprise" class="text-sm">Nouvelle entreprise</label>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="travailleur-autonome" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary">
+                                                <label for="travailleur-autonome" class="text-sm">Travailleur autonome</label>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="exportateur" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary">
+                                                <label for="exportateur" class="text-sm">Exportateur</label>
+                                            </div>
+                                            <div class="flex items-center space-x-2">
+                                                <input type="checkbox" id="manufacturier" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary">
+                                                <label for="manufacturier" class="text-sm">Manufacturier</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Membership Type -->
+                            <div id="step-2" class="step-content hidden-step">
+                                <div class="space-y-6">
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Type d'adhésion</h3>
+                                        <div class="space-y-4">
+                                            <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                                <div class="flex items-center space-x-3">
+                                                    <input type="radio" name="membership-type" value="basic" class="text-asl-primary focus:ring-asl-primary">
+                                                    <div>
+                                                        <div class="font-medium">Adhésion de base</div>
+                                                        <div class="text-sm text-gray-600">Accès aux services essentiels</div>
+                                                    </div>
+                                                </div>
+                                                <div class="font-semibold">299$ CAD</div>
+                                            </label>
+                                            <label class="flex items-center justify-between p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                                <div class="flex items-center space-x-3">
+                                                    <input type="radio" name="membership-type" value="premium" class="text-asl-primary focus:ring-asl-primary">
+                                                    <div>
+                                                        <div class="font-medium">Adhésion premium</div>
+                                                        <div class="text-sm text-gray-600">Accès complet aux services</div>
+                                                    </div>
+                                                </div>
+                                                <div class="font-semibold">499$ CAD</div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Options de commandite d'événements</h3>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div class="flex items-center justify-between p-3 border rounded-lg">
+                                                <div class="flex items-center space-x-2">
+                                                    <input type="checkbox" id="commandite-bronze" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary">
+                                                    <label for="commandite-bronze">Bronze</label>
+                                                </div>
+                                                <span class="font-medium">100$</span>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 border rounded-lg">
+                                                <div class="flex items-center space-x-2">
+                                                    <input type="checkbox" id="commandite-argent" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary">
+                                                    <label for="commandite-argent">Argent</label>
+                                                </div>
+                                                <span class="font-medium">250$</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Contact Principal -->
+                            <div id="step-3" class="step-content hidden-step">
+                                <div class="space-y-6">
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Identité</h3>
+                                        <div class="grid grid-cols-3 gap-4">
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Civilité *</label>
+                                                <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                                    <option value="">Sélectionner</option>
+                                                    <option value="M.">M.</option>
+                                                    <option value="Mme">Mme</option>
+                                                    <option value="Dr">Dr</option>
+                                                </select>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Prénom *</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                            </div>
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Nom de famille *</label>
+                                                <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Coordonnées</h3>
+                                        <div class="space-y-4">
+                                            <div class="space-y-2">
+                                                <label class="block text-sm font-medium text-gray-700">Courriel (obligatoire) *</label>
+                                                <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent" required>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <label class="block text-sm font-medium text-gray-700">Téléphone</label>
+                                                    <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <label class="block text-sm font-medium text-gray-700">Cellulaire</label>
+                                                    <input type="tel" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 4: Délégués -->
+                            <div id="step-4" class="step-content hidden-step">
+                                <div class="space-y-6">
+                                    <div class="text-center">
+                                        <h3 class="font-medium mb-2">Délégués supplémentaires</h3>
+                                        <p class="text-sm text-gray-600 mb-6">
+                                            Ajoutez des délégués qui représenteront votre organisation (optionnel)
+                                        </p>
+                                    </div>
+                                    
+                                    <div id="delegues-container">
+                                        <!-- Délégués will be added here dynamically -->
+                                    </div>
+
+                                    <div class="flex justify-center">
+                                        <button type="button" id="add-delegue" class="flex items-center px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                            </svg>
+                                            Ajouter un délégué
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step 5: Review -->
+                            <div id="step-5" class="step-content hidden-step">
+                                <div class="space-y-6">
+                                    <div class="bg-gray-50 rounded-lg p-6">
+                                        <h3 class="font-medium mb-4">Résumé de votre inscription</h3>
+                                        <div class="space-y-3">
+                                            <div class="flex justify-between">
+                                                <span>Adhésion Premium</span>
+                                                <span>499$ CAD</span>
+                                            </div>
+                                            <hr>
+                                            <div class="flex justify-between font-semibold">
+                                                <span>Total</span>
+                                                <span>499$ CAD</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-section">
+                                        <h3 class="font-medium mb-4">Méthode de paiement</h3>
+                                        <div class="space-y-4">
+                                            <label class="flex items-center p-4 border rounded-lg cursor-pointer hover:bg-gray-50">
+                                                <input type="radio" name="payment-method" value="carte" class="text-asl-primary focus:ring-asl-primary" checked>
+                                                <span class="ml-3">Carte de crédit</span>
+                                            </label>
+                                            <div class="ml-7 space-y-4">
+                                                <div class="grid grid-cols-2 gap-4">
+                                                    <div class="col-span-2 space-y-2">
+                                                        <label class="block text-sm font-medium text-gray-700">Numéro de carte</label>
+                                                        <input type="text" placeholder="**** **** **** ****" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                                    </div>
+                                                    <div class="space-y-2">
+                                                        <label class="block text-sm font-medium text-gray-700">Date d'expiration</label>
+                                                        <input type="text" placeholder="MM/AA" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                                    </div>
+                                                    <div class="space-y-2">
+                                                        <label class="block text-sm font-medium text-gray-700">CVV</label>
+                                                        <input type="text" placeholder="***" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center space-x-2 p-4 bg-gray-50 rounded-lg">
+                                        <input type="checkbox" id="final-consent" class="rounded border-gray-300 text-asl-primary focus:ring-asl-primary" required>
+                                        <label for="final-consent" class="text-sm">
+                                            J'accepte les conditions finales et confirme mon inscription *
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="flex justify-between pt-4 border-t border-gray-200 mt-8">
+                            <button type="button" id="prev-btn" class="btn-hover flex items-center px-6 py-2.5 border border-gray-300 rounded-md disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                <svg class="w-3.5 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                                Précédent
+                            </button>
+
+                            <button type="button" id="next-btn" class="btn-hover flex items-center px-6 py-2.5 bg-asl-primary hover:bg-asl-primary/90 text-white rounded-md disabled:opacity-50">
+                                <span id="next-btn-text">Suivant</span>
+                                <svg id="next-btn-arrow" class="w-3.5 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                                <svg id="loading-spinner" class="w-4 h-4 ml-2 loading-spinner hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"/>
+                                    <path fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" class="opacity-75"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Why Join Section -->
+                <div class="bg-white rounded-lg shadow-sm border p-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.3s">
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-xl font-bold text-asl-primary">Pourquoi rejoindre ASL?</h2>
+                            <div class="flex items-center space-x-4">
+                                <span id="why-join-progress" class="text-sm text-asl-primary">Votre progression: 20%</span>
+                                <div class="w-20 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                    <div id="why-join-bar" class="h-1.5 bg-asl-primary rounded-full progress-bar" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div class="benefit-card border border-gray-200 rounded-lg p-4">
+                            <div class="benefit-icon w-10 h-10 bg-asl-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-5 h-5 text-asl-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-medium text-asl-text mb-3">Connexions industrielles</h3>
+                            <p class="text-sm text-gray-600 leading-5">
+                                Établissez des relations avec les principaux acteurs et décideurs de l'industrie.
+                            </p>
+                        </div>
+                        
+                        <div class="benefit-card border border-gray-200 rounded-lg p-4">
+                            <div class="benefit-icon w-10 h-10 bg-asl-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-5 h-5 text-asl-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-medium text-asl-text mb-3">Partage de connaissances</h3>
+                            <p class="text-sm text-gray-600 leading-5">
+                                Accédez à des recherches exclusives, études de cas et meilleures pratiques.
+                            </p>
+                        </div>
+                        
+                        <div class="benefit-card border border-gray-200 rounded-lg p-4">
+                            <div class="benefit-icon w-10 h-10 bg-asl-primary/10 rounded-full flex items-center justify-center mb-4">
+                                <svg class="w-5 h-5 text-asl-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                </svg>
+                            </div>
+                            <h3 class="font-medium text-asl-text mb-3">Croissance professionnelle</h3>
+                            <p class="text-sm text-gray-600 leading-5">
+                                Améliorez vos compétences grâce à des formations et ateliers spécialisés.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <p id="steps-remaining" class="text-sm text-gray-500 text-center">
+                        Plus que 4 étapes pour compléter votre demande d'adhésion
+                    </p>
+                </div>
             </div>
         </div>
-    </noscript>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-asl-primary text-white py-8 mt-16">
+        <div class="max-w-7xl mx-auto px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                            <span class="text-asl-primary font-bold text-sm">ASL</span>
+                        </div>
+                        <span class="font-semibold">ASL</span>
+                    </div>
+                    <p class="text-sm text-white/80">
+                        Association de la Sécurité Logistique - Votre partenaire pour un avenir sécurisé.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Services</h3>
+                    <ul class="space-y-2 text-sm text-white/80">
+                        <li><a href="#" class="hover:text-white">Formations</a></li>
+                        <li><a href="#" class="hover:text-white">Certifications</a></li>
+                        <li><a href="#" class="hover:text-white">Consulting</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">À propos</h3>
+                    <ul class="space-y-2 text-sm text-white/80">
+                        <li><a href="#" class="hover:text-white">Notre mission</a></li>
+                        <li><a href="#" class="hover:text-white">Équipe</a></li>
+                        <li><a href="#" class="hover:text-white">Carrières</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-semibold mb-4">Contact</h3>
+                    <ul class="space-y-2 text-sm text-white/80">
+                        <li>support@asl.org</li>
+                        <li>+1 (514) 123-4567</li>
+                        <li>Montréal, QC</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/20 mt-8 pt-8 text-center text-sm text-white/60">
+                <p>&copy; 2024 Association de la Sécurité Logistique. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
 
-    <!-- Remove loading screen after app loads -->
     <script>
-        // Remove loading screen when the app is ready
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                document.body.classList.add('app-loaded');
-                // Remove from DOM after animation
-                setTimeout(function() {
-                    const loading = document.getElementById('app-loading');
-                    if (loading) {
-                        loading.remove();
+        // Application state
+        let currentStep = 1;
+        const totalSteps = 5;
+        let delegueCount = 0;
+
+        const stepTitles = [
+            { id: 1, title: "Informations sur l'organisation / le compte", description: "Veuillez fournir les informations sur votre entreprise ou organisation." },
+            { id: 2, title: "Choix de la catégorie d'adhésion", description: "Sélectionnez le type d'adhésion qui convient le mieux à votre organisation." },
+            { id: 3, title: "Contact principal", description: "Renseignez les informations du contact principal de votre organisation." },
+            { id: 4, title: "Délégués supplémentaires", description: "Ajoutez des délégués qui représenteront votre organisation (optionnel)." },
+            { id: 5, title: "Revue et soumission", description: "Vérifiez vos informations et finalisez votre demande d'adhésion." }
+        ];
+
+        // DOM elements
+        const stepCounter = document.getElementById('step-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const stepTitle = document.getElementById('step-title');
+        const stepDescription = document.getElementById('step-description');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const nextBtnText = document.getElementById('next-btn-text');
+        const nextBtnArrow = document.getElementById('next-btn-arrow');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const whyJoinProgress = document.getElementById('why-join-progress');
+        const whyJoinBar = document.getElementById('why-join-bar');
+        const stepsRemaining = document.getElementById('steps-remaining');
+        const addDelegueBtn = document.getElementById('add-delegue');
+        const deleguesContainer = document.getElementById('delegues-container');
+
+        // Initialize the application
+        function init() {
+            updateUI();
+            animateFormSections();
+            
+            // Add event listeners
+            prevBtn.addEventListener('click', goToPreviousStep);
+            nextBtn.addEventListener('click', goToNextStep);
+            addDelegueBtn.addEventListener('click', addDelegue);
+        }
+
+        // Update the UI based on current step
+        function updateUI() {
+            updateStepCounter();
+            updateProgressBar();
+            updateStepTitle();
+            updateStepContent();
+            updateNavigationButtons();
+            updateSidebar();
+            updateWhyJoinSection();
+        }
+
+        // Update step counter
+        function updateStepCounter() {
+            stepCounter.textContent = `Étape ${currentStep} sur ${totalSteps}`;
+        }
+
+        // Update progress bar
+        function updateProgressBar() {
+            const percentage = (currentStep / totalSteps) * 100;
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${Math.round(percentage)}% terminé`;
+        }
+
+        // Update step title and description
+        function updateStepTitle() {
+            const stepInfo = stepTitles[currentStep - 1];
+            stepTitle.textContent = stepInfo.title;
+            stepDescription.textContent = stepInfo.description;
+        }
+
+        // Update step content visibility
+        function updateStepContent() {
+            // Hide all steps
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepElement = document.getElementById(`step-${i}`);
+                if (stepElement) {
+                    stepElement.classList.add('hidden-step');
+                }
+            }
+            
+            // Show current step
+            const currentStepElement = document.getElementById(`step-${currentStep}`);
+            if (currentStepElement) {
+                currentStepElement.classList.remove('hidden-step');
+                currentStepElement.classList.add('animate-slide-in');
+            }
+
+            // Re-animate form sections
+            setTimeout(animateFormSections, 100);
+        }
+
+        // Update navigation buttons
+        function updateNavigationButtons() {
+            // Previous button
+            prevBtn.disabled = currentStep === 1;
+            
+            // Next button
+            if (currentStep === totalSteps) {
+                nextBtnText.textContent = "Finaliser l'inscription";
+            } else {
+                nextBtnText.textContent = "Suivant";
+            }
+        }
+
+        // Update sidebar steps
+        function updateSidebar() {
+            const stepItems = document.querySelectorAll('.step-item');
+            
+            stepItems.forEach((item, index) => {
+                const stepNumber = index + 1;
+                const indicator = item.querySelector('.step-indicator');
+                const stepNumberSpan = item.querySelector('.step-number');
+                const stepCheck = item.querySelector('.step-check');
+                const stepStatus = item.querySelector('.step-status');
+                const stepText = item.querySelector('p');
+                const connector = item.querySelector('.step-connector');
+
+                // Reset classes
+                indicator.className = 'step-indicator w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium';
+                
+                if (stepNumber === currentStep) {
+                    // Current step
+                    indicator.classList.add('bg-asl-primary', 'text-white', 'active');
+                    stepText.classList.remove('text-gray-500');
+                    stepText.classList.add('text-asl-primary');
+                    if (stepStatus) {
+                        stepStatus.textContent = 'En cours';
+                        stepStatus.className = 'text-xs text-asl-primary mt-1 step-status';
                     }
-                }, 500);
-            }, 1000); // Show for at least 1 second
-        });
-        
-        // Performance monitoring
-        if ('performance' in window) {
-            window.addEventListener('load', function() {
-                // Log performance metrics in development
-                if (window.location.hostname === 'localhost') {
-                    setTimeout(function() {
-                        const perfData = performance.getEntriesByType('navigation')[0];
-                        console.log('🚀 Performance:', {
-                            domContentLoaded: Math.round(perfData.domContentLoadedEventEnd - perfData.fetchStart),
-                            loadComplete: Math.round(perfData.loadEventEnd - perfData.fetchStart),
-                            firstPaint: performance.getEntriesByType('paint')[0]?.startTime || 'N/A'
-                        });
-                    }, 100);
+                } else if (stepNumber < currentStep) {
+                    // Completed step
+                    indicator.classList.add('bg-asl-primary', 'text-white');
+                    stepNumberSpan.classList.add('hidden');
+                    stepCheck.classList.remove('hidden');
+                    stepText.classList.remove('text-gray-500');
+                    stepText.classList.add('text-asl-primary');
+                    if (stepStatus) {
+                        stepStatus.textContent = 'Terminé';
+                        stepStatus.className = 'text-xs text-green-600 mt-1 step-status';
+                    }
+                    if (connector) {
+                        connector.classList.remove('bg-gray-200');
+                        connector.classList.add('bg-asl-primary');
+                    }
+                } else {
+                    // Future step
+                    indicator.classList.add('bg-gray-200', 'text-gray-500');
+                    stepNumberSpan.classList.remove('hidden');
+                    stepCheck.classList.add('hidden');
+                    stepText.classList.remove('text-asl-primary');
+                    stepText.classList.add('text-gray-500');
+                    if (stepStatus) {
+                        stepStatus.textContent = '';
+                    }
+                    if (connector) {
+                        connector.classList.remove('bg-asl-primary');
+                        connector.classList.add('bg-gray-200');
+                    }
                 }
             });
         }
-        
-        // Service Worker Registration (for future PWA features)
-        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').catch(function() {
-                    // Service worker not available, that's okay
-                });
+
+        // Update "Why Join" section
+        function updateWhyJoinSection() {
+            const percentage = (currentStep / totalSteps) * 100;
+            const remaining = totalSteps - currentStep;
+            
+            whyJoinProgress.textContent = `Votre progression: ${Math.round(percentage)}%`;
+            whyJoinBar.style.width = `${percentage}%`;
+            
+            if (remaining > 0) {
+                stepsRemaining.textContent = `Plus que ${remaining} étape${remaining > 1 ? 's' : ''} pour compléter votre demande d'adhésion`;
+            } else {
+                stepsRemaining.textContent = "Félicitations! Votre demande d'adhésion est terminée.";
+            }
+        }
+
+        // Animate form sections
+        function animateFormSections() {
+            const sections = document.querySelectorAll('.form-section');
+            sections.forEach((section, index) => {
+                section.classList.remove('visible');
+                setTimeout(() => {
+                    section.classList.add('visible');
+                }, index * 100 + 100);
             });
         }
-    </script>
 
-    <!-- Module Script - Will be replaced by build tool -->
-    <script type="module" src="/src/main.tsx"></script>
+        // Go to previous step
+        function goToPreviousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        // Go to next step
+        function goToNextStep() {
+            if (currentStep < totalSteps) {
+                // Show loading state
+                showLoading();
+                
+                // Simulate processing time
+                setTimeout(() => {
+                    hideLoading();
+                    currentStep++;
+                    updateUI();
+                }, 500);
+            } else {
+                // Final submission
+                submitForm();
+            }
+        }
+
+        // Show loading state
+        function showLoading() {
+            nextBtnText.classList.add('hidden');
+            nextBtnArrow.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            nextBtn.disabled = true;
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            nextBtnText.classList.remove('hidden');
+            nextBtnArrow.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
+            nextBtn.disabled = false;
+        }
+
+        // Add delegate
+        function addDelegue() {
+            delegueCount++;
+            
+            const delegueHTML = `
+                <div class="bg-gray-50 rounded-lg p-6 mb-4" id="delegue-${delegueCount}">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-medium">Délégué #${delegueCount}</h4>
+                        <button type="button" class="text-red-600 hover:text-red-800" onclick="removeDelegue(${delegueCount})">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Civilité</label>
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                                <option value="">Sélectionner</option>
+                                <option value="M.">M.</option>
+                                <option value="Mme">Mme</option>
+                                <option value="Dr">Dr</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Prénom</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Nom de famille</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mt-4">
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Courriel</label>
+                            <input type="email" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium text-gray-700">Titre</label>
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-asl-primary focus:border-transparent">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            deleguesContainer.insertAdjacentHTML('beforeend', delegueHTML);
+        }
+
+        // Remove delegate
+        function removeDelegue(id) {
+            const delegueElement = document.getElementById(`delegue-${id}`);
+            if (delegueElement) {
+                delegueElement.remove();
+            }
+        }
+
+        // Submit form
+        function submitForm() {
+            showLoading();
+            
+            // Simulate form submission
+            setTimeout(() => {
+                hideLoading();
+                alert('Félicitations! Votre demande d\'adhésion a été soumise avec succès.');
+                
+                // You could redirect to a confirmation page here
+                // window.location.href = '/confirmation';
+            }, 2000);
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 </body>
 </html>

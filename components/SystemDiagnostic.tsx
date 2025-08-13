@@ -2,22 +2,30 @@ import { useState, useEffect } from 'react';
 import { membriApi } from '../utils/membriApi';
 import { Alert, AlertDescription } from './ui/alert';
 import { Button } from './ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { Badge } from './ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { Separator } from './ui/separator';
 import { 
-  ChevronDown, 
-  ChevronUp, 
+  AlertCircle, 
+  CheckCircle, 
+  Info, 
   Wifi, 
   WifiOff, 
-  Settings, 
-  Monitor, 
-  CheckCircle,
-  AlertTriangle,
-  Info,
+  Server, 
+  Database,
   Shield,
-  Zap
+  Clock,
+  RefreshCw,
+  Monitor,
+  Zap,
+  ChevronUp,
+  ChevronDown,
+  Settings,
+  AlertTriangle
 } from 'lucide-react';
+import { ApiHealthDashboard } from './ApiHealthDashboard';
 
 interface DiagnosticInfo {
   environment: string;

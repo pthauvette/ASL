@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dossiers Sectoriels - Armateurs du Saint-Laurent</title>
+    <meta name="description" content="Consultez les dossiers sectoriels, analyses et positions de l'Association des Armateurs du Saint-Laurent sur les enjeux du transport maritime.">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=120&h=60&fit=crop&crop=center" alt="Armateurs du Saint-Laurent" class="logo-img">
+                    <span class="logo-text">Armateurs du Saint-Laurent</span>
+                </div>
+                
+                <nav class="navigation">
+                    <ul class="nav-list">
+                        <li><a href="index.html" class="nav-link">Accueil</a></li>
+                        <li><a href="association.html" class="nav-link">L'Association</a></li>
+                        <li><a href="saint-laurent.html" class="nav-link">Le Saint-Laurent</a></li>
+                        <li><a href="membres.html" class="nav-link">Nos Membres</a></li>
+                        <li><a href="evenements.html" class="nav-link">Événements</a></li>
+                        <li><a href="dossiers.html" class="nav-link active">Dossiers</a></li>
+                        <li><a href="contact.html" class="nav-link">Contact</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="connexion.html" class="btn btn-outline">Connexion</a>
+                    <a href="inscription.html" class="btn btn-primary">Devenir membre</a>
+                </div>
+
+                <button class="mobile-menu-toggle" aria-label="Menu mobile">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div class="page-hero-background">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&h=600&fit=crop&crop=center" alt="Dossiers sectoriels ASL" class="page-hero-image">
+            <div class="page-hero-overlay"></div>
+        </div>
+        <div class="container">
+            <div class="page-hero-content">
+                <h1>Dossiers Sectoriels</h1>
+                <p>Analyses, positions et documents de référence sur les enjeux maritimes</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dossiers Overview -->
+    <section class="dossiers-overview">
+        <div class="container">
+            <div class="dossiers-intro">
+                <h2>Centre de documentation maritime</h2>
+                <p>L'Association des Armateurs du Saint-Laurent produit régulièrement des analyses sectorielles, prises de position et documents de référence pour éclairer les débats et accompagner les décisions des acteurs de l'industrie maritime.</p>
+            </div>
+            
+            <div class="dossiers-stats">
+                <div class="dossier-stat">
+                    <div class="stat-number">150+</div>
+                    <div class="stat-label">Documents publiés</div>
+                </div>
+                <div class="dossier-stat">
+                    <div class="stat-number">25</div>
+                    <div class="stat-label">Dossiers thématiques</div>
+                </div>
+                <div class="dossier-stat">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Mises à jour annuelles</div>
+                </div>
+                <div class="dossier-stat">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">Téléchargements par mois</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search and Filters -->
+    <section class="dossiers-search">
+        <div class="container">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="search" placeholder="Rechercher dans les dossiers..." class="search-input">
+                    <button class="search-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="filters">
+                    <select class="filter-select">
+                        <option value="">Toutes les catégories</option>
+                        <option value="reglementation">Réglementation</option>
+                        <option value="environnement">Environnement</option>
+                        <option value="economie">Économie</option>
+                        <option value="innovation">Innovation</option>
+                        <option value="securite">Sécurité</option>
+                        <option value="infrastructure">Infrastructure</option>
+                    </select>
+                    
+                    <select class="filter-select">
+                        <option value="">Toutes les années</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Dossiers -->
+    <section class="featured-dossiers">
+        <div class="container">
+            <div class="section-header">
+                <h2>Dossiers prioritaires</h2>
+                <p>Les analyses les plus consultées et les enjeux actuels</p>
+            </div>
+            
+            <div class="featured-grid">
+                <div class="dossier-card featured">
+                    <div class="dossier-category reglementation">Réglementation</div>
+                    <div class="dossier-content">
+                        <h3>Nouvelles Réglementations Environnementales 2024</h3>
+                        <p>Analyse complète des nouvelles exigences environnementales de l'OMI et leur impact sur les opérations maritimes canadiennes.</p>
+                        <div class="dossier-meta">
+                            <span class="dossier-date">📅 Décembre 2024</span>
+                            <span class="dossier-pages">📄 45 pages</span>
+                            <span class="dossier-downloads">⬇️ 1,250 téléchargements</span>
+                        </div>
+                        <div class="dossier-actions">
+                            <a href="#" class="btn btn-primary">Télécharger PDF</a>
+                            <a href="#" class="btn btn-outline">Lire en ligne</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dossier-card featured">
+                    <div class="dossier-category economie">Économie</div>
+                    <div class="dossier-content">
+                        <h3>Impact Économique du Transport Maritime au Québec</h3>
+                        <p>Étude détaillée sur la contribution économique du secteur maritime à l'économie québécoise et ses perspectives d'avenir.</p>
+                        <div class="dossier-meta">
+                            <span class="dossier-date">📅 Novembre 2024</span>
+                            <span class="dossier-pages">📄 62 pages</span>
+                            <span class="dossier-downloads">⬇️ 980 téléchargements</span>
+                        </div>
+                        <div class="dossier-actions">
+                            <a href="#" class="btn btn-primary">Télécharger PDF</a>
+                            <a href="#" class="btn btn-outline">Lire en ligne</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="dossiers-categories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Catégories de dossiers</h2>
+                <p>Explorez nos analyses par domaine d'expertise</p>
+            </div>
+            
+            <div class="categories-grid">
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>📋 Réglementation</h3>
+                        <span class="category-count">18 documents</span>
+                    </div>
+                    <div class="category-documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Code ISPS - Mise à jour 2024</h4>
+                                <p>Guide d'application des nouvelles dispositions de sécurité portuaire.</p>
+                                <span class="document-date">Octobre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Réglementation Transport Canada</h4>
+                                <p>Synthèse des modifications réglementaires en vigueur.</p>
+                                <span class="document-date">Septembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Douanes et Procédures Frontalières</h4>
+                                <p>Guide pratique pour les formalités douanières transfrontalières.</p>
+                                <span class="document-date">Août 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="category-more">Voir tous les documents réglementaires →</a>
+                    </div>
+                </div>
+                
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>🌱 Environnement</h3>
+                        <span class="category-count">15 documents</span>
+                    </div>
+                    <div class="category-documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Stratégie Décarbonation Maritime</h4>
+                                <p>Feuille de route pour atteindre les objectifs de neutralité carbone.</p>
+                                <span class="document-date">Novembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Gestion des Eaux de Ballast</h4>
+                                <p>Meilleures pratiques pour la conformité environnementale.</p>
+                                <span class="document-date">Octobre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Protection Écosystème Saint-Laurent</h4>
+                                <p>Initiatives de préservation de la biodiversité marine.</p>
+                                <span class="document-date">Septembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="category-more">Voir tous les documents environnementaux →</a>
+                    </div>
+                </div>
+                
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>💰 Économie</h3>
+                        <span class="category-count">12 documents</span>
+                    </div>
+                    <div class="category-documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Tendances Tarifaires 2024</h4>
+                                <p>Analyse des évolutions tarifaires du transport maritime.</p>
+                                <span class="document-date">Décembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Compétitivité Ports Québécois</h4>
+                                <p>Étude comparative de la performance des ports québécois.</p>
+                                <span class="document-date">Novembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Investissements Infrastructure Maritime</h4>
+                                <p>Analyse des besoins d'investissement à moyen terme.</p>
+                                <span class="document-date">Octobre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="category-more">Voir tous les documents économiques →</a>
+                    </div>
+                </div>
+                
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>🚀 Innovation</h3>
+                        <span class="category-count">10 documents</span>
+                    </div>
+                    <div class="category-documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Technologies Autonomes Maritime</h4>
+                                <p>État des lieux des navires autonomes et perspectives d'adoption.</p>
+                                <span class="document-date">Novembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Digitalisation Ports Intelligents</h4>
+                                <p>Guide de transformation numérique des infrastructures portuaires.</p>
+                                <span class="document-date">Octobre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Carburants Alternatifs</h4>
+                                <p>Évaluation des solutions énergétiques pour la flotte maritime.</p>
+                                <span class="document-date">Septembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="category-more">Voir tous les documents d'innovation →</a>
+                    </div>
+                </div>
+                
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>🛡️ Sécurité</h3>
+                        <span class="category-count">14 documents</span>
+                    </div>
+                    <div class="category-documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Protocoles Sécurité Portuaire</h4>
+                                <p>Mise à jour des procédures de sécurité dans les ports canadiens.</p>
+                                <span class="document-date">Décembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Formation Équipages</h4>
+                                <p>Standards de formation et certification du personnel maritime.</p>
+                                <span class="document-date">Novembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Gestion des Risques Maritimes</h4>
+                                <p>Méthodologie d'évaluation et de mitigation des risques.</p>
+                                <span class="document-date">Octobre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="category-more">Voir tous les documents de sécurité →</a>
+                    </div>
+                </div>
+                
+                <div class="category-section">
+                    <div class="category-header">
+                        <h3>🏗️ Infrastructure</h3>
+                        <span class="category-count">8 documents</span>
+                    </div>
+                    <div class="category-documents">
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Modernisation Écluses Saint-Laurent</h4>
+                                <p>Projet de rénovation et d'amélioration des infrastructures d'écluses.</p>
+                                <span class="document-date">Novembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Développement Terminaux Conteneurs</h4>
+                                <p>Stratégie d'expansion des capacités de manutention.</p>
+                                <span class="document-date">Octobre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <div class="document-item">
+                            <div class="document-info">
+                                <h4>Connectivité Multimodale</h4>
+                                <p>Amélioration des liens routiers et ferroviaires vers les ports.</p>
+                                <span class="document-date">Septembre 2024</span>
+                            </div>
+                            <div class="document-actions">
+                                <a href="#" class="download-link">PDF</a>
+                            </div>
+                        </div>
+                        
+                        <a href="#" class="category-more">Voir tous les documents d'infrastructure →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research and Reports -->
+    <section class="research-reports">
+        <div class="container">
+            <div class="section-header">
+                <h2>Recherche et analyses</h2>
+                <p>Nos études approfondies sur les enjeux maritimes</p>
+            </div>
+            
+            <div class="reports-grid">
+                <div class="report-card annual">
+                    <div class="report-header">
+                        <div class="report-type">Rapport annuel</div>
+                        <h3>État de l'Industrie Maritime 2024</h3>
+                    </div>
+                    <div class="report-content">
+                        <p>Analyse complète de l'évolution du secteur maritime québécois avec statistiques détaillées, tendances et perspectives.</p>
+                        <div class="report-highlights">
+                            <span>📊 150 pages d'analyses</span>
+                            <span>📈 Données exclusives</span>
+                            <span>🔮 Prévisions 2025-2027</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <a href="#" class="btn btn-primary">Télécharger</a>
+                        <span class="report-size">12.5 MB</span>
+                    </div>
+                </div>
+                
+                <div class="report-card quarterly">
+                    <div class="report-header">
+                        <div class="report-type">Bulletin trimestriel</div>
+                        <h3>Veille Maritime Q4 2024</h3>
+                    </div>
+                    <div class="report-content">
+                        <p>Synthèse des développements réglementaires, économiques et technologiques du dernier trimestre.</p>
+                        <div class="report-highlights">
+                            <span>📰 Actualités sectorielles</span>
+                            <span>⚖️ Évolutions réglementaires</span>
+                            <span>🔧 Innovations technologiques</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <a href="#" class="btn btn-outline">Télécharger</a>
+                        <span class="report-size">3.2 MB</span>
+                    </div>
+                </div>
+                
+                <div class="report-card special">
+                    <div class="report-header">
+                        <div class="report-type">Étude spéciale</div>
+                        <h3>Post-COVID : Transformation Maritime</h3>
+                    </div>
+                    <div class="report-content">
+                        <p>Analyse de l'impact de la pandémie sur le transport maritime et les adaptations durables du secteur.</p>
+                        <div class="report-highlights">
+                            <span>🦠 Impact COVID-19</span>
+                            <span>🔄 Adaptations sectorielles</span>
+                            <span>💡 Leçons apprises</span>
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <a href="#" class="btn btn-outline">Télécharger</a>
+                        <span class="report-size">8.7 MB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submission Guidelines -->
+    <section class="submission-guidelines">
+        <div class="container">
+            <div class="guidelines-content">
+                <div class="guidelines-text">
+                    <h2>Contribuer à nos dossiers</h2>
+                    <p class="guidelines-intro">L'Association accueille les contributions de ses membres et partenaires pour enrichir sa base documentaire.</p>
+                    
+                    <div class="guidelines-steps">
+                        <div class="guideline-item">
+                            <div class="guideline-icon">📝</div>
+                            <div class="guideline-content">
+                                <h3>Proposer un sujet</h3>
+                                <p>Identifiez un enjeu d'actualité nécessitant une analyse approfondie.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="guideline-item">
+                            <div class="guideline-icon">👥</div>
+                            <div class="guideline-content">
+                                <h3>Collaboration</h3>
+                                <p>Travaillez avec notre équipe éditoriale pour développer le contenu.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="guideline-item">
+                            <div class="guideline-icon">✅</div>
+                            <div class="guideline-content">
+                                <h3>Publication</h3>
+                                <p>Validation par le comité éditorial et diffusion dans notre réseau.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="guidelines-criteria">
+                        <h3>Critères de publication</h3>
+                        <ul>
+                            <li>✓ Pertinence pour l'industrie maritime québécoise</li>
+                            <li>✓ Rigueur méthodologique et sources fiables</li>
+                            <li>✓ Perspective d'analyse originale</li>
+                            <li>✓ Respect des standards éditoriaux de l'ASL</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="guidelines-image">
+                    <img src="https://images.unsplash.com/photo-1556075798-4825dfaaf498?w=600&h=500&fit=crop&crop=center" alt="Collaboration éditoriale">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Signup -->
+    <section class="newsletter-signup">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Restez informé</h2>
+                <p>Recevez nos dernières publications et analyses directement dans votre boîte email.</p>
+                
+                <form class="newsletter-form">
+                    <div class="form-group">
+                        <input type="email" placeholder="Votre adresse email" required>
+                        <button type="submit" class="btn btn-primary">S'abonner</button>
+                    </div>
+                    <div class="newsletter-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" checked>
+                            <span class="checkmark"></span>
+                            Nouvelles publications
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            Bulletins trimestriels
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            Alertes réglementaires
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Accédez à l'ensemble de nos ressources</h2>
+                <p>Les membres de l'ASL bénéficient d'un accès privilégié à nos analyses exclusives et peuvent contribuer à nos travaux de recherche.</p>
+                <div class="cta-actions">
+                    <a href="inscription.html" class="btn btn-primary btn-large">Devenir membre</a>
+                    <a href="contact.html" class="btn btn-outline btn-large">Nous contacter</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=120&h=60&fit=crop&crop=center" alt="ASL" class="footer-logo-img">
+                        <span class="footer-logo-text">Armateurs du Saint-Laurent</span>
+                    </div>
+                    <p class="footer-description">L'association des professionnels du transport maritime au Québec depuis 1949.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link" aria-label="LinkedIn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                        <a href="#" class="social-link" aria-label="Twitter">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>L'Association</h4>
+                    <ul class="footer-links">
+                        <li><a href="association.html">Qui sommes-nous</a></li>
+                        <li><a href="association.html#mission">Notre mission</a></li>
+                        <li><a href="association.html#conseil">Conseil d'administration</a></li>
+                        <li><a href="association.html#histoire">Notre histoire</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="membres.html">Nos membres</a></li>
+                        <li><a href="evenements.html">Événements</a></li>
+                        <li><a href="dossiers.html">Dossiers sectoriels</a></li>
+                        <li><a href="saint-laurent.html">Voie maritime</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <div class="footer-contact">
+                        <p>📍 123 Rue du Port<br>Montréal, QC H2Y 2X9</p>
+                        <p>📞 (514) 555-0123</p>
+                        <p>✉️ info@armateurs.ca</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <p>&copy; 2024 Association des Armateurs du Saint-Laurent. Tous droits réservés.</p>
+                    <div class="footer-legal">
+                        <a href="politique-confidentialite.html">Politique de confidentialité</a>
+                        <a href="conditions-utilisation.html">Conditions d'utilisation</a>
+                        <a href="plan-site.html">Plan du site</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="scripts/main.js"></script>
+</body>
+</html>

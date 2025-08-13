@@ -1,4 +1,6 @@
 import { MEMBRI_CONFIG, buildApiUrl, buildSubmissionUrl, DEFAULT_HEADERS, getEnvironmentConfig } from './config';
+import { withRetry, withRetryAndCircuitBreaker, DEFAULT_RETRY_CONFIGS } from './retrySystem';
+import { humanizeError, logError } from './errorMessages';
 
 // ===== TYPES BASÉS SUR LA DOCUMENTATION API MEMBRI 365 =====
 
@@ -565,7 +567,43 @@ const DEMO_DATA = {
       ReadyForSale: true,
       OpenToAll: false,
       SoldOut: false,
-      ParticipantEmailRequired: true
+      ParticipantEmailRequired: true,
+      TicketTypes: [
+        {
+          ID: 'ticket-1-member',
+          Name: 'Membre - Accès complet',
+          Description: 'Accès à toutes les sessions, déjeuner et pause-café inclus',
+          MemberPrice: 195,
+          GuestPrice: 295,
+          TaxIncluded: false,
+          MainTicketType: true
+        },
+        {
+          ID: 'ticket-1-student',
+          Name: 'Étudiant',
+          Description: 'Tarif réduit pour les étudiants avec preuve d\'inscription',
+          MemberPrice: 50,
+          GuestPrice: 75,
+          TaxIncluded: false,
+          MainTicketType: false
+        }
+      ],
+      Activities: [
+        {
+          ID: 'act-1-1',
+          Name: 'Session d\'ouverture',
+          Description: 'Présentation des enjeux maritimes 2024',
+          StartTime: '2024-09-15T09:00:00Z',
+          EndTime: '2024-09-15T10:30:00Z'
+        },
+        {
+          ID: 'act-1-2',
+          Name: 'Panel - Innovation technologique',
+          Description: 'Table ronde sur les nouvelles technologies',
+          StartTime: '2024-09-15T11:00:00Z',
+          EndTime: '2024-09-15T12:30:00Z'
+        }
+      ]
     },
     {
       ID: 'event-2',
@@ -580,629 +618,527 @@ const DEMO_DATA = {
       ReadyForSale: true,
       OpenToAll: true,
       SoldOut: false,
-      ParticipantEmailRequired: true
+      ParticipantEmailRequired: true,
+      TicketTypes: [
+        {
+          ID: 'ticket-2-formation',
+          Name: 'Formation complète',
+          Description: 'Formation d\'une journée avec certification',
+          MemberPrice: 350,
+          GuestPrice: 450,
+          TaxIncluded: false,
+          MainTicketType: true
+        }
+      ]
+    },
+    {
+      ID: 'event-3',
+      Name: 'Networking Maritime - Cocktail d\'automne',
+      Description: 'Événement de réseautage informel pour les professionnels du secteur maritime. Cocktail dînatoire et activités de réseautage.',
+      StartTime: '2024-10-10T17:00:00Z',
+      EndTime: '2024-10-10T21:00:00Z',
+      Venue: 'Yacht Club de Québec',
+      Address: '1100 Chemin Saint-Louis',
+      City: { ID: 'city-qc', Name: 'Québec', Province: 'Québec' },
+      PostalCode: 'G1S 1E5',
+      ReadyForSale: true,
+      OpenToAll: false,
+      SoldOut: false,
+      ParticipantEmailRequired: true,
+      TicketTypes: [
+        {
+          ID: 'ticket-3-cocktail',
+          Name: 'Cocktail networking',
+          Description: 'Accès au cocktail et activités de réseautage',
+          MemberPrice: 75,
+          GuestPrice: 125,
+          TaxIncluded: true,
+          MainTicketType: true
+        }
+      ]
+    },
+    {
+      ID: 'event-4',
+      Name: 'Salon Technologie Maritime',
+      Description: 'Exposition des dernières innovations technologiques pour l\'industrie maritime. Plus de 50 exposants attendus.',
+      StartTime: '2024-11-05T09:00:00Z',
+      EndTime: '2024-11-07T17:00:00Z',
+      Venue: 'Palais des congrès de Montréal',
+      Address: '1001 Place Jean-Paul-Riopelle',
+      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
+      PostalCode: 'H2Z 1H5',
+      ReadyForSale: true,
+      OpenToAll: true,
+      SoldOut: false,
+      ParticipantEmailRequired: false,
+      TicketTypes: [
+        {
+          ID: 'ticket-4-1day',
+          Name: 'Accès 1 jour',
+          Description: 'Accès au salon pour une journée',
+          MemberPrice: 45,
+          GuestPrice: 65,
+          TaxIncluded: false,
+          MainTicketType: false
+        },
+        {
+          ID: 'ticket-4-3days',
+          Name: 'Accès 3 jours',
+          Description: 'Accès complet au salon',
+          MemberPrice: 125,
+          GuestPrice: 175,
+          TaxIncluded: false,
+          MainTicketType: true
+        }
+      ]
+    },
+    {
+      ID: 'event-5',
+      Name: 'Forum Environnement Maritime',
+      Description: 'Discussions sur les enjeux environnementaux et le développement durable dans le secteur maritime.',
+      StartTime: '2024-12-03T09:00:00Z',
+      EndTime: '2024-12-03T16:00:00Z',
+      Venue: 'Pavillon Alphonse-Desjardins, Université Laval',
+      Address: '2325 Rue de l\'Université',
+      City: { ID: 'city-qc', Name: 'Québec', Province: 'Québec' },
+      PostalCode: 'G1V 0A6',
+      ReadyForSale: true,
+      OpenToAll: false,
+      SoldOut: false,
+      ParticipantEmailRequired: true,
+      TicketTypes: [
+        {
+          ID: 'ticket-5-forum',
+          Name: 'Forum environnement',
+          Description: 'Accès au forum avec déjeuner inclus',
+          MemberPrice: 165,
+          GuestPrice: 215,
+          TaxIncluded: false,
+          MainTicketType: true
+        }
+      ]
     }
   ] as MembriEvent[],
 
   members: [
     {
-      ID: 'member-csl',
-      AccountName: 'Canada Steamship Lines',
-      Description: 'Leader du transport maritime au Canada depuis plus d\'un siècle, CSL opère une flotte moderne de vraquiers autovideurs et de navires de charge générale sur les Grands Lacs et le fleuve Saint-Laurent.',
-      MemberSince: '1936-01-01',
-      Address: '759 Victoria Square',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H2Y 2J7',
-      Phone: '514-982-3800',
-      Email: 'info@cslships.com',
-      Website: 'https://www.cslships.com',
-      SectorCategory: { ID: 'sect-1', Name: 'Transport maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-algoma',
-      AccountName: 'Algoma Central Corporation',
-      Description: 'Propriétaire et exploitant de la plus grande flotte de vraquiers des Grands Lacs au Canada. Algoma transporte des matières premières essentielles à l\'économie canadienne.',
-      MemberSince: '1945-03-15',
-      Address: '63 Church Street',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H9S 4L2',
-      Phone: '705-649-2411',
-      Email: 'info@algonet.com',
-      Website: 'https://www.algonet.com',
-      SectorCategory: { ID: 'sect-1', Name: 'Transport maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-lowerlakes',
-      AccountName: 'Lower Lakes Towing Ltd.',
-      Description: 'Spécialisé dans le transport de vrac sec sur les Grands Lacs et la Voie maritime du Saint-Laurent, avec une flotte de navires modernes et efficaces.',
-      MemberSince: '1962-07-10',
-      Address: '185 Ouellette Ave',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'N9A 6Z4',
-      Phone: '519-256-5681',
-      Email: 'info@lowerlakes.com',
-      Website: 'https://www.lowerlakes.com',
-      SectorCategory: { ID: 'sect-1', Name: 'Transport maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-mckeil',
-      AccountName: 'McKeil Marine Limited',
-      Description: 'Entreprise familiale offrant des services de transport maritime, de remorquage et de services portuaires sur les Grands Lacs et la Voie maritime.',
-      MemberSince: '1980-11-22',
-      Address: '234 Main Street W',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'L8N 1H8',
-      Phone: '905-549-5002',
-      Email: 'info@mckeilmarine.com',
-      Website: 'https://www.mckeilmarine.com',
-      SectorCategory: { ID: 'sect-3', Name: 'Services nautiques' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-fednav',
-      AccountName: 'Fednav Limited',
-      Description: 'Armateur international spécialisé dans le transport de vrac sec, opérant une flotte mondiale avec une forte expertise dans la navigation arctique.',
-      MemberSince: '1944-05-08',
-      Address: '1000 Sherbrooke St W',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H3A 3G4',
-      Phone: '514-878-6500',
-      Email: 'info@fednav.com',
-      Website: 'https://www.fednav.com',
-      SectorCategory: { ID: 'sect-1', Name: 'Transport maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-oceanex',
-      AccountName: 'Oceanex Inc.',
-      Description: 'Service de transport maritime régulier entre le Canada atlantique et Terre-Neuve, transportant marchandises et véhicules.',
-      MemberSince: '1993-09-12',
-      Address: '4 Dundas Street',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'B3L 4S1',
-      Phone: '709-570-0626',
-      Email: 'info@oceanex.com',
-      Website: 'https://www.oceanex.com',
-      SectorCategory: { ID: 'sect-1', Name: 'Transport maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-servmarine',
-      AccountName: 'Servmarine Inc.',
-      Description: 'Services maritimes spécialisés incluant la manutention portuaire, l\'arrimage et les services aux navires dans les ports du Saint-Laurent.',
-      MemberSince: '1971-03-18',
-      Address: '850 Place D\'Youville',
-      City: { ID: 'city-qc', Name: 'Québec', Province: 'Québec' },
-      PostalCode: 'G1R 3P4',
-      Phone: '418-648-9100',
-      Email: 'info@servmarine.com',
-      Website: 'https://www.servmarine.com',
+      ID: 'member-1',
+      AccountName: 'Port de Québec',
+      Description: 'Premier port en eaux profondes de l\'Est du Canada, le Port de Québec est un acteur clé du commerce international.',
+      MainContact: {
+        FirstName: 'Marie',
+        LastName: 'Tremblay',
+        JobTitle: 'Directrice des opérations',
+        Email: 'marie.tremblay@portquebec.ca',
+        Phone: '(418) 555-0123',
+        ShowEmailOnWeb: true,
+        ShowCellphoneOnWeb: false
+      },
       SectorCategory: { ID: 'sect-2', Name: 'Logistique portuaire' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-logistecplus',
-      AccountName: 'Logistec Plus Inc.',
-      Description: 'Services logistiques intégrés et manutention portuaire spécialisée dans les produits forestiers et les marchandises diverses.',
-      MemberSince: '1985-06-30',
-      Address: '360 Saint-Jacques Street',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H2Y 1P5',
-      Phone: '514-985-2345',
-      Email: 'info@logistec.com',
-      Website: 'https://www.logistec.com',
-      SectorCategory: { ID: 'sect-2', Name: 'Logistique portuaire' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-marimarine',
-      AccountName: 'Marimarine Services Ltd.',
-      Description: 'Services aux navires et expertise maritime incluant l\'inspection, la consultation et les services techniques spécialisés.',
-      MemberSince: '1992-12-05',
-      Address: '55 Place Charles Le Moyne',
-      City: { ID: 'city-lng', Name: 'Longueuil', Province: 'Québec' },
-      PostalCode: 'J4K 0A7',
-      Phone: '450-646-2000',
-      Email: 'info@marimarine.ca',
-      Website: 'https://www.marimarine.ca',
-      SectorCategory: { ID: 'sect-3', Name: 'Services nautiques' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-technav',
-      AccountName: 'Technav Marine Solutions',
-      Description: 'Solutions technologiques innovantes pour l\'industrie maritime, incluant systèmes de navigation, télécommunications et automatisation.',
-      MemberSince: '2001-04-15',
-      Address: '125 Rue Saint-Paul',
+      Address: '150 Rue Dalhousie',
       City: { ID: 'city-qc', Name: 'Québec', Province: 'Québec' },
-      PostalCode: 'G1K 3W2',
-      Phone: '418-692-1234',
-      Email: 'info@technav.ca',
-      Website: 'https://www.technav.ca',
-      SectorCategory: { ID: 'sect-5', Name: 'Technologie maritime' },
+      PostalCode: 'G1K 4C4',
+      Phone: '(418) 555-0123',
+      Email: 'info@portquebec.ca',
+      Website: 'https://portquebec.ca',
+      MemberSince: '2019-03-15T00:00:00Z',
       ShowOnWeb: true,
       ShowEmailOnWeb: true,
       ShowAddressOnWeb: true,
       ShowPhoneFaxOnWeb: true,
-      isActive: true
+      NbEmployees: 125,
+      EnterpriseMission: 'Faciliter les échanges commerciaux maritimes et contribuer au développement économique du Québec.',
+      OfferedServices: 'Services portuaires, logistique, entreposage, manutention'
     },
     {
-      ID: 'member-assurmar',
-      AccountName: 'AssurMar Maritime Insurance',
-      Description: 'Courtier spécialisé en assurance maritime offrant une couverture complète pour navires, cargaisons et responsabilité maritime.',
-      MemberSince: '1998-08-20',
-      Address: '2000 McGill College',
+      ID: 'member-2',
+      AccountName: 'Armateurs Associés',
+      Description: 'Compagnie d\'armateurs spécialisée dans le transport maritime commercial avec une flotte moderne.',
+      MainContact: {
+        FirstName: 'Jean',
+        LastName: 'Leblanc',
+        JobTitle: 'Capitaine',
+        Email: 'j.leblanc@armateurs.ca',
+        Phone: '(514) 555-0156',
+        ShowEmailOnWeb: true,
+        ShowCellphoneOnWeb: true
+      },
+      SectorCategory: { ID: 'sect-1', Name: 'Transport maritime' },
+      Address: '2100 Avenue Pierre-Dupuy',
       City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H3A 3H3',
-      Phone: '514-287-9595',
-      Email: 'info@assurmar.ca',
-      Website: 'https://www.assurmar.ca',
-      SectorCategory: { ID: 'sect-4', Name: 'Assurance maritime' },
+      PostalCode: 'H3C 3R5',
+      Phone: '(514) 555-0156',
+      Email: 'info@armateurs.ca',
+      Website: 'https://armateurs-associes.ca',
+      LinkedIn: 'armateurs-associes',
+      MemberSince: '2020-07-22T00:00:00Z',
       ShowOnWeb: true,
       ShowEmailOnWeb: true,
       ShowAddressOnWeb: true,
       ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-navcan',
-      AccountName: 'Navigation Canadienne Ltd.',
-      Description: 'Services de pilotage maritime et expertise nautique pour la navigation sécuritaire sur le fleuve Saint-Laurent.',
-      MemberSince: '1954-02-28',
-      Address: '475 Rue de la Gauchetière O',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H2Z 1X6',
-      Phone: '514-496-8500',
-      Email: 'info@navcan.ca',
-      Website: 'https://www.navcan.ca',
-      SectorCategory: { ID: 'sect-11', Name: 'Navigation' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-ecomar',
-      AccountName: 'EcoMarine Environmental',
-      Description: 'Solutions environnementales maritimes, gestion des déchets de navires et services de protection environnementale portuaire.',
-      MemberSince: '2005-11-10',
-      Address: '750 Marcel-Laurin',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H4M 2M4',
-      Phone: '514-336-8877',
-      Email: 'info@ecomarine.ca',
-      Website: 'https://www.ecomarine.ca',
-      SectorCategory: { ID: 'sect-9', Name: 'Environnement maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-formations',
-      AccountName: 'Institut Maritime du Québec',
-      Description: 'Formation maritime professionnelle, certification STCW et programmes spécialisés pour l\'industrie du transport maritime.',
-      MemberSince: '1967-09-01',
-      Address: '53 Rue Saint-Germain E',
-      City: { ID: 'city-rim', Name: 'Rimouski', Province: 'Québec' },
-      PostalCode: 'G5L 1A1',
-      Phone: '418-724-2822',
-      Email: 'info@imq.ca',
-      Website: 'https://www.imq.ca',
-      SectorCategory: { ID: 'sect-10', Name: 'Formation maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-securimar',
-      AccountName: 'SecuriMar Safety Systems',
-      Description: 'Équipements de sécurité maritime, systèmes de sauvetage et services d\'inspection de conformité aux normes internationales.',
-      MemberSince: '1995-05-25',
-      Address: '1200 Avenue Papineau',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H2K 4R5',
-      Phone: '514-522-6789',
-      Email: 'info@securimar.ca',
-      Website: 'https://www.securimar.ca',
-      SectorCategory: { ID: 'sect-12', Name: 'Sécurité maritime' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-innov',
-      AccountName: 'InnovMarine Technologies',
-      Description: 'Recherche et développement en technologies marines, solutions IoT pour navires et systèmes de surveillance maritime intelligents.',
-      MemberSince: '2010-03-12',
-      Address: '3333 Université Street',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H3A 2A5',
-      Phone: '514-398-4455',
-      Email: 'info@innovmarine.ca',
-      Website: 'https://www.innovmarine.ca',
-      SectorCategory: { ID: 'sect-13', Name: 'Innovation' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-greenships',
-      AccountName: 'GreenShips Solutions',
-      Description: 'Technologies vertes pour l\'industrie maritime, systèmes de propulsion écologiques et solutions de réduction des émissions.',
-      MemberSince: '2015-07-08',
-      Address: '600 Rue de la Montagne',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H3G 1Y5',
-      Phone: '514-845-3333',
-      Email: 'info@greenships.ca',
-      Website: 'https://www.greenships.ca',
-      SectorCategory: { ID: 'sect-14', Name: 'Technologies vertes' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
-    },
-    {
-      ID: 'member-regulatory',
-      AccountName: 'Regulatory Marine Consulting',
-      Description: 'Conseil en réglementation maritime, aide à la conformité internationale et représentation auprès des organismes gouvernementaux.',
-      MemberSince: '2003-12-01',
-      Address: '1010 Sherbrooke Street W',
-      City: { ID: 'city-mtl', Name: 'Montréal', Province: 'Québec' },
-      PostalCode: 'H3A 2R7',
-      Phone: '514-934-1934',
-      Email: 'info@regmarine.ca',
-      Website: 'https://www.regmarine.ca',
-      SectorCategory: { ID: 'sect-15', Name: 'Réglementation' },
-      ShowOnWeb: true,
-      ShowEmailOnWeb: true,
-      ShowAddressOnWeb: true,
-      ShowPhoneFaxOnWeb: true,
-      isActive: true
+      ShowSocialMediaOnWeb: true,
+      NbEmployees: 45,
+      EnterpriseMission: 'Transport maritime sécuritaire et efficace pour nos clients.',
+      OfferedServices: 'Transport maritime, affrètement, services de navigation'
     }
   ] as MembriMember[]
 };
 
-// ===== CLASSE API MEMBRI =====
-
 class MembriApiService {
-  private config: any;
-  private isDemoMode: boolean = false;
+  private readonly isDevelopment: boolean;
+  private readonly useDemoMode: boolean;
+  private orgId: string;
+  private envConfig: any;
 
   constructor() {
-    this.config = getEnvironmentConfig();
-    console.log('🔧 MembriApiService initialized:', this.config);
+    // Utiliser la nouvelle fonction de configuration d'environnement
+    this.envConfig = getEnvironmentConfig();
+    this.isDevelopment = this.envConfig.isDevelopment;
+    // Force le mode démo temporairement pour éviter les erreurs 400
+    this.useDemoMode = this.isDevelopment || this.envConfig.forceDemo;
+    this.orgId = this.envConfig.orgId;
+    
+    console.log('🔧 Service Membri initialisé:', {
+      environment: this.isDevelopment ? 'Développement' : 'Production',
+      mode: this.useDemoMode ? 'Démonstration (hors ligne)' : 'API (en ligne)',
+      hostname: this.envConfig.hostname,
+      orgId: this.useDemoMode ? 'demo-org-guid' : this.orgId,
+      baseUrl: this.envConfig.apiUrl,
+      forcedDemo: this.envConfig.forceDemo ? 'Oui (temporaire)' : 'Non'
+    });
   }
 
-  // Getter pour la configuration
-  getConfig() {
-    return {
-      ...this.config,
-      baseUrl: MEMBRI_CONFIG.BASE_URL,
-      orgId: MEMBRI_CONFIG.ORG_ID,
-      mode: this.isDemoMode ? 'demo' : 'production',
-      endpoints: MEMBRI_CONFIG.ENDPOINTS
-    };
+  private async simulateLatency(min = 200, max = 600): Promise<void> {
+    if (!this.useDemoMode) return;
+    const delay = Math.random() * (max - min) + min;
+    await new Promise(resolve => setTimeout(resolve, delay));
   }
 
-  // Méthode pour déterminer si on est en développement
-  isInDevelopment(): boolean {
-    return this.config.isDevelopment;
-  }
-
-  // Test de connexion à l'API
-  async testConnection(): Promise<boolean> {
-    // En mode développement, forcer le mode démo pour éviter les erreurs réseau
-    if (this.config.isDevelopment || this.config.forceOffline || this.config.forceDemo) {
-      console.log('🔧 Development/Demo mode detected, using demo data');
-      this.isDemoMode = true;
-      return false;
+  private async makeApiCall(endpoint: string): Promise<any> {
+    // En mode démo, retourner directement les données de démonstration
+    if (this.useDemoMode) {
+      console.log(`📍 Mode démo: Simulation appel API ${endpoint}`);
+      await this.simulateLatency();
+      
+      // Retourner les données de démonstration selon l'endpoint
+      if (endpoint.includes('/Member') || endpoint.includes('/Account')) {
+        return DEMO_DATA.members;
+      }
+      if (endpoint.includes('/Event')) {
+        return DEMO_DATA.events;
+      }
+      if (endpoint.includes('/MembershipType')) {
+        return DEMO_DATA.membershipTypes;
+      }
+      if (endpoint.includes('/SectorCategory')) {
+        return DEMO_DATA.sectors;
+      }
+      if (endpoint.includes('/City')) {
+        return DEMO_DATA.cities;
+      }
+      if (endpoint.includes('/Province')) {
+        return DEMO_DATA.provinces;
+      }
+      
+      // Retour par défaut
+      return [];
     }
 
-    try {
-      console.log('🔍 Testing API connection...');
-      
-      // Test simple avec timeout réduit et gestion d'erreur robuste
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 1500); // Timeout encore plus court
-      
-      const testUrl = buildApiUrl(MEMBRI_CONFIG.ENDPOINTS.CITIES, { limit: '1' });
-      console.log('🌐 Test URL:', testUrl);
-      
-      // Utiliser une approche plus robuste pour éviter les "Failed to fetch"
-      const response = await Promise.race([
-        fetch(testUrl, {
-          method: 'GET',
-          headers: DEFAULT_HEADERS,
-          signal: controller.signal,
-          mode: 'cors', // Explicitement définir le mode CORS
-          cache: 'no-cache'
-        }),
-        new Promise<never>((_, reject) => 
-          setTimeout(() => reject(new Error('Connection timeout')), 1500)
-        )
-      ]);
-      
-      clearTimeout(timeoutId);
-      
-      if (response.ok) {
-        console.log('✅ API connection successful');
-        this.isDemoMode = false;
-        return true;
-      } else {
-        console.warn(`⚠️ API responded with status ${response.status}, switching to demo mode`);
-        this.isDemoMode = true;
-        return false;
-      }
-    } catch (error) {
-      const errorMessage = error?.message || 'Unknown error';
-      
-      if (error?.name === 'AbortError' || errorMessage.includes('timeout')) {
-        console.warn('⏱️ API connection timeout, switching to demo mode');
-      } else if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
-        console.warn('🌐 Network error detected, switching to demo mode');
-      } else {
-        console.warn('⚠️ API connection failed, switching to demo mode:', errorMessage);
-      }
-      
-      this.isDemoMode = true;
-      return false;
-    }
-  }
-
-  // Utilitaire pour les appels API avec fallback
-  private async apiCall<T>(
-    endpoint: string,
-    options: RequestInit = {},
-    demoData: T
-  ): Promise<T> {
-    try {
-      // Si déjà en mode démo ou forcé offline, utiliser les données de démo
-      if (this.isDemoMode || this.config.forceOffline) {
-        console.log(`📊 Using demo data for ${endpoint} (demo mode: ${this.isDemoMode}, offline: ${this.config.forceOffline})`);
-        return demoData;
-      }
-
-      const url = buildApiUrl(endpoint);
-      console.log(`🌐 Fetching from ${url}`);
-      
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), MEMBRI_CONFIG.TIMEOUT);
+    // Utiliser le système de retry avec circuit breaker pour les appels réels
+    const circuitBreakerKey = `membri_api_${endpoint.split('/')[1] || 'general'}`;
+    
+    return withRetryAndCircuitBreaker(async () => {
+      const url = `${this.envConfig.apiUrl}${endpoint}?orgId=${this.orgId}`;
       
       const response = await fetch(url, {
         method: 'GET',
         headers: DEFAULT_HEADERS,
-        signal: controller.signal,
-        ...options
+        signal: AbortSignal.timeout(MEMBRI_CONFIG.TIMEOUT)
       });
-      
-      clearTimeout(timeoutId);
-      
+
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+        // Log error with context for better debugging
+        logError(error, {
+          operation: 'membri_api_call',
+          component: 'MembriApiService',
+          additionalData: {
+            endpoint,
+            url,
+            status: response.status,
+            statusText: response.statusText
+          }
+        });
+        throw error;
       }
-      
+
       const data = await response.json();
-      console.log(`✅ API call successful for ${endpoint}`);
       return data;
-      
-    } catch (error) {
-      const errorName = error?.name || 'UnknownError';
-      const errorMessage = error?.message || 'Unknown error occurred';
-      
-      if (errorName === 'AbortError') {
-        console.warn(`⏱️ API call timeout for ${endpoint}, using demo data`);
-      } else if (errorName === 'TypeError' && errorMessage.includes('fetch')) {
-        console.warn(`🌐 Network error for ${endpoint}, using demo data`);
-      } else {
-        console.warn(`⚠️ API call failed for ${endpoint}, using demo data:`, errorMessage);
-      }
-      
-      // Basculer en mode démo après une erreur
-      this.isDemoMode = true;
-      return demoData;
-    }
+    }, circuitBreakerKey, 'standard');
   }
 
-  // Récupération des provinces
-  async fetchProvinces(): Promise<Province[]> {
-    return this.apiCall(
-      MEMBRI_CONFIG.ENDPOINTS.CITIES,
-      {},
-      DEMO_DATA.provinces
-    );
+  // ===== MÉTHODES PUBLIQUES DE L'API =====
+
+  // Configuration et environnement
+  isInDevelopment(): boolean {
+    return this.isDevelopment;
   }
 
-  // Récupération des villes
-  async fetchCities(): Promise<City[]> {
-    return this.apiCall(
-      MEMBRI_CONFIG.ENDPOINTS.CITIES,
-      {},
-      DEMO_DATA.cities
-    );
+  isUsingDemoMode(): boolean {
+    return this.useDemoMode;
   }
 
-  // Récupération des types d'adhésion
-  async fetchMembershipTypes(): Promise<MembershipType[]> {
-    return this.apiCall(
-      MEMBRI_CONFIG.ENDPOINTS.MEMBERSHIP_TYPES,
-      {},
-      DEMO_DATA.membershipTypes
-    );
+  getConfig(): any {
+    return {
+      mode: this.useDemoMode ? 'demo' : 'api',
+      environment: this.isDevelopment ? 'development' : 'production',
+      orgId: this.orgId,
+      hostname: this.envConfig.hostname,
+      apiUrl: this.envConfig.apiUrl,
+      forceOffline: this.useDemoMode
+    };
   }
 
-  // Récupération des catégories de secteurs
-  async fetchSectorCategories(): Promise<SectorCategory[]> {
-    return this.apiCall(
-      MEMBRI_CONFIG.ENDPOINTS.SECTOR_CATEGORIES,
-      {},
-      DEMO_DATA.sectors
-    );
-  }
-
-  // Récupération des événements actifs
-  async fetchActiveEvents(): Promise<Event[]> {
-    return this.apiCall(
-      MEMBRI_CONFIG.ENDPOINTS.EVENTS,
-      {},
-      DEMO_DATA.events
-    );
-  }
-
-  // Récupération des membres
-  async fetchMembers(): Promise<Member[]> {
-    return this.apiCall(
-      MEMBRI_CONFIG.ENDPOINTS.MEMBERS,
-      {},
-      DEMO_DATA.members
-    );
-  }
-
-  // Alias pour la compatibilité
-  async getActiveMembers(): Promise<Member[]> {
-    return this.fetchMembers();
-  }
-
-  // Alias supplémentaires pour la compatibilité
-  async getMembers(): Promise<Member[]> {
-    return this.fetchMembers();
-  }
-
-  // Alias pour les événements
-  async getEvents(): Promise<Event[]> {
-    return this.fetchActiveEvents();
-  }
-
-  async getActiveEvents(): Promise<Event[]> {
-    return this.fetchActiveEvents();
-  }
-
-  // Soumission d'une demande d'adhésion
-  async submitMembership(membershipData: MembershipFormData): Promise<string | MembriCreateMembershipResponse> {
+  // Méthodes pour récupérer les données de base
+  async getProvinces(): Promise<Province[]> {
     try {
-      if (this.isDemoMode) {
-        console.log('📊 Demo mode: simulating membership submission');
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulation d'attente
-        return 'success';
-      }
-
-      // Mapper les données vers le format Membri
-      const membriData: MembriCreateMembershipRequest = {
-        MembershipTypeID: membershipData.membershipTypeId,
-        MembershipPackageID: membershipData.membershipPackageId,
-        AccountName: membershipData.accountName,
-        Description: membershipData.description,
-        Address: membershipData.address,
-        CityID: membershipData.cityId,
-        PostalCode: membershipData.postalCode,
-        Email: membershipData.email,
-        EmailBilling: membershipData.emailBilling,
-        Phone: membershipData.phone,
-        Website: membershipData.website,
-        NEQ: membershipData.neq,
-        ShowInfoOnWebsite: membershipData.showInfoOnWebsite,
-        ShowAddressOnWeb: membershipData.showAddressOnWeb,
-        ShowEmailOnWeb: membershipData.showEmailOnWeb,
-        ShowPhoneOnWeb: membershipData.showPhoneOnWeb,
-        ShowSocialMediaOnWeb: membershipData.showSocialMediaOnWeb,
-        AutoRenewal: membershipData.autoRenewal,
-        MainContact: {
-          FirstName: membershipData.mainContact.firstName,
-          LastName: membershipData.mainContact.lastName,
-          Email: membershipData.mainContact.email,
-          Phone: membershipData.mainContact.phone,
-          Cell: membershipData.mainContact.cell,
-          JobTitle: membershipData.mainContact.jobtitle,
-          ShowEmailOnWeb: membershipData.mainContact.showEmailOnWeb,
-          ShowCellphoneOnWeb: membershipData.mainContact.showCellphoneOnWeb,
-          OptInNewsletter: true
-        }
-      };
-
-      const response = await fetch(buildSubmissionUrl(MEMBRI_CONFIG.ENDPOINTS.MEMBERSHIP_CREATE), {
-        method: 'POST',
-        headers: {
-          ...DEFAULT_HEADERS,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(membriData)
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-      return result;
-
+      const data = await this.makeApiCall('/Province');
+      return data || DEMO_DATA.provinces;
     } catch (error) {
-      console.error('❌ Error submitting membership:', error);
-      throw error;
+      console.warn('Falling back to demo provinces:', error);
+      return DEMO_DATA.provinces;
     }
+  }
+
+  async getCities(): Promise<City[]> {
+    try {
+      const data = await this.makeApiCall('/City');
+      return data || DEMO_DATA.cities;
+    } catch (error) {
+      console.warn('Falling back to demo cities:', error);
+      return DEMO_DATA.cities;
+    }
+  }
+
+  async getMembershipTypes(): Promise<MembershipType[]> {
+    try {
+      const data = await this.makeApiCall('/MembershipType');
+      return data || DEMO_DATA.membershipTypes;
+    } catch (error) {
+      console.warn('Falling back to demo membership types:', error);
+      return DEMO_DATA.membershipTypes;
+    }
+  }
+
+  async getSectorCategories(): Promise<SectorCategory[]> {
+    try {
+      const data = await this.makeApiCall('/SectorCategory');
+      return data || DEMO_DATA.sectors;
+    } catch (error) {
+      console.warn('Falling back to demo sectors:', error);
+      return DEMO_DATA.sectors;
+    }
+  }
+
+  async getEvents(): Promise<Event[]> {
+    try {
+      const data = await this.makeApiCall('/Event');
+      const events = data || DEMO_DATA.events;
+      
+      // Filter to only return active events (ReadyForSale = true)
+      return events.filter((event: any) => event.ReadyForSale || event.readyForSale);
+    } catch (error) {
+      console.warn('Falling back to demo events:', error);
+      return DEMO_DATA.events.filter(event => event.ReadyForSale);
+    }
+  }
+
+  async getMembers(): Promise<Member[]> {
+    try {
+      // Utiliser l'endpoint Account au lieu de Member selon la doc Membri
+      const data = await this.makeApiCall('/Account');
+      const members = data || DEMO_DATA.members;
+      
+      // Filter to only return visible members (ShowOnWeb = true) and sort alphabetically
+      return members
+        .filter((member: any) => member.ShowOnWeb || member.showOnWeb)
+        .sort((a: any, b: any) => {
+          const nameA = (a.AccountName || a.accountName || a.name || '').toLowerCase();
+          const nameB = (b.AccountName || b.accountName || b.name || '').toLowerCase();
+          return nameA.localeCompare(nameB);
+        });
+    } catch (error) {
+      console.warn('Falling back to demo members:', error);
+      return DEMO_DATA.members
+        .filter(member => member.ShowOnWeb)
+        .sort((a, b) => a.AccountName.localeCompare(b.AccountName));
+    }
+  }
+
+  async getMemberById(memberId: string): Promise<Member | null> {
+    try {
+      if (this.useDemoMode) {
+        await this.simulateLatency();
+        const member = DEMO_DATA.members.find(m => m.ID === memberId);
+        return member || null;
+      }
+
+      const data = await this.makeApiCall(`/Account/${memberId}`);
+      return data || null;
+    } catch (error) {
+      console.warn(`Error fetching member ${memberId}:`, error);
+      
+      // Fallback to demo data
+      const member = DEMO_DATA.members.find(m => m.ID === memberId);
+      return member || null;
+    }
+  }
+
+  // Soumission d'adhésion
+  async submitMembership(formData: MembershipFormData): Promise<{ success: boolean; accountId?: string; paymentUrl?: string; message?: string }> {
+    if (this.useDemoMode) {
+      console.log('🎭 Mode démo: Simulation soumission adhésion', formData);
+      await this.simulateLatency(1000, 2000);
+      
+      // Simulate success response
+      return {
+        success: true,
+        accountId: `demo-account-${Date.now()}`,
+        message: 'Demande d\'adhésion soumise avec succès (mode démonstration)'
+      };
+    }
+
+    // Utiliser le système de retry critique pour la soumission d'adhésion
+    return withRetryAndCircuitBreaker(async () => {
+      try {
+        // Transform application data to Membri API format
+        const membriRequest: MembriCreateMembershipRequest = {
+          MembershipTypeID: formData.membershipTypeId,
+          MembershipPackageID: formData.membershipPackageId,
+          MainContact: {
+            FirstName: formData.mainContact.firstName,
+            LastName: formData.mainContact.lastName,
+            Email: formData.mainContact.email,
+            Phone: formData.mainContact.phone,
+            Cell: formData.mainContact.cell,
+            JobTitle: formData.mainContact.jobtitle,
+            OptInNewsletter: true,
+            ShowOnWeb: formData.mainContact.showEmailOnWeb,
+            ShowCellphoneOnWeb: formData.mainContact.showCellphoneOnWeb,
+            ShowEmailOnWeb: formData.mainContact.showEmailOnWeb
+          },
+          AccountName: formData.accountName,
+          Description: formData.description,
+          Address: formData.address,
+          CityID: formData.cityId,
+          PostalCode: formData.postalCode,
+          Email: formData.email,
+          EmailBilling: formData.emailBilling,
+          Phone: formData.phone,
+          Website: formData.website,
+          NEQ: formData.neq,
+          ShowInfoOnWebsite: formData.showInfoOnWebsite,
+          ShowAddressOnWeb: formData.showAddressOnWeb,
+          ShowEmailOnWeb: formData.showEmailOnWeb,
+          ShowPhoneOnWeb: formData.showPhoneOnWeb,
+          ShowSocialMediaOnWeb: formData.showSocialMediaOnWeb,
+          AutoRenewal: formData.autoRenewal
+        };
+
+        const url = buildSubmissionUrl();
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            ...DEFAULT_HEADERS,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(membriRequest),
+          signal: AbortSignal.timeout(MEMBRI_CONFIG.TIMEOUT)
+        });
+
+        if (!response.ok) {
+          const error = new Error(`HTTP ${response.status}: ${response.statusText}`);
+          logError(error, {
+            operation: 'membership_submission',
+            component: 'MembriApiService',
+            additionalData: {
+              url,
+              status: response.status,
+              statusText: response.statusText,
+              accountName: formData.accountName
+            }
+          });
+          throw error;
+        }
+
+        const result: MembriCreateMembershipResponse = await response.json();
+        
+        return {
+          success: true,
+          accountId: result.AccountId,
+          paymentUrl: result.PaymentURL,
+          message: 'Demande d\'adhésion soumise avec succès'
+        };
+
+      } catch (error) {
+        console.error('Membership submission error:', error);
+        
+        // Humanize error for user display
+        const { message: errorMessage } = humanizeError(error, {
+          operation: 'membership_submission',
+          component: 'signup_form',
+          additionalData: { accountName: formData.accountName }
+        });
+        
+        throw new Error(errorMessage.description);
+      }
+    }, 'membri_membership_submission', 'critical').catch(error => {
+      return {
+        success: false,
+        message: error.message || 'Erreur lors de la soumission de votre demande d\'adhésion'
+      };
+    });
+  }
+
+  // Méthodes utilitaires
+  async testConnection(): Promise<{ connected: boolean; message: string; mode: string }> {
+    if (this.useDemoMode) {
+      return {
+        connected: false,
+        message: 'Mode démonstration actif - aucune connexion API réelle',
+        mode: 'demo'
+      };
+    }
+
+    try {
+      await this.makeApiCall('/Province');
+      return {
+        connected: true,
+        message: 'Connexion API Membri 365 établie',
+        mode: 'api'
+      };
+    } catch (error) {
+      return {
+        connected: false,
+        message: `Impossible de se connecter à l'API: ${error.message}`,
+        mode: 'fallback'
+      };
+    }
+  }
+
+  async getDiagnosticInfo(): Promise<any> {
+    const config = this.getConfig();
+    
+    return {
+      environment: config.environment,
+      mode: config.mode,
+      hostname: config.hostname,
+      userAgent: navigator.userAgent.substring(0, 50),
+      demoDataAvailable: true,
+      networkCallsBlocked: config.forceOffline
+    };
   }
 }
 
-// Instance singleton de l'API
+// Instance singleton exportée
 export const membriApi = new MembriApiService();
-
-// Exports des types
-export type {
-  Province,
-  City,
-  MembershipType,
-  MembershipPackage,
-  SectorCategory,
-  Event,
-  Member,
-  MembershipFormData,
-  MainContact
-};
